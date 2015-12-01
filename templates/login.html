@@ -1,0 +1,15 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta type="utf-8">
+    <title>首页</title>
+</head>
+<body>
+<form action="/user/login" method="post">
+    {% module xsrf_form_html() %}
+    Name: <input type="text" name="loginName">
+    <input type="submit" value="Sign in">
+
+</form>
+</body>
+</html>
