@@ -30,7 +30,11 @@ angular.module('app')
                         resolve: {
                             deps: ['$ocLazyLoad',
                                 function ($ocLazyLoad) {
-                                    return $ocLazyLoad.load(['static/js/controllers/app_index.js']);
+                                    return $ocLazyLoad.load(['static/js/controllers/app_index.js']).then(
+                                        function(){
+                                            return $ocLazyLoad.load(['static/js/controllers/app_index.js']);
+                                        }
+                                    );
                                 }]
                         }
                     })
