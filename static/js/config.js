@@ -28,8 +28,8 @@ var app =
             $translateProvider.preferredLanguage('zh_CN');
             // Tell the module to store the language in the local storage
             $translateProvider.useLocalStorage();
-        }]);
-app.config(function ($httpProvider) {
-    $httpProvider.defaults.xsrfCookieName = "_xsrf";
-    $httpProvider.defaults.xsrfHeaderName = "X-XSRFToken";
-});
+        }])
+        .config(function ($httpProvider) {
+            $httpProvider.defaults.xsrfCookieName = "_xsrf";
+            $httpProvider.defaults.xsrfHeaderName = "X-XSRFToken";
+        });
