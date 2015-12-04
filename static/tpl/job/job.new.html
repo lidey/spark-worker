@@ -1,11 +1,11 @@
 <div ng-controller="JobNewCtrl">
 
   <div class="wrapper">
-    <form name="newMail" class="form-horizontal m-t-lg">
+    <form name="newJob" role="form" class="form-horizontal m-t-lg form-validation">
       <div class="form-group">
         <label class="col-lg-2 control-label">标题:</label>
         <div class="col-lg-8">
-         <input type="text" class="form-control" id="title" ng-model="job.title">
+         <input type="text" class="form-control" id="title" ng-model="job.title" required ng-maxlength="100">
         </div>
       </div>
       <div class="form-group">
@@ -16,7 +16,7 @@
       </div>
       <div class="form-group">
         <div class="col-lg-8 col-lg-offset-2">
-          <button class="btn btn-info w-xs" ng-click="saveJob()">保存</button>
+          <button class="btn btn-info w-xs" ng-click="saveJob()" ng-disabled="newJob.$invalid">保存</button>
         </div>
       </div>
     </form>

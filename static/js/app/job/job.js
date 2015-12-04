@@ -33,17 +33,18 @@ app.controller('JobDetailCtrl', ['$scope','$location', 'jobs', '$stateParams', f
              $scope.jobs[i].selected =false;
         }
 
-    $scope.job={
-        id:"",
-        title:"",
-        content:"",
-        date:Date.now()
-    }
-
     $scope.editJob = function(){
          console.info('修改'+ $scope.job)
-         console.info( $scope.job)
-
+         jobs.update($scope.job)
+         for (var i = 0; i < $scope.jobs.length; i++) {
+             if ($scope.jobs[i].id == $scope.job.id){
+                  $scope.jobs[i] = $scope.job;
+                  $scope.jobs[i].selected =true;
+                    console.info($scope.jobs[i])
+             } else{
+                  $scope.jobs[i].selected =false;
+             }
+         }
          return $location.path("/app/job");
     }
 
