@@ -1,24 +1,28 @@
 <div ng-controller="JobDetailCtrl">
 
- <div class="wrapper">
-    <form name="newJob" role="form" class="form-horizontal m-t-lg form-validation" >
-      <div class="form-group">
-        <label class="col-lg-2 control-label">标题:</label>
-        <div class="col-lg-8">
-         <input type="text" class="form-control" id="title" ng-model="job.title"  required ng-maxlength="100">
-        </div>
-      </div>
-      <div class="form-group">
-        <label class="col-sm-2 control-label">描述:</label>
-        <div class="col-sm-10">
-            <text-angular ng-model="job.content" ></text-angular>
-        </div>
-      </div>
-      <div class="form-group">
-        <div class="col-lg-8 col-lg-offset-2">
-          <button class="btn btn-info w-xs" ng-click="editJob()" ng-disabled="newJob.$invalid">修改</button>
-        </div>
-      </div>
-    </form>
-  </div>
+    <div class="wrapper">
+        <form name="newJob" role="form" class="form-horizontal m-t-lg form-validation">
+            <div class="form-group">
+                <label class="col-lg-2 control-label">标题:</label>
+
+                <div class="col-lg-8">
+                    <input type="text" class="form-control" name="title" id="title" ng-model="job.title" required ng-maxlength="100">
+                      <span class="error" ng-show="newJob.title.$error.maxlength"><font color="red">标题长度不能超过100</font></span>
+                      <span class="error" ng-show="newJob.title.$error.required"><font color="red">标题不能为空</font></span>
+                </div>
+            </div>
+            <div class="form-group">
+                <label class="col-sm-2 control-label">描述:</label>
+
+                <div class="col-sm-10">
+                    <text-angular ng-model="job.content"></text-angular>
+                </div>
+            </div>
+            <div class="form-group">
+                <div class="col-lg-8 col-lg-offset-2">
+                    <button class="btn btn-info w-xs" ng-click="editJob()" ng-disabled="newJob.$invalid">修改</button>
+                </div>
+            </div>
+        </form>
+    </div>
 </div>
