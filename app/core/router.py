@@ -13,5 +13,5 @@ urls = [
     (r"/", MainHandler, dict()),
     (r"/user/(.*)", UserHandler, dict()),
     (r"/job/(.*)", JobHandler, dict()),
-    (r"/job/(.*)", ServerHandler, dict()),
+    (r"/server/(.*)", ServerHandler, dict()),
 ]
