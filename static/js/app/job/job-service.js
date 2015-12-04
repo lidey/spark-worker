@@ -38,6 +38,11 @@ app.factory('jobs', ['$http', function ($http) {
             });
   };
 
+    factory.update = function (job) {
+      return   $http.post('job/update',job).then(function (resp) {
+                console.log(resp.data.job)
+            });
+  };
 
    factory.uuid =  function () {
     function S4() {

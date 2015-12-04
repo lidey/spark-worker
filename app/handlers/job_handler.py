@@ -32,6 +32,8 @@ class JobHandler(BaseHandler):
             self.list()
         if url_str == 'add':
             self.add()
+        if url_str == 'update':
+            self.update()
 
     @tornado.web.authenticated
     def post(self, url_str=''):
@@ -47,6 +49,8 @@ class JobHandler(BaseHandler):
             self.deleteUUID()
         if url_str == 'add':
             self.add()
+        if url_str == 'update':
+            self.update()
 
     @tornado.web.authenticated
     def start(self):
@@ -102,5 +106,14 @@ class JobHandler(BaseHandler):
         job.uuid = self.args.get("id")
         job.createTime = datetime.datetime.now()
         job.save(force_insert=True)
+
+        self.write({'log': True, 'job':job.to_dict()})
+    def update(self):
+
+        job = Job().find_uuid(self.args.get("id"))
+        job.title =  self.args.get("title")
+        job.desc = self.args.get("content")
+        print job.title
+        job.save()
 
         self.write({'log': True, 'job':job.to_dict()})
