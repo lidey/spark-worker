@@ -5,6 +5,7 @@
 # File Author: lidey 
 # File Created Date: 2015-11-27 12:47
 from app.handlers.job_handler import JobHandler
+from app.handlers.server_handler import ServerHandler
 from app.handlers.user_handler import UserHandler
 from app.handlers.index_handler import MainHandler
 
@@ -12,4 +13,5 @@ urls = [
     (r"/", MainHandler, dict()),
     (r"/user/(.*)", UserHandler, dict()),
     (r"/job/(.*)", JobHandler, dict()),
+    (r"/job/(.*)", ServerHandler, dict()),
 ]
