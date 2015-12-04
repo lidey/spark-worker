@@ -1,0 +1,75 @@
+<!-- navbar -->
+<div data-ng-include=" 'static/tpl/blocks/header.html' " class="app-header navbar">
+</div>
+<!-- / navbar -->
+
+<!-- menu -->
+<div data-ng-include=" 'static/tpl/blocks/aside.html' " class="app-aside hidden-xs {{ app.settings.asideColor }}"
+     ng-class="{'hide': app.hideAside }">
+</div>
+<!-- / menu -->
+
+<!-- view -->
+<div class="app-content" ng-class="{'m-n': app.hideAside, 'h-full': app.hideFooter }">
+    <div class="app-content-body app-content-full fade-in-up" ng-class="{'h-full': app.hideFooter }">
+        <!-- hbox layout -->
+        <div class="hbox hbox-auto-xs bg-light " ng-init="
+  app.settings.asideFixed = true;
+  app.settings.asideDock = false;
+  app.settings.container = false;
+  app.hideAside = false;
+  app.hideFooter = true;
+  " ng-controller="ServerCtrl">
+            <!-- column -->
+            <div class="col w-lg lt b-r">
+                <div class="vbox">
+                    <div class="wrapper">
+                        <a ui-sref="server.add" class="pull-right btn btn-sm btn-info m-t-n-xs">新增</a>
+
+                        <div class="h4">服务器</div>
+                    </div>
+                    <div class="wrapper b-t m-t-xxs">
+                        <div class="input-group">
+                            <span class="input-group-addon input-sm"><i class="fa fa-search"></i></span>
+                            <input type="text" class="form-control input-sm" placeholder="search" ng-model="query">
+                        </div>
+                    </div>
+                    <div class="row-row">
+                        <div class="cell scrollable hover">
+                            <div class="cell-inner">
+                                <div class="padder">
+                                    <div class="list-group">
+                                        <a ng-repeat="server in servers | filter:query | orderBy:'created_time':true"
+                                           class="list-group-item b-l-{{ server.color }} b-l-3x hover-anchor"
+                                           ng-class="{'hover': server.selected }" ng-click="selectServer(server)">
+                                            <span class="block text-ellipsis h6">{{ server.title ? server.title : '无' }}</span>
+                                            <small class="text-muted block m-t-xs">
+                                                {{ server.created_time | date:'yyyy-MM-dd' }}</small>
+                                        </a>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <!-- /column -->
+
+            <!-- column -->
+            <div class="col">
+                <div ui-view>
+                </div>
+            </div>
+            <!-- /column -->
+        </div>
+        <!-- /hbox layout -->
+    </div>
+</div>
+<!-- / view -->
+<!-- navbar -->
+<div class="app-footer navbar navbar-fixed-bottom bg-light lt b-t"
+     ng-class="{'m-n': app.hideAside, 'hide': app.hideFooter}" ui-view="footer">
+
+    123123
+</div>
+<!-- /navbar -->

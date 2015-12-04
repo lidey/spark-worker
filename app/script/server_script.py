@@ -7,21 +7,23 @@
 import paramiko
 
 
-class SparkScript:
-    def __init__(self, hostname, username, password):
-        self.hostname = hostname
-        self.username = username
-        self.password = password
+class ServerScript:
+    def __init__(self, server):
+        self.hostname = server.host
+        self.username = server.name
+        self.password = server.password
 
-    def command(self):
         ssh = paramiko.SSHClient()
         ssh.set_missing_host_key_policy(paramiko.AutoAddPolicy())
         ssh.connect(hostname=self.hostname, username=self.username, password=self.password)
-        transport = ssh.get_transport()
+        self.ssh = ssh
+
+    def command(self, shell):
+        transport = self.ssh.get_transport()
         channel = transport.open_session()
         channel.exec_command('ifconfig;free;df -h')
-        stdin, stdout, stderr = ssh.exec_command('ifconfig;free;df -h')
-        log = stdout.read()
-        print stderr.read()
-        ssh.close()
-        return log
+        stdin, stdout, stderr = self.ssh.exec_command(shell)
+        return stdout.read(), stderr.read()
+
+    def close(self):
+        self.ssh.close()
