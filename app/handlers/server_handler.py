@@ -7,9 +7,9 @@
 import commands
 import uuid
 from datetime import datetime
-
 import tornado
 from paramiko import AuthenticationException
+from paramiko.ssh_exception import NoValidConnectionsError
 
 from app.core.base_handler import BaseHandler
 from app.model.server_model import Server
@@ -63,7 +63,7 @@ class ServerHandler(BaseHandler):
             server.save(force_insert=True)
         else:
             server.save()
-        self.write({'success': True, 'content': '保存成功.'})
+        self.write({'success': True, 'content': '服务器保存成功.'})
 
     @tornado.web.authenticated
     def info(self):
@@ -81,7 +81,7 @@ class ServerHandler(BaseHandler):
     def remove(self):
         server = Server.get(Server.uuid == self.get_argument('uuid'))
         server.delete_instance()
-        self.write({'log': True})
+        self.write({'success': True, 'content': '服务器删除成功.'})
 
     @tornado.web.authenticated
     def test(self):
@@ -90,8 +90,11 @@ class ServerHandler(BaseHandler):
             cpu_num, _ = script.command("cat /proc/cpuinfo |grep 'physical id'|sort |uniq|wc -l")
             core_num, _ = script.command("cat /proc/cpuinfo |grep 'cores'|uniq|awk '{print $4}'")
             men, _ = script.command("free -m | grep Mem | awk '{print $2}'")
-            self.write({'success': True, 'content': '测试通过.', 'cpu': cpu_num, 'core': core_num, 'men': men})
-        except IndentationError:
+            script.close()
+            self.write({'success': True, 'content': '服务器链接测试通过.', 'cpu': cpu_num, 'core': core_num, 'men': men})
+        except NoValidConnectionsError:
             self.write({'success': False, 'content': '服务器链接错误.'})
         except AuthenticationException:
             self.write({'success': False, 'content': '账号或密码错误.'})
+        except IndentationError:
+            self.write({'success': False, 'content': '服务器链接错误.'})
