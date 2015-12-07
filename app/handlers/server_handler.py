@@ -30,7 +30,7 @@ class ServerHandler(BaseHandler):
         server.title = self.args.get('title')
         server.description = self.args.get('description')
         server.host = self.args.get('host')
-        server.type = self.args.get('type')
+        server.version = self.args.get('version').get('key')
         server.name = self.args.get('name')
         server.password = self.args.get('password')
         server.cpu = self.args.get('cpu')
@@ -47,7 +47,7 @@ class ServerHandler(BaseHandler):
     def get(self, url_str=''):
         if url_str == '':
             return
-        if url_str == 'get':
+        if url_str == 'info':
             self.info()
         if url_str == 'list':
             self.list()
@@ -58,17 +58,17 @@ class ServerHandler(BaseHandler):
     def save(self):
         server = self.server
         if server.uuid == None:
-            server.uuid = uuid.uuid1()
+            server.uuid = str(uuid.uuid1())
             server.created_time = datetime.now()
             server.save(force_insert=True)
         else:
             server.save()
-        self.write({'success': True, 'content': '服务器保存成功.'})
+        self.write({'success': True, 'content': '服务器保存成功.', 'server': server.to_dict()})
 
     @tornado.web.authenticated
     def info(self):
-        uuid = self.get_argument('id')
-        self.write({'log': True})
+        server = Server.get(Server.uuid == self.get_argument('uuid'))
+        self.write(server.to_dict())
 
     @tornado.web.authenticated
     def list(self):
