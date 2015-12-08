@@ -4,6 +4,7 @@
     <div class="wrapper b-b bg">
       <button class="btn btn-sm btn-default pull-right visible-sm visible-xs" ui-toggle-class="show" target="#email-menu"><i class="fa fa-bars"></i></button>
       <a ui-sref="app.job.new" class="btn btn-sm btn-danger w-xs font-bold">添加任务</a>
+
     </div>
 
       <div class="wrapper b-t m-t-xxs">
@@ -18,9 +19,9 @@
           <div class="cell-inner">
             <div class="padder">
               <div class="list-group">
-                <a    ng-repeat="job in jobs | filter:query | orderBy:'date':true"  class="list-group-item b-l-3x hover-anchor" ng-class="{'hover': job.selected }">
-                     <span ng-click='deleteJob(job.id)' class="pull-right text-muted hover-action"><i class="fa fa-times"></i></span>
-                    <span ui-sref="app.job.info({id:job.id})" class="block text-ellipsis">{{ job.title}}</span>
+                <a  ui-sref="app.job.list({jobId:job.id})"  ng-repeat="job in jobs | filter:query | orderBy:'date':true"  class="list-group-item b-l-3x hover-anchor" ng-class="{'hover': job.selected }">
+                    <span ng-click='deleteJob(job.id)' class="pull-right text-muted hover-action"><i class="fa fa-times"></i></span>
+                    <span  class="block text-ellipsis">{{ job.title}}</span>
                   <small class="text-muted">{{ job.date | date:'yyyy-MM-dd HH:mm:ss'}}</small>
                 </a>
               </div>

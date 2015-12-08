@@ -1,5 +1,5 @@
 // A RESTful factory for retreiving mails from 'mails.json'
-app.factory('jobs', ['$http','commAlertService',function ($http,commAlertService) {
+app.factory('jobs', ['$http',function ($http) {
 
   var factory = {};
   factory.all = function () {
@@ -8,6 +8,21 @@ app.factory('jobs', ['$http','commAlertService',function ($http,commAlertService
       return  $http.get(path).then(function (resp) {
           if(resp.data.success){
              list = resp.data.list;
+              console.log(resp.data.message)
+              return list;
+          }else{
+              console.error(resp.data.message)
+              return null;
+          }
+
+      })
+  };
+    factory.script_all = function (job_id) {
+      var path = 'script/list';
+      var list = ''
+      return  $http.post(path,{'job_id':job_id}).then(function (resp) {
+          if(resp.data.success){
+              list = resp.data.list;
               console.log(resp.data.message)
               return list;
           }else{

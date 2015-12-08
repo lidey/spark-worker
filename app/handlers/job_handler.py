@@ -101,7 +101,7 @@ class JobHandler(BaseHandler):
             job.save(force_insert=True)
             self.write({'success': True, 'message': '添加成功', 'job':job.to_dict()})
         except Exception,e:
-            self.write({'success': False, 'message': '添加失败', 'job': job.to_dict()})
+            self.write({'success': False, 'message': '添加失败'})
             print Exception, ':', e
 
     @tornado.web.authenticated

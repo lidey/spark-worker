@@ -1,11 +1,16 @@
-app.controller('JobCtrl', ['$scope','$location', 'jobs', '$stateParams', function ($scope,$location, jobs ,$stateParams) {
+app.controller('JobCtrl', ['$rootScope','$scope','$location', 'jobs','dataService' ,'$stateParams', function ($rootScope,$scope,$location, jobs ,dataService,$stateParams) {
 
     $scope.colors = ['primary', 'info', 'success', 'warning', 'danger', 'dark'];
+    var jId;
     jobs.all().then(function (jobs) {
+
         $scope.jobs = jobs;
+        jId = jobs[0].id
+        dataService.data = jobs;
+        //$scope.jobs[0].selected = true;
 
     });
-
+    jobs.script_all(jId);
     $scope.deleteJob = function (jobId) {
         console.info('删除'+jobId)
         jobs.delete(jobId)
@@ -20,22 +25,24 @@ app.controller('JobCtrl', ['$scope','$location', 'jobs', '$stateParams', functio
 
 }]);
 
-app.controller('JobDetailCtrl', ['$scope','$location', 'jobs', '$stateParams', function ($scope,$location, jobs, $stateParams) {
+app.controller('JobDetailCtrl', ['$scope','$location', 'jobs', '$stateParams','dataService', function ($scope,$location, jobs, $stateParams,dataService) {
     console.info('查询--'+$stateParams.id)
     jobs.get($stateParams.id).then(function (job) {
         $scope.job = job;
         console.info(job)
     })
-    for (var i = 0; i < $scope.jobs.length; i++) {
+    if( $scope.jobs!=null){
+            for (var i = 0; i < $scope.jobs.length; i++) {
              if ($scope.jobs[i].id == $stateParams.id)
               $scope.jobs[i].selected =true;
              else
              $scope.jobs[i].selected =false;
         }
+    }
 
     $scope.editJob = function(){
-         console.info('修改'+ $scope.job)
          jobs.update($scope.job)
+
          for (var i = 0; i < $scope.jobs.length; i++) {
              if ($scope.jobs[i].id == $scope.job.id){
                   $scope.jobs[i] = $scope.job;
@@ -45,7 +52,7 @@ app.controller('JobDetailCtrl', ['$scope','$location', 'jobs', '$stateParams', f
                   $scope.jobs[i].selected =false;
              }
          }
-         return $location.path("/app/job");
+         return $location.path("/app/job/add");
     }
 
 
@@ -70,7 +77,7 @@ app.controller('JobNewCtrl', ['$scope','$location','$http','jobs', function ($sc
         for (var i = 0; i < $scope.jobs.length; i++) {
                      $scope.jobs[i].selected =false;
                 }
-        return $location.path("/app/job");
+        return $location.path("/app/job/script/list/"+$scope.job.id);
 
     }
 
