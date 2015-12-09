@@ -1,4 +1,4 @@
-app.controller('ServerCtrl', ['$scope', 'serverService', '$stateParams', function ($scope, serverService, $stateParams) {
+app.controller('ServerCtrl', ['$scope', 'serverService', '$stateParams', '$modal', function ($scope, serverService, $stateParams, $modal) {
 
     $scope.refresh = function () {
         serverService.all().then(function (servers) {
@@ -24,10 +24,24 @@ app.controller('ServerCtrl', ['$scope', 'serverService', '$stateParams', functio
         $scope.$broadcast('server', $scope.server);
     };
 
-    $scope.$on('message', function (event, data) {
-        $scope.message = data;
-        $scope.refresh();
-    });
+    $scope.showMessage = function (message) {
+        var modalInstance = $modal.open({
+            templateUrl: 'serverModalContent.html',
+            controller: 'ServerModalCtrl',
+            size: '',
+            resolve: {
+                message: function () {
+                    return message;
+                }
+            }
+        });
+
+        modalInstance.result.then(function () {
+            $scope.refresh();
+        }, function () {
+            $log.info('Modal dismissed at: ' + new Date());
+        });
+    };
 
     $scope.refresh();
 
@@ -47,42 +61,55 @@ app.controller('ServerDetailCtrl', ['$scope', 'serverService', '$stateParams', f
     $scope.delete = function (server) {
         console.log(server);
         serverService.delete(server.uuid).then(function (message) {
-            $scope.$emit('message', message);
+            $scope.showMessage(message)
         });
     }
 }]);
 
 app.controller('ServerEditCtrl', ['$scope', 'serverService', '$state', '$stateParams', function ($scope, serverService, $state, $stateParams) {
+    console.log($scope.server);
     if ($stateParams.uuid != null) {
         serverService.get($stateParams.uuid).then(function (data) {
             $scope.server = data;
+            $scope.server.success = true;
             $scope.server.version = serverService.getVersion(data.version);
         });
         $scope.$on('server', function (event, data) {
             $scope.server = data;
+            $scope.server.success = true;
             $scope.server.version = serverService.getVersion(data.version);
         });
     } else {
         $scope.server = {};
+        $scope.server.success = true;
     }
     $scope.versions = serverService.getVersionArrayAll();
     $scope.saveServer = function () {
         console.log($scope.server);
         serverService.save($scope.server).then(function (message) {
-            $scope.$emit('message', message);
+            $scope.showMessage(message)
             $state.go('server.manager');
         });
     };
 
     $scope.testServer = function () {
-        console.log($scope.server);
         serverService.test($scope.server).then(function (message) {
-            $scope.message = message;
             if (message.success) {
+                $scope.server.success = !message.success;
                 $scope.server.cpu = message.cpu;
                 $scope.server.core = message.core;
                 $scope.server.men = message.men;
+                console.log(message);
             }
+            $scope.showMessage(message)
         });
+    };
+}]);
+
+app.controller('ServerModalCtrl', ['$scope', '$modalInstance', 'message', function ($scope, $modalInstance, message) {
+    $scope.message = message;
+
+    $scope.cancel = function () {
+        $modalInstance.dismiss('cancel');
     };
 }]);

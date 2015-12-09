@@ -1,24 +1,50 @@
 // A RESTful factory for retreiving mails from 'mails.json'
-app.factory('jobs', ['$http', function ($http) {
+app.factory('jobs', ['$http',function ($http) {
 
   var factory = {};
   factory.all = function () {
       var path = 'job/list';
       var list = ''
       return  $http.get(path).then(function (resp) {
-             list = resp.data.list
-             console.info(list)
-             return list;
+          if(resp.data.success){
+             list = resp.data.list;
+              console.log(resp.data.message)
+              return list;
+          }else{
+              console.error(resp.data.message)
+              return null;
+          }
+
+      })
+  };
+    factory.script_all = function (job_id) {
+      var path = 'script/list';
+      var list = ''
+      return  $http.post(path,{'job_id':job_id}).then(function (resp) {
+          if(resp.data.success){
+              list = resp.data.list;
+              console.log(resp.data.message)
+              return list;
+          }else{
+              console.error(resp.data.message)
+              return null;
+          }
+
       })
   };
   factory.get = function (id) {
-
       var path = 'job/getUUID';
       var job;
       return  $http.post(path,{'id':id}).then(function (resp) {
-             job = resp.data.job
-             console.info(job)
-             return job;
+          if(resp.data.success){
+              job = resp.data.job
+              console.log(resp.data.message)
+              return job;
+          }else{
+              console.error(resp.data.message)
+              return null;
+          }
+
       })
 
   };
@@ -27,20 +53,34 @@ app.factory('jobs', ['$http', function ($http) {
       var path = 'job/deleteUUID';
       var job;
       return  $http.post(path,{'id':id}).then(function (resp) {
-             job = resp.data.job
-             console.info(job)
-             return job;
+          if(resp.data.success){
+              job = resp.data.job
+              console.log(resp.data.message)
+              return job;
+          }else{
+              console.error(resp.data.message)
+              return null;
+          }
+
       })
   };
     factory.add = function (job) {
       return   $http.post('job/add',job).then(function (resp) {
-                console.log(resp.data.job)
+              if(resp.data.success){
+                  console.log(resp.data.message)
+              }else{
+                  console.error(resp.data.message)
+              }
             });
   };
 
     factory.update = function (job) {
       return   $http.post('job/update',job).then(function (resp) {
-                console.log(resp.data.job)
+                if(resp.data.success){
+                  console.log(resp.data.message)
+                  }else{
+                      console.error(resp.data.message)
+                  }
             });
   };
 

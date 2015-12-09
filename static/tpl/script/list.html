@@ -1,0 +1,26 @@
+
+<div ng-controller="ScriptListCtrl">
+
+        <div class="wrapper bg-light lter b-b">
+        <div class="pull-left btn-group  m-t-n-xs">
+           <!-- <a ui-sref="app.job.info({id:jobId})"  class="btn btn-sm btn-default w-xxs w-auto-xs">
+                <i class="fa fa-archive"></i>编辑
+            </a> -->
+             <a ui-sref="app.job.info({id:jobId})" class="btn btn-sm btn-danger w-xs font-bold">编辑任务</a>
+
+             <button class="btn btn-sm btn-default w-xxs w-auto-xs" ng-click='addScript(jobId)'>
+                <i class="fa fa-add-o"></i>+腳本
+            </button>
+        </div>
+        &nbsp;
+    </div>
+
+
+  <!-- list -->
+    <a  ui-sref="app.job.scriptEdit({scriptId:script.id})"  ng-repeat="script in scripts | filter:fold" class="list-group-item b-l-3x hover-anchor" ng-class="{'hover': script.selected }">
+        <span  class="pull-right text-sm text-muted">{{ script.date | date:'yyyy-MM-dd HH:mm:ss' }}</span>
+
+        <span  class="block text-ellipsis">{{script.title}}</span>
+    </a>
+  <!-- / list -->
+</div>

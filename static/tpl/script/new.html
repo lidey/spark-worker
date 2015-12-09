@@ -1,0 +1,38 @@
+<div ng-controller="ScriptNewCtrl">
+
+    <div class="wrapper">
+        <form name="newScript" role="form" class="form-horizontal m-t-lg form-validation">
+            <div class="form-group">
+                <label class="col-lg-2 control-label">标题:</label>
+
+                <div class="col-lg-8">
+                    <input type="text" class="form-control" name="title" id="title" ng-model="script.title" required
+                           ng-maxlength="100">
+                </div>
+            </div>
+            <div class="form-group">
+                <label class="col-sm-2 control-label">脚本:</label>
+
+                <div class="col-sm-10">
+                    <text-angular ng-model="script.script"></text-angular>
+                </div>
+            </div>
+            <div class="form-group">
+                <label class="col-lg-2 control-label">运行服务器:</label>
+
+                <div class="col-lg-4">
+                    <select required class="col-lg-8 control-label" ng-model="script.server_id">
+                        <option value="">选择运行服务器</option>
+                        <option ng-repeat="obj in servers" value="{{ obj.uuid }}">{{ obj.host }}</option>
+                    </select>
+                </div>
+            </div>
+            <div class="form-group">
+                <div class="col-lg-8 col-lg-offset-2">
+                    <button class="btn btn-info w-xs" ng-disabled="newScript.$invalid" ng-click="saveScript()">保存
+                    </button>
+                </div>
+            </div>
+        </form>
+    </div>
+</div>
