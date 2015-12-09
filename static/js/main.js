@@ -3,8 +3,27 @@
 /* Controllers */
 
 angular.module('app')
-    .controller('AppCtrl', ['$scope', '$translate', '$localStorage', '$window',
-        function ($scope, $translate, $localStorage, $window) {
+    .controller('AppCtrl', ['$scope', '$translate', '$localStorage', '$window', '$modal',
+        function ($scope, $translate, $localStorage, $window, $modal) {
+
+            $scope.showMessage = function (message) {
+                var modalInstance = $modal.open({
+                    templateUrl: 'serverModalContent.html',
+                    controller: 'ServerModalCtrl',
+                    size: '',
+                    resolve: {
+                        message: function () {
+                            return message;
+                        }
+                    }
+                });
+
+                modalInstance.result.then(function () {
+                    $scope.refresh();
+                }, function () {
+                    $log.info('Modal dismissed at: ' + new Date());
+                });
+            };
             // add 'ie' classes to html
             var isIE = !!navigator.userAgent.match(/MSIE/i);
             isIE && angular.element($window.document.body).addClass('ie');
@@ -74,3 +93,11 @@ angular.module('app')
             }
 
         }]);
+
+
+app.controller('ServerModalCtrl', ['$scope', '$modalInstance', '$timeout', 'message', function ($scope, $modalInstance, $timeout, message) {
+    $scope.message = message;
+    $timeout(function () {
+        $modalInstance.dismiss('cancel');
+    }, 2000);
+}]);
