@@ -11,7 +11,13 @@ app.controller('ScriptListCtrl', ['$scope', '$location', 'scripts', '$state', 'd
     }
     dataService.data = jobs;
 
-    scripts.all($stateParams.jobId).then(function (scripts) {
+    scripts.all($stateParams.jobId).then(function (resp) {
+        var scripts;
+        if (resp.data.success) {
+            scripts = resp.data.list;
+        } else {
+            $scope.showMessage({content: resp.data.message})
+        }
         $scope.scripts = scripts;
     });
 
@@ -19,9 +25,12 @@ app.controller('ScriptListCtrl', ['$scope', '$location', 'scripts', '$state', 'd
         return $location.path("/app/job/script/add/" + jobId);
     }
     $scope.deleteScript = function (scriptId) {
-        scripts.delete(scriptId).then(function (scripts) {
-            console.info("删除");
-            console.info(scripts)
+        scripts.delete(scriptId).then(function (resp) {
+            if (resp.data.success) {
+                $scope.showMessage({content: resp.data.message})
+            } else {
+                $scope.showMessage({content: resp.data.message})
+            }
         })
         return $location.path("/app/job/info/" + jobId);
     }
@@ -49,7 +58,13 @@ app.controller('ScriptNewCtrl', ['$scope', '$location', '$http', 'scripts', '$st
 
     $scope.saveScript = function () {
         $scope.script.id = scripts.uuid()
-        scripts.add($scope.script)
+        scripts.add($scope.script).then(function (resp) {
+            if (resp.data.success) {
+                $scope.showMessage({content: resp.data.message})
+            } else {
+                $scope.showMessage({content: resp.data.message})
+            }
+        })
         return $location.path("/app/job/script/list/" + $stateParams.jobId);
     }
 
@@ -58,9 +73,9 @@ app.controller('ScriptNewCtrl', ['$scope', '$location', '$http', 'scripts', '$st
 app.controller('ScriptInfoCtrl', ['$scope', '$location', '$http', 'scripts', '$state', '$stateParams', function ($scope, $location, $http, scripts, $state, $stateParams) {
     $scope.editFlag = false
 
-    scripts.get($stateParams.scriptId).then(function (script) {
-        $scope.script = script;
-        console.log(script)
+    scripts.get($stateParams.scriptId).then(function (resp) {
+        $scope.script = resp.data.script;
+
         scripts.all_server().then(function (servers) {
             $scope.servers = servers;
 
@@ -73,7 +88,6 @@ app.controller('ScriptInfoCtrl', ['$scope', '$location', '$http', 'scripts', '$s
                     }
                 }
             }
-            console.info($scope.servers)
         });
     })
 
@@ -82,14 +96,23 @@ app.controller('ScriptInfoCtrl', ['$scope', '$location', '$http', 'scripts', '$s
         $scope.editFlag = true;
     }
     $scope.saveScript = function () {
-        scripts.update($scope.script)
+        scripts.update($scope.script).then(function (resp) {
+            if (resp.data.success) {
+                $scope.showMessage({content: resp.data.message})
+            } else {
+                $scope.showMessage({content: resp.data.message})
+            }
+        })
         return $location.path("/app/job/script/list/" + $scope.script.job_id);
     }
 
     $scope.deleteScript = function (scriptId) {
-        scripts.delete(scriptId).then(function (scripts) {
-            console.info("删除");
-            console.info(scripts)
+        scripts.delete(scriptId).then(function (resp) {
+            if (resp.data.success) {
+                $scope.showMessage({content: resp.data.message})
+            } else {
+                $scope.showMessage({content: resp.data.message})
+            }
         })
         return $location.path("/app/job/script/list/" + $scope.script.job_id);
     }

@@ -6,14 +6,7 @@ app.factory('scripts', ['$http', function ($http) {
         var path = 'script/list';
         var list = ''
         return $http.post(path, {'job_id': job_id}).then(function (resp) {
-            if (resp.data.success) {
-                list = resp.data.list;
-                console.log(resp.data.message)
-                return list;
-            } else {
-                console.error(resp.data.message)
-                return null;
-            }
+            return resp;
 
         })
     };
@@ -21,15 +14,7 @@ app.factory('scripts', ['$http', function ($http) {
         var path = 'script/get';
         var script;
         return $http.post(path, {'id': id}).then(function (resp) {
-            if (resp.data.success) {
-                script = resp.data.script
-                console.log(resp.data.message)
-                return script;
-            } else {
-                console.error(resp.data.message)
-                return null;
-            }
-
+            return resp;
         })
 
     };
@@ -38,34 +23,18 @@ app.factory('scripts', ['$http', function ($http) {
         var path = 'script/remove';
         var script;
         return $http.post(path, {'id': id}).then(function (resp) {
-            if (resp.data.success) {
-                script = resp.data.script
-                console.log(resp.data.message)
-                return script;
-            } else {
-                console.error(resp.data.message)
-                return null;
-            }
-
+            return resp;
         })
     };
     factory.add = function (script) {
         return $http.post('script/save', script).then(function (resp) {
-            if (resp.data.success) {
-                console.log(resp.data.message)
-            } else {
-                console.error(resp.data.message)
-            }
+            return resp;
         });
     };
 
     factory.update = function (script) {
         return $http.post('script/update', script).then(function (resp) {
-            if (resp.data.success) {
-                console.log(resp.data.message)
-            } else {
-                console.error(resp.data.message)
-            }
+            return resp;
         });
     };
 

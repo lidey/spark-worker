@@ -6,29 +6,14 @@ app.factory('jobs', ['$http',function ($http) {
       var path = 'job/list';
       var list = ''
       return  $http.get(path).then(function (resp) {
-          if(resp.data.success){
-             list = resp.data.list;
-              console.log(resp.data.message)
-              return list;
-          }else{
-              console.error(resp.data.message)
-              return null;
-          }
-
+          return resp;
       })
   };
     factory.script_all = function (job_id) {
       var path = 'script/list';
       var list = ''
       return  $http.post(path,{'job_id':job_id}).then(function (resp) {
-          if(resp.data.success){
-              list = resp.data.list;
-              console.log(resp.data.message)
-              return list;
-          }else{
-              console.error(resp.data.message)
-              return null;
-          }
+          return resp;
 
       })
   };
@@ -36,15 +21,7 @@ app.factory('jobs', ['$http',function ($http) {
       var path = 'job/getUUID';
       var job;
       return  $http.post(path,{'id':id}).then(function (resp) {
-          if(resp.data.success){
-              job = resp.data.job
-              console.log(resp.data.message)
-              return job;
-          }else{
-              console.error(resp.data.message)
-              return null;
-          }
-
+          return resp;
       })
 
   };
@@ -53,34 +30,18 @@ app.factory('jobs', ['$http',function ($http) {
       var path = 'job/deleteUUID';
       var job;
       return  $http.post(path,{'id':id}).then(function (resp) {
-          if(resp.data.success){
-              job = resp.data.job
-              console.log(resp.data.message)
-              return job;
-          }else{
-              console.error(resp.data.message)
-              return null;
-          }
-
+           return resp;
       })
   };
     factory.add = function (job) {
       return   $http.post('job/add',job).then(function (resp) {
-              if(resp.data.success){
-                  console.log(resp.data.message)
-              }else{
-                  console.error(resp.data.message)
-              }
+               return resp;
             });
   };
 
     factory.update = function (job) {
       return   $http.post('job/update',job).then(function (resp) {
-                if(resp.data.success){
-                  console.log(resp.data.message)
-                  }else{
-                      console.error(resp.data.message)
-                  }
+                return resp;
             });
   };
 

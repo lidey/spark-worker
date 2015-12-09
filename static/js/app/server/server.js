@@ -1,4 +1,4 @@
-app.controller('ServerCtrl', ['$scope', 'serverService', '$stateParams', '$modal', function ($scope, serverService, $stateParams, $modal) {
+app.controller('ServerCtrl', ['$scope', 'serverService', '$stateParams', function ($scope, serverService, $stateParams) {
 
     $scope.refresh = function () {
         serverService.all().then(function (servers) {
@@ -24,24 +24,6 @@ app.controller('ServerCtrl', ['$scope', 'serverService', '$stateParams', '$modal
         $scope.$broadcast('server', $scope.server);
     };
 
-    $scope.showMessage = function (message) {
-        var modalInstance = $modal.open({
-            templateUrl: 'serverModalContent.html',
-            controller: 'ServerModalCtrl',
-            size: '',
-            resolve: {
-                message: function () {
-                    return message;
-                }
-            }
-        });
-
-        modalInstance.result.then(function () {
-            $scope.refresh();
-        }, function () {
-            $log.info('Modal dismissed at: ' + new Date());
-        });
-    };
 
     $scope.refresh();
 
@@ -103,13 +85,5 @@ app.controller('ServerEditCtrl', ['$scope', 'serverService', '$state', '$statePa
             }
             $scope.showMessage(message)
         });
-    };
-}]);
-
-app.controller('ServerModalCtrl', ['$scope', '$modalInstance', 'message', function ($scope, $modalInstance, message) {
-    $scope.message = message;
-
-    $scope.cancel = function () {
-        $modalInstance.dismiss('cancel');
     };
 }]);
