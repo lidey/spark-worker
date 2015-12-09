@@ -19,22 +19,15 @@ app.factory('serverService', ['$http', function ($http) {
     };
 
     factory.save = function (server) {
-        if (server.version != undefined)
-            server.version = server.version.key;
         return $http.post("server/save", server).then(function (resp) {
-            return resp.data.servers;
+            return resp.data;
         });
     };
 
     factory.get = function (uuid) {
-        return servers.then(function (servers) {
-            for (var i = 0; i < servers.length; i++) {
-                if (servers[i].uuid == uuid) {
-                    return servers[i];
-                }
-            }
-            return null;
-        })
+        return $http.get("server/info", {params: {uuid: uuid}}).then(function (resp) {
+            return resp.data;
+        });
     };
 
     factory.delete = function (uuid) {
@@ -56,6 +49,7 @@ app.factory('serverService', ['$http', function ($http) {
     factory.getVersion = function (key) {
         var version = key;
         angular.forEach(versionArray, function (tmp) {
+
             if (tmp.key == key) {
                 version = tmp;
             }
