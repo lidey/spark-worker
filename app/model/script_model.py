@@ -9,6 +9,7 @@ class Script(BaseModel):
     script = CharField(db_column='SCRIPT', max_length=500)
     server_id = CharField(db_column='SERVER_ID', max_length=64)
     job_id = CharField(db_column='JOB_ID', max_length=64)
+    desc = CharField(db_column='DESC', max_length=500)
     createTime = DateTimeField(db_column='CREATE_TIME')
 
     def find_uuid(self, uuid):
@@ -24,7 +25,8 @@ class Script(BaseModel):
             'date': time.mktime(self.createTime.timetuple())*1000,
             'id': self.uuid,
             'server_id': self.server_id,
-            'job_id': self.job_id
+            'job_id': self.job_id,
+            'desc':self.desc
         }
     class Meta:
         db_table = 'JOB_SCRIPT'

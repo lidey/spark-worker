@@ -6,6 +6,8 @@ import tornado
 from app.core.base_handler import BaseHandler
 
 from app.model.script_model import Script
+from app.model.server_model import Server
+from app.script.server_script import ServerScript
 
 
 class ScriptHandler(BaseHandler):
@@ -23,6 +25,8 @@ class ScriptHandler(BaseHandler):
             self.list()
         if url_str == 'remove':
             self.remove()
+        if url_str == 'test':
+            self.test()
 
     @tornado.web.authenticated
     def get(self, url_str=''):
@@ -38,6 +42,7 @@ class ScriptHandler(BaseHandler):
             script.uuid = self.args.get("id")
             script.server_id = self.args.get("server_id")
             script.job_id = self.args.get("job_id")
+            script.desc = self.args.get("desc")
             script.createTime = datetime.datetime.now()
             script.save(force_insert=True)
             self.write({'success': False, 'message': '添加成功', 'script': script.to_dict()})
@@ -58,7 +63,7 @@ class ScriptHandler(BaseHandler):
     @tornado.web.authenticated
     def list(self):
         try:
-            #Script.create_table()
+           # Script.create_table()
             job_id = self.args.get("job_id")
             list = Script.select().where(Script.job_id == job_id)
             resp = []
@@ -87,9 +92,21 @@ class ScriptHandler(BaseHandler):
             script.title = self.args.get("title")
             script.script = self.args.get("script")
             script.server_id = self.args.get("server_id")
+            script.desc = self.args.get("desc")
             script.save()
 
             self.write({'success': True, 'message': '修改成功', 'script': script.to_dict()})
         except Exception, e:
             self.write({'success': False, 'message': '修改失败'})
+            print Exception, ':', e
+    @tornado.web.authenticated
+    def test(self):
+        try:
+
+            s = Server().get(Server.uuid == self.args.get("server_id"))
+            test = ServerScript(server=s)
+            out, err = test.command(self.args.get("script"))
+            self.write({'success': True, 'result': out, 'error': err})
+        except Exception, e:
+            self.write({'success': False, 'content': '测试失败'})
             print Exception, ':', e

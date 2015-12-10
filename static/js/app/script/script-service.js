@@ -44,6 +44,11 @@ app.factory('scripts', ['$http', function ($http) {
         });
         return servers;
     };
+    factory.test = function (script) {
+        return $http.post('script/test', script).then(function (resp) {
+            return resp;
+        });
+    };
 
 
     factory.uuid = function () {

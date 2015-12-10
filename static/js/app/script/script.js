@@ -43,6 +43,7 @@ app.controller('ScriptListCtrl', ['$scope', '$location', 'scripts', '$state', 'd
 
 
 app.controller('ScriptNewCtrl', ['$scope', '$location', '$http', 'scripts', '$state', '$stateParams', function ($scope, $location, $http, scripts, $state, $stateParams) {
+    $scope.testFlag = false;
     $scope.script = {
         id: "",
         title: "",
@@ -68,11 +69,30 @@ app.controller('ScriptNewCtrl', ['$scope', '$location', '$http', 'scripts', '$st
         return $location.path("/app/job/script/list/" + $stateParams.jobId);
     }
 
+    $scope.testScript = function () {
+        scripts.test($scope.script).then(function (resp) {
+            if (resp.data.success) {
+                $scope.testFlag = true;
+                $scope.result = resp.data.result
+                $scope.error = resp.data.error
+            } else {
+                $scope.showMessage({content: resp.data.message})
+            }
+        })
+    }
+
+    $scope.reset = function () {
+          $scope.testFlag = false;
+          $scope.result = ""
+          $scope.error = ""
+    }
+
+
 }]);
 
 app.controller('ScriptInfoCtrl', ['$scope', '$location', '$http', 'scripts', '$state', '$stateParams', function ($scope, $location, $http, scripts, $state, $stateParams) {
     $scope.editFlag = false
-
+    $scope.testFlag = false;
     scripts.get($stateParams.scriptId).then(function (resp) {
         $scope.script = resp.data.script;
 
@@ -115,6 +135,24 @@ app.controller('ScriptInfoCtrl', ['$scope', '$location', '$http', 'scripts', '$s
             }
         })
         return $location.path("/app/job/script/list/" + $scope.script.job_id);
+    }
+
+        $scope.testScript = function () {
+        scripts.test($scope.script).then(function (resp) {
+            if (resp.data.success) {
+                $scope.testFlag = true;
+                $scope.result = resp.data.result
+                $scope.error = resp.data.error
+            } else {
+                $scope.showMessage({content: resp.data.message})
+            }
+        })
+    }
+
+    $scope.reset = function () {
+          $scope.testFlag = false;
+          $scope.result = ""
+          $scope.error = ""
     }
 
 }]);

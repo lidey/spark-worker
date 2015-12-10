@@ -10,11 +10,18 @@
                            ng-maxlength="100">
                 </div>
             </div>
-            <div class="form-group">
+             <div class="form-group">
                 <label class="col-sm-2 control-label">脚本:</label>
 
                 <div class="col-sm-10">
-                    <text-angular ng-model="script.script"></text-angular>
+                     <textarea ng-model="script.script" ng-disabled="testFlag" class="form-control" rows="4" ></textarea>
+                </div>
+            </div>
+            <div class="form-group">
+                <label class="col-sm-2 control-label">描述:</label>
+
+                <div class="col-sm-10">
+                    <text-angular ng-model="script.desc" ></text-angular>
                 </div>
             </div>
             <div class="form-group">
@@ -29,8 +36,27 @@
             </div>
             <div class="form-group">
                 <div class="col-lg-8 col-lg-offset-2">
-                    <button class="btn btn-info w-xs" ng-disabled="newScript.$invalid" ng-click="saveScript()">保存
+                    <button class="btn btn-info w-xs" ng-disabled="newScript.$invalid" ng-click="testScript()">测试
                     </button>
+                    <button class="btn btn-info w-xs" ng-disabled="!testFlag" ng-click="saveScript()">保存
+                    </button>
+                     <button class="btn btn-info w-xs" ng-click="reset()">重置
+                    </button>
+                </div>
+            </div>
+
+            <div class="form-group">
+                <label class="col-lg-2 control-label">结果:</label>
+
+                <div class="col-lg-8">
+                     <textarea ng-model="result" class="form-control" rows="4" ></textarea>
+                </div>
+            </div>
+            <div class="form-group">
+                <label class="col-lg-2 control-label">错误:</label>
+
+                <div class="col-lg-8">
+                     <textarea ng-model="error" class="form-control" rows="4" ></textarea>
                 </div>
             </div>
         </form>

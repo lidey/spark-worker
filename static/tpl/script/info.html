@@ -9,11 +9,18 @@
             <i class="fa fa-trash-o"></i>删除
         </button>
         <form name="newScript" role="form" class="form-horizontal m-t-lg form-validation">
-            <div class="form-group">
+            <div ng-show="!editFlag" class="form-group">
+                <label class="col-sm-2 control-label">标题:</label>
+
+                <div class="col-sm-10">
+                    {{ script.title }}
+                </div>
+            </div>
+            <div ng-show="editFlag" class="form-group">
                 <label class="col-lg-2 control-label">标题:</label>
 
                 <div class="col-lg-8">
-                    <input type="text" ng-disabled="!editFlag" class="form-control" name="title" id="title"
+                    <input type="text" class="form-control" name="title" id="title"
                            ng-model="script.title" required ng-maxlength="100">
                 </div>
             </div>
@@ -24,11 +31,25 @@
                     {{ script.script }}
                 </div>
             </div>
+            <div ng-show="!editFlag" class="form-group">
+                <label class="col-sm-2 control-label">描述:</label>
+
+                <div class="col-sm-10">
+                    {{ script.desc }}
+                </div>
+            </div>
             <div ng-show="editFlag" class="form-group">
                 <label class="col-sm-2 control-label">脚本:</label>
 
                 <div class="col-sm-10">
-                    <text-angular ng-model="script.script"></text-angular>
+                    <textarea  class="form-control" rows="4" ng-disabled="testFlag"  ng-model="script.script"></textarea>
+                </div>
+            </div>
+             <div ng-show="editFlag" class="form-group">
+                <label class="col-sm-2 control-label">描述:</label>
+
+                <div class="col-sm-10">
+                     <text-angular ng-model="script.desc" ></text-angular>
                 </div>
             </div>
             <div ng-show="editFlag" class="form-group">
@@ -45,8 +66,28 @@
 
             <div class="form-group" ng-show="editFlag">
                 <div class="col-lg-8 col-lg-offset-2">
-                    <button class="btn btn-info w-xs" ng-disabled="newScript.$invalid" ng-click="saveScript()">保存
+                     <button class="btn btn-info w-xs" ng-disabled="newScript.$invalid" ng-click="testScript()">测试
                     </button>
+                    <button class="btn btn-info w-xs" ng-disabled="!testFlag" ng-click="saveScript()">保存
+                    </button>
+                     <button class="btn btn-info w-xs" ng-click="reset()">重置
+                    </button>
+                </div>
+
+
+            </div>
+              <div ng-show="editFlag" class="form-group">
+                <label class="col-lg-2 control-label">结果:</label>
+
+                <div class="col-lg-8">
+                     <textarea ng-model="result" class="form-control" rows="4" ></textarea>
+                </div>
+            </div>
+            <div ng-show="editFlag" class="form-group">
+                <label class="col-lg-2 control-label">错误:</label>
+
+                <div class="col-lg-8">
+                     <textarea ng-model="error" class="form-control" rows="4" ></textarea>
                 </div>
             </div>
         </form>
