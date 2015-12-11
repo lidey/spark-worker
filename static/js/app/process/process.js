@@ -39,9 +39,9 @@ app.controller('processCtrl', ['$scope', '$location', 'pros', 'jobs', '$statePar
          })
     }
       refresh();
-      setInterval(function(){
+     /* setInterval(function(){
            refresh();
-      },5000);
+      },5000);*/
      $scope.startJob = function(jId){
        jobs.start(jId).then(function(resp){
            if(resp.data.success){
