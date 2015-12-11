@@ -3,6 +3,7 @@
 import time
 from peewee import *
 from app.core.base_model import BaseModel
+from app.model.job_model import Job
 
 
 class JobProgress(BaseModel):
@@ -23,7 +24,10 @@ class JobProgress(BaseModel):
         self.delete_instance()
 
     def to_dict(self):
-        stat, res = ""
+        stat = ""
+        res = ""
+        endDate = ''
+        startDate = ''
         if self.status == 0:
             stat = "未执行"
         elif self.status == 1:
@@ -35,13 +39,18 @@ class JobProgress(BaseModel):
             res = "成功"
         elif self.result == 2:
             res = "失败"
-
+        if self.endTime:
+            endDate = time.mktime(self.endTime.timetuple())*1000
+        if self.startTime:
+            startDate = time.mktime(self.startTime.timetuple())*1000
+        job = Job().find_uuid(self.job_id)
         return {
-            'title': self.title,
-            'status': stat,
+            'job_title': job.title,
+            'job_desc': job.desc,
+            'status':  stat,
             'result': res,
-            'startTime': time.mktime(self.startTime.timetuple())*1000,
-            'endTime': time.mktime(self.endTime.timetuple())*1000,
+            'startTime': endDate,
+            'endTime': startDate,
             'id': self.uuid,
             'max_num': self.max_num,
             'fail_num': self.fail_num,

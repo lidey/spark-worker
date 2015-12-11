@@ -99,5 +99,5 @@ app.controller('ServerModalCtrl', ['$scope', '$modalInstance', '$timeout', 'mess
     $scope.message = message;
     $timeout(function () {
         $modalInstance.dismiss('cancel');
-    }, 2000);
+    }, 1000);
 }]);

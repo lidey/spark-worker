@@ -14,7 +14,7 @@ from playhouse.pool import PooledMySQLDatabase
 
 db = PooledMySQLDatabase(config.database['database'],
                          max_connections=config.database['max_connections'],
-                         stale_timeout=config.database['stale_timeout'],
+                         #stale_timeout=config.database['stale_timeout'],
                          **{'host': config.database['host'],
                             'user': config.database['user'],
                             'password': config.database['password'],

@@ -99,6 +99,7 @@ class JobHandler(BaseHandler):
             job.uuid = self.args.get("id")
             job.createTime = datetime.datetime.now()
             job.save(force_insert=True)
+
             self.write({'success': True, 'message': '添加成功', 'job':job.to_dict()})
         except Exception,e:
             self.write({'success': False, 'message': '添加失败'})

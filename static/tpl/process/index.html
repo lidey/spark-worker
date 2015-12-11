@@ -1,0 +1,82 @@
+<div class="bg-light lter b-b wrapper-md">
+    <h1 class="m-n font-thin h3">进程管理</h1>
+</div>
+<div class="wrapper-md" ng-controller="processCtrl">
+    <tabset class="tab-container" ng-init="steps={step1:true, step2:false, step3:false,showP:false}">
+        <tab heading="任务列表" active="steps.step1">
+            <div class="row-row">
+                <div class="cell scrollable hover">
+                    <div class="cell-inner">
+                        <div class="padder">
+                            <div class="list-group" >
+
+                                <div ng-repeat="job in jobs" class="list-group-item b-l-3x hover-anchor">
+                                    <div><span class="text-md">{{ job.title }}</span> <a ng-click="startJob(job.id)"
+                                                                            ng-disabled="steps.showP"
+                                                                            class="pull-right m-l-sm btn btn-sm btn-default  m-t-n-xs"><i
+                                            class="fa fa-tags"></i>执行</a></div>
+                                    <span class="block text-ellipsis">{{ job.content }}</span>
+
+                                    <div ng-show="steps.showP">
+                                        <progressbar max="2" value="1" type="info" class="progress-sm m-t-sm"><span
+                                                style="white-space:nowrap;">1 / 2</span></progressbar>
+                                        <small class="text-muted pull-left-xs">成功：1 失败：1</small>
+                                    </div>
+
+                                </div>
+
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+        </tab>
+        <tab heading="正在执行" active="steps.step2">
+            <div class="row-row">
+                <div class="cell scrollable hover">
+                    <div class="cell-inner">
+                        <div class="padder">
+                            <div class="list-group">
+
+                                <div ng-repeat="zxp in zxPros" class="list-group-item b-l-3x hover-anchor">
+                                    <div><span class="text-md">{{ zxp.job_title }}</span></div>
+                                    <span class="block text-ellipsis">{{ zxp.job_desc }}</span>
+
+                                    <progressbar max="zxp.max_num" value="zxp.success_num+zxp.fail_num" type="info" class="progress-sm m-t-sm"><span
+                                            style="white-space:nowrap;">{{ zxp.success_num+zxp.fail_num }} / {{ zxp.max_num }}</span></progressbar>
+                                    <small class="text-muted pull-left-xs">成功：{{ zxp.success_num }} 失败：{{ zxp.fail_num }} </small>
+                                    <small class="text-muted  pull-right"> 开始时间:{{ zxp.startTime | date:'yyyy-MM-dd HH:mm:ss'}}</small>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </tab>
+        <tab heading="执行完成" active="steps.step3" >
+            <div class="row-row">
+                <div class="cell scrollable hover">
+                    <div class="cell-inner">
+                        <div class="padder">
+                            <div class="list-group">
+
+                                <div ng-repeat="wcp in wcPros" class="list-group-item b-l-3x hover-anchor">
+                                    <div><span class="text-md">{{ wcp.job_title }}</span> <a ng-click="steps.showP=true"
+                                                                            ng-disabled="steps.showP"
+                                                                            class="pull-right m-l-sm btn btn-sm btn-default  m-t-n-xs"><i
+                                            class="fa  fa-sort-amount-asc"></i>详细</a></div>
+                                    <span class="block text-ellipsis">{{ wcp.job_desc }}</span>
+<progressbar max="wcp.max_num" value="wcp.success_num+wcp.fail_num" type="info" class="progress-sm m-t-sm"><span
+                                            style="white-space:nowrap;">{{ wcp.success_num+wcp.fail_num }} / {{ wcp.max_num }}</span></progressbar>
+                                    <small class="text-muted pull-left-xs">成功：{{ wcp.success_num }} 失败：{{ wcp.fail_num }} </small>
+                                    <small class="text-muted  pull-right"> 开始时间:{{ wcp.startTime | date:'yyyy-MM-dd HH:mm:ss'}}   结束时间:{{ wcp.endTime | date:'yyyy-MM-dd HH:mm:ss'}}</small>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </tab>
+    </tabset>
+</div>

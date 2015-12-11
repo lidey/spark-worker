@@ -44,6 +44,11 @@ app.factory('jobs', ['$http',function ($http) {
                 return resp;
             });
   };
+    factory.start = function (job_id) {
+      return   $http.post('process/start',{'job_id':job_id}).then(function (resp) {
+                return resp;
+            });
+  };
 
    factory.uuid =  function () {
     function S4() {

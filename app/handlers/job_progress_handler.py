@@ -26,7 +26,7 @@ class JobProgressHandler(BaseHandler):
 
     @tornado.web.authenticated
     def start(self):
-        #JobProgress.create_table()
+        # JobProgress.create_table()
         #ShellLog.create_table()
         #查询job下所有的脚本
         job_id = self.args.get("job_id")
@@ -44,16 +44,30 @@ class JobProgressHandler(BaseHandler):
 
         #开启线程执行脚本 并保存执行记录
         #for i in list:
-        Thread( pro.uuid);
+        Thread(pro.uuid);
 
         self.write({'success': True, 'content': '开始执行'})
 
     @tornado.web.authenticated
     def info(self):
         pass
+
     @tornado.web.authenticated
     def list(self):
-        pass
+        try:
+            # 进程状态
+            status = self.args.get("status")
+            list = JobProgress.select().where(JobProgress.status == status)
+            print len(list)
+            resp = []
+            for data in list:
+                resp.append(data.to_dict())
+
+            self.write({'success': True, 'content': '查询成功', 'list': resp})
+        except Exception, e:
+            self.write({'success': False, 'content': '查询失败'})
+            print Exception, e
+
     @tornado.web.authenticated
     def remove(self):
         pass
