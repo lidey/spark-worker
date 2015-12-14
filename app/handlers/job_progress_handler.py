@@ -1,8 +1,10 @@
 #!/usr/bin/python
 # coding=utf-8
+from tornado import gen
 
 import tornado.web
 from app.core.base_handler import BaseHandler
+from app.core.base_model import db
 from app.core.tools import get_uuid
 from app.model.job_progress_model import JobProgress
 from app.model.script_model import Script
@@ -25,6 +27,7 @@ class JobProgressHandler(BaseHandler):
             self.remove()
 
     @tornado.web.authenticated
+    @db.commit_on_success
     def start(self):
         # JobProgress.create_table()
         #ShellLog.create_table()
@@ -50,9 +53,20 @@ class JobProgressHandler(BaseHandler):
 
     @tornado.web.authenticated
     def info(self):
-        pass
+        try:
+            pro_id = self.args.get("pro_id")
+            list = ShellLog.select().where(ShellLog.process_id == pro_id)
+            resp = []
+            for data in list:
+                resp.append(data.to_dict())
+
+            self.write({'success': True, 'content': '查询成功', 'list': resp})
+        except Exception, e:
+            self.write({'success': False, 'content': '查询失败'})
+            print Exception, e;
 
     @tornado.web.authenticated
+    @db.commit_on_success
     def list(self):
         try:
             # 进程状态
