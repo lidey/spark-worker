@@ -1,7 +1,7 @@
 <div class="hbox hbox-auto-xs hbox-auto-sm" ng-controller="FileUploadCtrl"  nv-file-drop="" uploader="uploader" filters="queueLimit, customFilter">
   <div class="col w-lg bg-light b-r bg-auto">
     <div class="wrapper-md dker b-b">
-      <h3 class="m-n font-thin">Select files</h3>
+      <h3 class="m-n font-thin">选择文件</h3>
     </div>
     <div class="wrapper-md">      
       <div ng-show="uploader.isHTML5" class="m-b-md">
@@ -18,23 +18,15 @@
           </div>
       </div>
 
-      <!-- Example: nv-file-select="" uploader="{Object}" options="{Object}" filters="{String}" -->
-       <form action='file' enctype="multipart/form-data" method='post'>
-           <input type='file' name='file'/><br/>
-        <input type='submit' value='submit'/>
-    </form>
-
-      <p>Multiple</p>
+      <p>多文件上传</p>
       <input type="file" nv-file-select="" uploader="uploader" multiple  />
 
-      <p class="m-t-md">Single</p>
-      <input type="file" nv-file-select="" uploader="uploader" />
     </div>
   </div>
   <div class="col">
     <div class="wrapper-md bg-light dk b-b">
       <span class="pull-right m-t-xs">Queue length: <b class="badge bg-info">{{ uploader.queue.length }}</b></span>
-      <h3 class="m-n font-thin">Upload queue</h3>      
+      <h3 class="m-n font-thin">上传队列</h3>
     </div>
     <div class="wrapper-md">
       <table class="table bg-white-only b-a">
