@@ -4,6 +4,7 @@
 # File Name: router.py.py
 # File Author: lidey 
 # File Created Date: 2015-11-27 12:47
+from app.handlers import UploadFileHandler
 from app.handlers.job_handler import JobHandler
 from app.handlers.job_progress_handler import JobProgressHandler
 from app.handlers.script_handler import ScriptHandler
@@ -18,4 +19,5 @@ urls = [
     (r"/server/(.*)", ServerHandler, dict()),
     (r"/script/(.*)", ScriptHandler, dict()),
     (r"/process/(.*)", JobProgressHandler, dict()),
+    (r"/file", UploadFileHandler, dict()),
 ]
