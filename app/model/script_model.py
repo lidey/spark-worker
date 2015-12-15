@@ -29,5 +29,5 @@ class Script(BaseModel):
             'desc':self.desc
         }
     class Meta:
-        db_table = 'JOB_SCRIPT'
+        db_table = 'WORKER_JOB_SCRIPT'
 

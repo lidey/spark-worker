@@ -19,14 +19,26 @@ app.factory('pros', ['$http','$rootScope', function ($http,$rootScope) {
       })
 
     }
-/*    factory.sorket = function(){
-       webs = new WebSocket('ws://localhost:8880/sorket');
+    factory.sorket = function(){
+       webs = new WebSocket('ws://localhost:8880/job-socket');
             webs.onmessage = function(event) {
-                console.log(event.data)
-                $rootScope.$broadcast('zxz', event.data)
+                   console.log('onmessage')
+                 console.log(eval('('+event.data+')').type)
+                 var type = eval('('+event.data+')').type;
+                if(type=='all'){
+                      $rootScope.$broadcast('list',eval('('+event.data+')').list)
+                }else{
+                      $rootScope.$broadcast('zxz', eval('('+event.data+')').progress)
+                }
+
+
+
+           };
+        webs.onopen = function(event) {
+            console.log("onopen")
            };
 
-    }*/
+    }
     factory.colse = function(){
         if(webs != null){
              webs.close()

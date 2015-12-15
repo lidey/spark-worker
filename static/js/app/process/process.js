@@ -1,5 +1,6 @@
 app.controller('processCtrl', ['$scope', '$location', 'pros', 'jobs', '$stateParams','$timeout','$modal',function ($scope, $location, pros, jobs, $stateParams,$timeout,$modal) {
-     $scope.showShellLog = function (data) {
+    $scope.zxPros = []; //执行中任务数组
+    $scope.showShellLog = function (data) {
                 var modalInstance = $modal.open({
                     templateUrl: 'shellLoglist.html',
                     controller: 'shellLogCtrl',
@@ -10,15 +11,41 @@ app.controller('processCtrl', ['$scope', '$location', 'pros', 'jobs', '$statePar
                         }
                     }
                 });
-
-                modalInstance.result.then(function () {
-                    $scope.refresh();
-                }, function () {
-                    $log.info('Modal dismissed at: ' + new Date());
-                });
             };
 
+    pros.sorket();
+     $scope.$on('list', function (event, data) {
+         $scope.zxPros = data;
+           $scope.$apply()
+     })
+    $scope.$on('zxz', function (event, data) {
+          console.log(data)
+          if(data.status == '执行完成'){
+              for(var i=0;i<$scope.zxPros.length;i++){
+                       if( $scope.zxPros[i].id == data.id){
+                           $scope.zxPros.splice($scope.zxPros.indexOf($scope.zxPros[i]), 1);
+                       }
+                  }
 
+          }else{
+              if($scope.zxPros.length>0){
+                   var cFlag = false;
+                   for(var i=0;i<$scope.zxPros.length;i++){
+                       if( $scope.zxPros[i].id == data.id){
+                           $scope.zxPros[i]=data;
+                           //$scope.zxPros[i].fail_num = data.fail_num;
+                           cFlag = true;
+                       }
+                  }
+                   if(!cFlag){
+                       $scope.zxPros.push(data)
+                   }
+              }else{
+                    $scope.zxPros.push(data)
+              }
+          }
+          $scope.$apply()
+        })
     var wc = 2; //执行完成
     var zx = 1; //正在执行
     var init = function(){
@@ -46,26 +73,26 @@ app.controller('processCtrl', ['$scope', '$location', 'pros', 'jobs', '$statePar
        })
     }
 
-    $scope.getZXJob = function(){
-          interval = setInterval(function(){
-                pros.list(zx).then(function(resp){
-                var zxPros;
-                if (resp.data.success) {
-                    zxPros = resp.data.list;
-                     console.log(zxPros)
-                     $scope.zxPros = zxPros;
-                } else {
-                    $scope.showMessage(resp.data)
-                }
-             })
-          },1000);
-    }
+    //$scope.getZXJob = function(){
+    //      interval = setInterval(function(){
+    //            pros.list(zx).then(function(resp){
+    //            var zxPros;
+    //            if (resp.data.success) {
+    //                zxPros = resp.data.list;
+    //                 console.log(zxPros)
+    //                 $scope.zxPros = zxPros;
+    //            } else {
+    //                $scope.showMessage(resp.data)
+    //            }
+    //         })
+    //      },1000);
+    //}
     $scope.cleanInterval = function(){
-        clearInterval(interval)
+        //clearInterval(interval)
     }
 
      $scope.getWCJob = function(){
-            clearInterval(interval)
+            //clearInterval(interval)
             pros.list(wc).then(function(resp){
             var wcPros;
             if (resp.data.success) {

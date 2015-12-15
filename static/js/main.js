@@ -21,7 +21,6 @@ angular.module('app')
                 modalInstance.result.then(function () {
                     $scope.refresh();
                 }, function () {
-                    $log.info('Modal dismissed at: ' + new Date());
                 });
             };
             // add 'ie' classes to html

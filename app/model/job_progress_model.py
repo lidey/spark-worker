@@ -58,5 +58,5 @@ class JobProgress(BaseModel):
             'job_id': self.job_id
         }
     class Meta:
-        db_table = 'JOB_PROGRESS'
+        db_table = 'WORKER_JOB_PROGRESS'
 

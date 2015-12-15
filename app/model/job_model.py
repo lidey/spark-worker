@@ -22,5 +22,5 @@ class Job(BaseModel):
             'id':self.uuid
         }
     class Meta:
-        db_table = 'M_JOB'
+        db_table = 'WORKER_JOB'
 

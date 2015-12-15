@@ -32,14 +32,14 @@
             </div>
 
         </tab>
-        <tab heading="正在执行" active="steps.step2" ng-click="getZXJob()" >
+        <tab heading="正在执行" active="steps.step2" >
             <div class="row-row">
                 <div class="cell scrollable hover">
                     <div class="cell-inner">
                         <div class="padder">
                             <div class="list-group">
 
-                                <div ng-repeat="zxp in zxPros" class="list-group-item b-l-3x hover-anchor">
+                                <div id=""  ng-repeat="zxp in zxPros" class="list-group-item b-l-3x hover-anchor">
                                     <div><span class="text-md">{{ zxp.job_title }}</span></div>
                                     <span class="block text-ellipsis" ng-bind-html="zxp.job_desc"></span>
 

@@ -4,7 +4,8 @@
 # File Name: router.py.py
 # File Author: lidey 
 # File Created Date: 2015-11-27 12:47
-from app.handlers.UploadFileHandler import UploadFileHandler
+from app.handlers.job_socket_handler import JobSocketHandler
+from app.handlers.upload_file_handler import UploadFileHandler
 from app.handlers.job_handler import JobHandler
 from app.handlers.job_progress_handler import JobProgressHandler
 from app.handlers.scheduler_handler import SchedulerHandler
@@ -22,4 +23,5 @@ urls = [
     (r"/scheduler/(.*)", SchedulerHandler, dict()),
     (r"/process/(.*)", JobProgressHandler, dict()),
     (r"/file", UploadFileHandler, dict()),
+    (r"/job-socket", JobSocketHandler, dict()),
 ]

@@ -35,4 +35,4 @@ class ShellLog(BaseModel):
             'log': self.log
         }
     class Meta:
-        db_table = 'SHELL_LOG'
+        db_table = 'WORKER_SHELL_LOG'

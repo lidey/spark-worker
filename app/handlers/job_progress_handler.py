@@ -3,13 +3,14 @@
 from tornado import gen
 
 import tornado.web
+import tornado.websocket
 from app.core.base_handler import BaseHandler
 from app.core.base_model import db
 from app.core.tools import get_uuid
 from app.model.job_progress_model import JobProgress
 from app.model.script_model import Script
 from app.model.shell_log_model import ShellLog
-from app.script.thread import Thread
+from app.script.job_thread import JobThread
 
 
 class JobProgressHandler(BaseHandler):
@@ -47,7 +48,7 @@ class JobProgressHandler(BaseHandler):
 
         #开启线程执行脚本 并保存执行记录
         #for i in list:
-        Thread(pro.uuid);
+        JobThread(pro.uuid);
 
         self.write({'success': True, 'content': '开始执行'})
 
@@ -85,3 +86,4 @@ class JobProgressHandler(BaseHandler):
     @tornado.web.authenticated
     def remove(self):
         pass
+

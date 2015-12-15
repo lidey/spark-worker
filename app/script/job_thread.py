@@ -3,15 +3,17 @@
 
 import threading
 import datetime
+import time
 from app.core.tools import get_uuid
 from app.model.job_progress_model import JobProgress
 from app.model.script_model import Script
 from app.model.server_model import Server
 from app.model.shell_log_model import ShellLog
 from app.script.server_script import ServerScript
+from app.handlers.job_socket_handler import JobSocketHandler
 
 
-class Thread(threading.Thread):
+class JobThread(threading.Thread):
     process_id = ""
     success = 0;
     fail = 0;
@@ -25,7 +27,9 @@ class Thread(threading.Thread):
         list = Script.select().where(Script.job_id == pro.job_id)
         pro.startTime = datetime.datetime.now()
         pro.save();
+        JobSocketHandler.send_to_all({'progress': pro.to_dict()})
         for obj in list:
+            time.sleep(3)
             job_progress = JobProgress.get(JobProgress.uuid == self.process_id)
             script = obj;
             host = Server.get(Server.uuid == script.server_id)
@@ -78,6 +82,7 @@ class Thread(threading.Thread):
                 job_progress.fail_num = fail;
                 print('执行数量成功%d,失败%d'%( success, fail))
 
+                JobSocketHandler.send_to_all({'type': 'simple', 'progress': job_progress.to_dict()})
                 job_progress.save()
 
             except Exception, e:
