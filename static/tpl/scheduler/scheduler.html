@@ -1,0 +1,48 @@
+<div ng-controller="SchedulerEditCtrl">
+    <!-- header -->
+    <div class="wrapper bg-light lter b-b">
+        <a ui-sref="scheduler.manager" class="pull-left btn btn-sm btn-default  m-t-n-xs"><i
+                class="fa fa-long-arrow-left"></i>取消</a>
+        &nbsp;
+    </div>
+    <!-- / header -->
+    <div class="wrapper">
+        <form name="newscheduler" class="form-horizontal m-t-lg" ng-submit="saveScheduler()">
+           <input type="hidden" class="form-control" ng-model="scheduler.uuid">
+             <!--<input type="hidden" class="form-control" ng-model="scheduler.cpu">
+            <input type="hidden" class="form-control" ng-model="scheduler.core">
+            <input type="hidden" class="form-control" ng-model="scheduler.men">-->
+
+            <div class="form-group">
+                <label class="col-lg-2 control-label">名称:</label>
+
+                <div class="col-lg-8">
+                    <input type="text" class="form-control" ng-model="scheduler.name">
+                </div>
+            </div>
+            <div class="form-group">
+                <label class="col-lg-2 control-label">执行周期:</label>
+
+                <div class="col-lg-4">
+                    <input type="text" class="form-control" ng-model="scheduler.cron">
+                </div>
+            </div>
+            <div class="form-group">
+                <label class="col-sm-2 control-label">详细信息：</label>
+
+                <div class="col-sm-10">
+                    <div text-angular ng-model="scheduler.msg" class="btn-groups h-auto"
+                         style="min-height:200px;"></div>
+                </div>
+            </div>
+            <div class="form-group">
+                <div class="col-lg-8 col-lg-offset-2">
+                    <!--<button ng-disabled="scheduler.success==true" type="button" ng-click="testscheduler()"
+                            class="btn btn-info w-xs">测试
+                    </button>-->
+                    <button ng-disabled="scheduler.success==false" class="btn btn-info w-xs">保存</button>
+                </div>
+            </div>
+        </form>
+    </div>
+</div>

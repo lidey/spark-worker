@@ -9,11 +9,15 @@
 import logging
 
 database = {
-    'host': '10.211.55.15',
+    # 'host': '10.211.55.15',
+    'host': '127.0.0.1',
     'port': 3306,
-    'database': 'cloud-data',
-    'user': 'cloud-data',
-    'password': 'cloud-data',
+    # 'database': 'cloud-data',
+    # 'user': 'cloud-data',
+    # 'password': 'cloud-data',
+    'database': 'yxk',
+    'user': 'root',
+    'password': 'root',
     'max_connections': 10,
     'stale_timeout': 300,
     'charset': 'utf8',
