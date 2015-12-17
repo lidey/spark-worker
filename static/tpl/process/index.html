@@ -54,14 +54,65 @@
                 </div>
             </div>
         </tab>
-        <tab heading="执行完成" active="steps.step3" ng-click="getWCJob()" >
+        <tab heading="执行完成" active="steps.step3" >
             <div class="row-row">
                 <div class="cell scrollable hover">
                     <div class="cell-inner">
                         <div class="padder">
                             <div class="list-group">
 
-                                <div ng-repeat="wcp in wcPros" class="list-group-item b-l-3x hover-anchor">
+                               <div class="panel-body b-b b-light">
+                                  搜索: <input ng-model="searchText" type="text" class="form-control input-sm w-sm inline m-r"/>
+                                </div>
+                                <table class="table m-b-none" class="footable" >
+                                    <thead>
+                                    <tr>
+                                        <th >
+                                            任务标题
+                                        </th>
+                                        <th>
+                                             成功
+                                        </th>
+                                        <th>
+                                            失败
+                                        </th>
+                                        <th >
+                                            状态
+                                        </th>
+                                        <th>
+                                            开始时间
+                                        </th>
+                                        <th>
+                                            结束时间
+                                        </th>
+
+                                        <th>
+                                            执行结果
+                                        </th>
+                                    </tr>
+                                    </thead>
+                                    <tbody>
+                                    <tr ng-repeat="wcp in wcPros |filter:searchText | pageStartFrom:(curPage-1) * pageSize | limitTo: pageSize ">
+                                        <td>{{ wcp.job_title }}</td>
+                                        <td>{{ wcp.success_num }}</td>
+                                        <td>{{ wcp.fail_num }}</td>
+                                        <td>{{ wcp.status }}</td>
+                                        <td>{{ wcp.startTime | date:'yyyy-MM-dd HH:mm:ss'}}</td>
+                                        <td>{{ wcp.endTime | date:'yyyy-MM-dd HH:mm:ss' }}</td>
+                                        <td><a ng-click="getInfo(wcp.id)"
+                                               class="pull-right m-l-sm btn btn-sm btn-default  m-t-n-xs"><i
+                                                class="fa  fa-sort-amount-asc"></i>详细</a></td>
+                                    </tr>
+                                    </tbody>
+                                    <tfoot >
+                                    <tr>
+                                        <td colspan="7" class="text-center">
+                                            <pagination total-items="totalCount" ng-model="curPage" max-size="5" class="pagination-sm m-t-sm m-b" boundary-links="true"></pagination>
+                                        </td>
+                                    </tr>
+                                    </tfoot>
+                                </table>
+                               <!-- <div ng-repeat="wcp in wcPros" class="list-group-item b-l-3x hover-anchor">
                                     <div><span class="text-md">{{ wcp.job_title }}</span> <a ng-click="getInfo(wcp.id)"
                                                                             ng-disabled="steps.showP"
                                                                             class="pull-right m-l-sm btn btn-sm btn-default  m-t-n-xs"><i
@@ -72,7 +123,7 @@
                                     <small class="text-muted pull-left-xs">成功：{{ wcp.success_num }} 失败：{{ wcp.fail_num }} </small>
                                     <small class="text-muted  pull-right"> 开始时间:{{ wcp.startTime | date:'yyyy-MM-dd HH:mm:ss'}}   结束时间:{{ wcp.endTime | date:'yyyy-MM-dd HH:mm:ss'}}</small>
                                 </div>
-                            </div>
+                            </div> -->
                         </div>
                     </div>
                 </div>
@@ -93,7 +144,8 @@
             <li ng-repeat="item in data">
                 <a ng-init="item.show = false" ng-click="item.show = !item.show">{{ item.script_title }}</a> <span>:{{ item.status }}</span>
                 <p>脚本:<span>{{ item.script }}</span></p>
-                <p ng-show="item.show" >{{ item.log }}</p>
+
+                <p  ng-show="item.show">{{ item.log }}</p>
             </li>
         </ul>
 

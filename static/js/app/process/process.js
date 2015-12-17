@@ -1,4 +1,5 @@
 app.controller('processCtrl', ['$scope', '$location', 'pros', 'jobs', '$stateParams','$timeout','$modal',function ($scope, $location, pros, jobs, $stateParams,$timeout,$modal) {
+
     $scope.zxPros = []; //执行中任务数组
     $scope.showShellLog = function (data) {
                 var modalInstance = $modal.open({
@@ -13,17 +14,37 @@ app.controller('processCtrl', ['$scope', '$location', 'pros', 'jobs', '$statePar
                 });
             };
 
-    pros.sorket();
+     pros.sorket();
      $scope.$on('list', function (event, data) {
          $scope.zxPros = data;
            $scope.$apply()
      })
+    var getWCJob =  function(){
+            pros.list(wc).then(function(resp){
+            var wcPros;
+            if (resp.data.success) {
+                wcPros = resp.data.list;
+                  console.log(wcPros)
+                  $scope.wcPros = wcPros;
+                    $scope.pageSize = 10;
+                  $scope.curPage = 1;
+                  $scope.pageCount = Math.ceil($scope.wcPros.length / $scope.pageSize) - 1
+                    $scope.totalCount = $scope.wcPros.length;
+            } else {
+                $scope.showMessage(resp.data)
+            }
+        })
+
+
+    }
+
     $scope.$on('zxz', function (event, data) {
           console.log(data)
           if(data.status == '执行完成'){
               for(var i=0;i<$scope.zxPros.length;i++){
                        if( $scope.zxPros[i].id == data.id){
                            $scope.zxPros.splice($scope.zxPros.indexOf($scope.zxPros[i]), 1);
+                           getWCJob();
                        }
                   }
 
@@ -48,6 +69,8 @@ app.controller('processCtrl', ['$scope', '$location', 'pros', 'jobs', '$statePar
         })
     var wc = 2; //执行完成
     var zx = 1; //正在执行
+
+
     var init = function(){
      jobs.all().then(function (resp) {
             var jobs;
@@ -59,6 +82,7 @@ app.controller('processCtrl', ['$scope', '$location', 'pros', 'jobs', '$statePar
             }
 
         });
+        getWCJob();
     }
 
     init();
@@ -91,19 +115,6 @@ app.controller('processCtrl', ['$scope', '$location', 'pros', 'jobs', '$statePar
         //clearInterval(interval)
     }
 
-     $scope.getWCJob = function(){
-            //clearInterval(interval)
-            pros.list(wc).then(function(resp){
-            var wcPros;
-            if (resp.data.success) {
-                wcPros = resp.data.list;
-                  console.log(wcPros)
-                  $scope.wcPros = wcPros;
-            } else {
-                $scope.showMessage(resp.data)
-            }
-        })
-    }
 
     $scope.getInfo = function(proId){
         pros.get(proId).then(function(resp){
@@ -123,4 +134,12 @@ app.controller('shellLogCtrl', ['$scope', '$modalInstance','data', function ($sc
     $scope.close = function(){
          $modalInstance.dismiss('cancel');
     }
+}]);
+
+
+app.filter('pageStartFrom', [function() {
+  return function(input, start) {
+        start = +start;
+    return input.slice(start);
+  }
 }]);
