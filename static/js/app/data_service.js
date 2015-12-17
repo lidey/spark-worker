@@ -1,5 +1,6 @@
 app.factory('dataService', function () {
   return{
-      data:''
+      data:'',
+      jobIds:[]
   };
 });
