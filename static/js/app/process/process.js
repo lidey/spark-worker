@@ -1,5 +1,5 @@
 app.controller('processCtrl', ['$scope', '$location', 'pros', 'jobs', '$stateParams','$timeout','$modal',function ($scope, $location, pros, jobs, $stateParams,$timeout,$modal) {
-
+    $scope.jobIds = [];
     $scope.zxPros = []; //执行中任务数组
     $scope.showShellLog = function (data) {
                 var modalInstance = $modal.open({
@@ -89,12 +89,25 @@ app.controller('processCtrl', ['$scope', '$location', 'pros', 'jobs', '$statePar
 
     var interval;
 
-     $scope.startJob = function(jId){
-       jobs.start(jId).then(function(resp){
-           if(resp.data.success){
-               $scope.showMessage(resp.data)
-           }
-       })
+
+      $scope.checkJob = function(jobId){
+
+          var index = $scope.jobIds.indexOf(jobId);
+          if( index !=-1){
+              $scope.jobIds.splice(index,1);
+          }else{
+              $scope.jobIds.push(jobId);
+          }
+    }
+     $scope.startJob = function(){
+          console.log($scope.jobIds);
+          jobs.start($scope.jobIds).then(function(resp){
+                   if(resp.data.success){
+                       $scope.showMessage(resp.data)
+                   }else{
+                        $scope.showMessage(resp.data)
+                   }
+               })
     }
 
     //$scope.getZXJob = function(){

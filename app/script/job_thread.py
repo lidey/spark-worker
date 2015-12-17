@@ -29,7 +29,6 @@ class JobThread(threading.Thread):
         pro.save();
         JobSocketHandler.send_to_all({'progress': pro.to_dict()})
         for obj in list:
-            time.sleep(3)
             job_progress = JobProgress.get(JobProgress.uuid == self.process_id)
             script = obj;
             host = Server.get(Server.uuid == script.server_id)

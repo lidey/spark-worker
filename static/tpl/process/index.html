@@ -4,24 +4,29 @@
 <div class="wrapper-md" ng-controller="processCtrl">
     <tabset class="tab-container" ng-init="steps={step1:true, step2:false, step3:false,showP:false}">
         <tab heading="任务列表" active="steps.step1" ng-click="cleanInterval()">
+           <div class="wrapper">
+               <a ng-click="startJob()" class="pull-right m-l-sm btn btn-sm btn-default  m-t-n-xs"><i class="fa fa-tags"></i>执行</a>
+                &nbsp;
+            </div>
+
             <div class="row-row">
                 <div class="cell scrollable hover">
                     <div class="cell-inner">
                         <div class="padder">
+
                             <div class="list-group" >
 
                                 <div ng-repeat="job in jobs" class="list-group-item b-l-3x hover-anchor">
-                                    <div><span class="text-md">{{ job.title }}</span> <a ng-click="startJob(job.id)"
-                                                                            ng-disabled="steps.showP"
-                                                                            class="pull-right m-l-sm btn btn-sm btn-default  m-t-n-xs"><i
-                                            class="fa fa-tags"></i>执行</a></div>
-                                    <span class="block text-ellipsis" ng-bind-html="job.content"></span>
 
-                                    <div ng-show="steps.showP">
-                                        <progressbar max="2" value="1" type="info" class="progress-sm m-t-sm"><span
-                                                style="white-space:nowrap;">1 / 2</span></progressbar>
-                                        <small class="text-muted pull-left-xs">成功：1 失败：1</small>
-                                    </div>
+
+                                    <div>
+                                        <label  class="pull-right i-checks m-b-none">
+                                            <input type="checkbox" ng-click="checkJob(job.id)"><i></i>
+                                        </label>
+                                            <span class="text-md">{{ job.title }}</span>
+
+                                        <span class="block text-ellipsis" ng-bind-html="job.content"></span>
+                                        </div>
 
                                 </div>
 

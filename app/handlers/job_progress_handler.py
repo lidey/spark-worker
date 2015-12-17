@@ -33,24 +33,31 @@ class JobProgressHandler(BaseHandler):
         # JobProgress.create_table()
         #ShellLog.create_table()
         #查询job下所有的脚本
-        job_id = self.args.get("job_id")
-        list = Script.select().where(Script.job_id == job_id)
-        max_num = len(list);
-        pro = JobProgress()
-        pro.uuid = get_uuid()
-        pro.job_id = job_id
-        pro.max_num = max_num
-        pro.success_num = 0;
-        pro.fail_num = 0;
-        pro.status = 0;
-        pro.result = -1;
-        pro.save(force_insert=True)
+        try:
+            job_id = self.args.get("job_id")
+            for id in job_id:
+                print id;
+                list = Script.select().where(Script.job_id == id)
+                max_num = len(list);
+                pro = JobProgress()
+                pro.uuid = get_uuid()
+                pro.job_id = id
+                pro.max_num = max_num
+                pro.success_num = 0;
+                pro.fail_num = 0;
+                pro.status = 0;
+                pro.result = -1;
+                pro.save(force_insert=True)
 
-        #开启线程执行脚本 并保存执行记录
-        #for i in list:
-        JobThread(pro.uuid);
+                #开启线程执行脚本 并保存执行记录
+                #for i in list:
+                JobThread(pro.uuid);
+            self.write({'success': True, 'content': '开始执行'})
+        except Exception, e:
+            self.write({'success': False, 'content': '服务器异常'})
+            print Exception, e;
 
-        self.write({'success': True, 'content': '开始执行'})
+
 
     @tornado.web.authenticated
     def info(self):
