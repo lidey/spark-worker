@@ -7,11 +7,8 @@
     </div>
     <!-- / header -->
     <div class="wrapper">
-        <form name="newscheduler" class="form-horizontal m-t-lg" ng-submit="saveScheduler()">
-           <input type="hidden" class="form-control" ng-model="scheduler.uuid">
-             <!--<input type="hidden" class="form-control" ng-model="scheduler.cpu">
-            <input type="hidden" class="form-control" ng-model="scheduler.core">
-            <input type="hidden" class="form-control" ng-model="scheduler.men">-->
+        <form name="newscheduler" class="form-horizontal m-t-lg">
+            <input type="hidden" class="form-control" ng-model="scheduler.uuid">
 
             <div class="form-group">
                 <label class="col-lg-2 control-label">名称:</label>
@@ -27,6 +24,18 @@
                     <input type="text" class="form-control" ng-model="scheduler.cron">
                 </div>
             </div>
+            <div ng-controller="ModalDemoCtrl">
+                <div class="form-group">
+                    <script type="text/ng-template" id="myModalContent.html">
+                        <div ng-include="'static/tpl/scheduler/modal.html'"></div>
+                    </script>
+                    <label class="col-lg-2 control-label">执行任务:</label>
+                    <div class="col-lg-4">
+                        <button class="col-lg-6" ng-click="open()">点击选择！</button>
+                    </div>
+                </div>
+            </div>
+            <!-- /modal -->
             <div class="form-group">
                 <label class="col-sm-2 control-label">详细信息：</label>
 
@@ -40,7 +49,9 @@
                     <!--<button ng-disabled="scheduler.success==true" type="button" ng-click="testscheduler()"
                             class="btn btn-info w-xs">测试
                     </button>-->
-                    <button ng-disabled="scheduler.success==false" class="btn btn-info w-xs">保存</button>
+                    <button ng-disabled="scheduler.success==false" ng-click="saveScheduler()" class="btn btn-info w-xs">
+                        保存
+                    </button>
                 </div>
             </div>
         </form>

@@ -7,8 +7,9 @@ class Scheduler(BaseModel):
     uuid = CharField(db_column='UUID', max_length='64', primary_key='true')
     name = CharField(db_column='NAME', max_length='128')
     cron = CharField(db_column='CRON', max_length='128')
+    jobId = CharField(db_column='JOBID', max_length='64')
     msg = TextField(db_column='MSG')
-    created_time = DateTimeField(db_column='CREATED_TIME' ,null='false')
+    created_time = DateTimeField(db_column='CREATED_TIME', null='false')
 
     def to_dict(self):
         return {
@@ -16,6 +17,7 @@ class Scheduler(BaseModel):
             'name': self.name,
             'cron': self.cron,
             'msg': self.msg,
+            'jobId': self.jobId,
             'created_time': time.mktime(self.created_time.timetuple()) * 1000,
         }
 
