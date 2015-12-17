@@ -140,15 +140,12 @@
         <h3 class="modal-title">执行结果</h3>
     </div>
     <div class="modal-body">
-        <ul>
-            <li ng-repeat="item in data">
-                <a ng-init="item.show = false" ng-click="item.show = !item.show">{{ item.script_title }}</a> <span>:{{ item.status }}</span>
-                <p>脚本:<span>{{ item.script }}</span></p>
-
-                <p  ng-show="item.show">{{ item.log }}</p>
-            </li>
-        </ul>
-
+        <tabset vertical="false" type="pills" class="tab-container">
+          <tab ng-repeat="item in data" heading="{{ item.script_title}}">
+              <div><span>脚本: </span>{{ item.script }}</div>
+              <div><span>日志:</span>{{item.log}}</div>
+          </tab>
+        </tabset>
     </div>
     <div class="modal-footer">
         <button class="btn btn-primary" ng-click="close()">关闭</button>
