@@ -35,6 +35,7 @@ class ServerHandler(BaseHandler):
         server.version = self.args.get('version').get('key')
         server.name = self.args.get('name')
         server.password = self.args.get('password')
+        server.path = self.args.get('path')
         server.cpu = self.args.get('cpu')
         server.core = self.args.get('core')
         server.processor = self.args.get('processor')

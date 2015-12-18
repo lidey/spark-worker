@@ -18,6 +18,7 @@ class Server(BaseModel):
     version = CharField(db_column='VERSION_FLAG', max_length=32)
     name = CharField(db_column='NAME', max_length=64)
     password = CharField(db_column='PASSWORD', max_length=64)
+    path = CharField(db_column='PATH', max_length=64)
     cpu = IntegerField(db_column='CPU_NUM', default=0)
     core = IntegerField(db_column='CORE_NUM', default=0)
     processor = IntegerField(db_column='PROCESSOR_NUM', default=0)
@@ -33,6 +34,7 @@ class Server(BaseModel):
             'version': self.version,
             'name': self.name,
             'password': self.password,
+            'path': self.path,
             'cpu': self.cpu,
             'core': self.core,
             'processor': self.processor,
