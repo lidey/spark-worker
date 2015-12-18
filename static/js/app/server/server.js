@@ -80,6 +80,7 @@ app.controller('ServerEditCtrl', ['$scope', 'serverService', '$state', '$statePa
                 $scope.server.success = !message.success;
                 $scope.server.cpu = message.cpu;
                 $scope.server.core = message.core;
+                $scope.server.processor = message.processor;
                 $scope.server.men = message.men;
                 console.log(message);
             }

@@ -20,6 +20,7 @@ class Server(BaseModel):
     password = CharField(db_column='PASSWORD', max_length=64)
     cpu = IntegerField(db_column='CPU_NUM', default=0)
     core = IntegerField(db_column='CORE_NUM', default=0)
+    processor = IntegerField(db_column='PROCESSOR_NUM', default=0)
     men = IntegerField(db_column='MEN_NUM', default=0)
     created_time = DateTimeField(db_column='CREATED_TIME', null=False)
 
@@ -34,6 +35,7 @@ class Server(BaseModel):
             'password': self.password,
             'cpu': self.cpu,
             'core': self.core,
+            'processor': self.processor,
             'men': self.men,
             'created_time': time.mktime(self.created_time.timetuple()) * 1000,
         }
