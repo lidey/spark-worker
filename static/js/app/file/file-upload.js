@@ -1,8 +1,29 @@
-app.controller('FileUploadCtrl', ['$scope', 'FileUploader', function($scope, FileUploader) {
-    var uploader = $scope.uploader = new FileUploader({
-        url: 'file'
+app.controller('FileUploadCtrl', ['$scope', 'FileUploader','$http', function($scope, FileUploader,$http) {
+     $scope.serverId = '';
+     $scope.isSelectServer = false;
+     var serverId = ''
+     $http.get("server/list").then(function (resp) {
+            $scope.servers =  resp.data.servers;
+        });
+
+     var uploader = $scope.uploader = new FileUploader({
+        url: 'file',
+        headers  : {'serverId': $scope.serverId}
     });
 
+      $scope.select = function(){
+
+          if($scope.serverId != ''&& $scope.serverId!=undefined){
+              console.log( $scope.serverId)
+               $scope.isSelectServer = true;
+               uploader.headers = {'serverId': $scope.serverId}
+          }else{
+               $scope.isSelectServer = false;
+          }
+
+          console.log($scope.isSelectServer)
+
+     }
     // FILTERS
 
     uploader.filters.push({
