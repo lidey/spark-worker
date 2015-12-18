@@ -8,9 +8,10 @@ app.controller('ServerCtrl', ['$scope', 'serverService', '$stateParams', functio
             else
                 angular.forEach($scope.servers, function (server) {
                     if (server.uuid == $scope.server.uuid)
-                        server.selected = true;
+                        $scope.server = server;
                 });
             $scope.server.selected = true;
+            $scope.server.color = 'success';
             $scope.$broadcast('server', $scope.server);
         });
     };
@@ -18,18 +19,19 @@ app.controller('ServerCtrl', ['$scope', 'serverService', '$stateParams', functio
     $scope.selectServer = function (server) {
         angular.forEach($scope.servers, function (server) {
             server.selected = false;
+            $scope.server.color = 'info';
         });
         $scope.server = server;
         $scope.server.selected = true;
+        $scope.server.color = 'success';
         $scope.$broadcast('server', $scope.server);
     };
-
 
     $scope.refresh();
 
 }]);
 
-app.controller('ServerDetailCtrl', ['$scope', 'serverService', '$stateParams', function ($scope, serverService, $stateParams) {
+app.controller('ServerDetailCtrl', ['$scope', 'serverService', '$stateParams', '$modal', function ($scope, serverService, $stateParams, $modal) {
 
     $scope.$on('server', function (event, data) {
         $scope.server = data;
@@ -42,9 +44,26 @@ app.controller('ServerDetailCtrl', ['$scope', 'serverService', '$stateParams', f
 
     $scope.delete = function (server) {
         console.log(server);
-        serverService.delete(server.uuid).then(function (message) {
-            $scope.showMessage(message)
+        $modal.open({
+            templateUrl: 'serverConfirmContent.html',
+            controller: 'ServerConfirmCtrl',
+            size: '',
+            resolve: {
+                message: function () {
+                    return "请确认是否删除服务器:" + $scope.server.name;
+                }
+            }
+        }).result.then(function (data) {
+            if ("delete" == data) {
+                serverService.delete(server.uuid).then(function (message) {
+                    $scope.showMessage(message);
+                    $scope.refresh();
+                });
+            }
+
+        }, function () {
         });
+
     }
 }]);
 
@@ -69,7 +88,10 @@ app.controller('ServerEditCtrl', ['$scope', 'serverService', '$state', '$statePa
     $scope.saveServer = function () {
         console.log($scope.server);
         serverService.save($scope.server).then(function (message) {
-            $scope.showMessage(message)
+            $scope.showMessage(message).result.then(function () {
+                $scope.refresh();
+            }, function () {
+            });
             $state.go('server.manager');
         });
     };
@@ -86,5 +108,17 @@ app.controller('ServerEditCtrl', ['$scope', 'serverService', '$state', '$statePa
             }
             $scope.showMessage(message)
         });
+    };
+}]);
+
+app.controller('ServerConfirmCtrl', ['$scope', '$modalInstance', '$timeout', 'message', function ($scope, $modalInstance, $timeout, message) {
+    $scope.message = {content: message};
+
+    $scope.cancel = function () {
+        $modalInstance.dismiss('cancel');
+    };
+
+    $scope.ok = function () {
+        $modalInstance.close('delete');
     };
 }]);

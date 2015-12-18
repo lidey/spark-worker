@@ -14,7 +14,7 @@
   },
   "aside": {
     "nav": {
-      "HEADER": "导航",
+      "HEADER": "功能导航",
       "DASHBOARD": "仪表板",
       "CALENDAR": "日历",
       "EMAIL": "邮件",
@@ -60,8 +60,8 @@
       },
       "your_stuff": {
         "YOUR_STUFF": "用户配置",
-        "PROFILE": "用户信息",
-        "DOCUMENTS": "文档"
+        "PROFILE": "个人设置",
+        "DOCUMENTS": "帮助文档"
       }
     },
     "MILESTONE": "Milestone",
