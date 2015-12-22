@@ -5,7 +5,6 @@
 # File Author: 姚丰利(lidey) 
 # File Created Date: 2015-12-03 17:37
 import time
-import datetime
 from peewee import *
 from app.core.base_model import BaseModel
 
