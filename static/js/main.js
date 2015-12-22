@@ -7,7 +7,7 @@ angular.module('app')
         function ($scope, $translate, $localStorage, $window, $modal) {
 
             $scope.showMessage = function (message) {
-                var modalInstance = $modal.open({
+                return $modal.open({
                     templateUrl: 'serverModalContent.html',
                     controller: 'ServerModalCtrl',
                     size: '',
@@ -16,11 +16,6 @@ angular.module('app')
                             return message;
                         }
                     }
-                });
-
-                modalInstance.result.then(function () {
-                    $scope.refresh();
-                }, function () {
                 });
             };
             // add 'ie' classes to html
@@ -96,7 +91,13 @@ angular.module('app')
 
 app.controller('ServerModalCtrl', ['$scope', '$modalInstance', '$timeout', 'message', function ($scope, $modalInstance, $timeout, message) {
     $scope.message = message;
+
+    $scope.cancel = function () {
+        $modalInstance.close();
+        //$modalInstance.dismiss('cancel');
+    };
+
     $timeout(function () {
-        $modalInstance.dismiss('cancel');
-    }, 1000);
+        $scope.cancel();
+    }, 3 * 1000);
 }]);

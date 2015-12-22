@@ -13,19 +13,26 @@
           <!-- Example: nv-file-drop="" uploader="{Object}" options="{Object}" filters="{String}" -->
           <div nv-file-drop="" uploader="uploader" options="{ url: '/foo' }">
               <div nv-file-over="" uploader="uploader" over-class="b-danger" class="b-a b-2x b-dashed wrapper-lg lter text-center">
-                  Another drop zone with its own settings
+                  将要上传的文件拖至此处进行上传
               </div>
           </div>
       </div>
-
-      <p>多文件上传</p>
+         <div class="wrapper-md">
+      <p>选择服务器</p>
+         <select required class="col-lg-8 control-label" ng-click="select()" ng-model="serverId">
+                        <option value="">选择服务器</option>
+                        <option ng-repeat="obj in servers" value="{{ obj.uuid }}">{{ obj.host }}</option>
+                    </select>
+       </div>
+        <div class="wrapper-md">
+      <p >多文件上传</p>
       <input type="file" nv-file-select="" uploader="uploader" multiple  />
-
+</div>
     </div>
   </div>
   <div class="col">
     <div class="wrapper-md bg-light dk b-b">
-      <span class="pull-right m-t-xs">Queue length: <b class="badge bg-info">{{ uploader.queue.length }}</b></span>
+      <span class="pull-right m-t-xs">队列大小: <b class="badge bg-info">{{ uploader.queue.length }}</b></span>
       <h3 class="m-n font-thin">上传队列</h3>
     </div>
     <div class="wrapper-md">
@@ -74,16 +81,18 @@
               <div class="progress-bar progress-bar-striped bg-info" role="progressbar" ng-style="{ 'width': uploader.progress + '%' }"></div>
           </div>
         </div>
-        <button type="button" class="btn btn-addon btn-success" ng-click="uploader.uploadAll()" ng-disabled="!uploader.getNotUploadedItems().length">
-          <i class="fa fa-arrow-circle-o-up"></i> Upload all
-        </button>
-        <button type="button" class="btn btn-addon btn-warning" ng-click="uploader.cancelAll()" ng-disabled="!uploader.isUploading">
-          <i class="fa fa-ban"></i> Cancel all
-        </button>
-        <button type="button" class="btn btn-addon btn-danger" ng-click="uploader.clearQueue()" ng-disabled="!uploader.queue.length">
-            <i class="fa fa-trash-o"></i> Remove all
-        </button>
-        <p class="text-muted m-t-xl">Note: upload.php file included, files will be uploaded to "src/js/controllers/uploads".</p>
+          <div ng-show="isSelectServer">
+                <button type="button" class="btn btn-addon btn-success" ng-click="uploader.uploadAll()" ng-disabled="!uploader.getNotUploadedItems().length">
+                  <i class="fa fa-arrow-circle-o-up"></i> Upload all
+                </button>
+                <button type="button" class="btn btn-addon btn-warning" ng-click="uploader.cancelAll()" ng-disabled="!uploader.isUploading">
+                  <i class="fa fa-ban"></i> Cancel all
+                </button>
+                <button type="button" class="btn btn-addon btn-danger" ng-click="uploader.clearQueue()" ng-disabled="!uploader.queue.length">
+                    <i class="fa fa-trash-o"></i> Remove all
+                </button>
+          </div>
+        <p class="text-muted m-t-xl">注意:请先选择服务器，然后再进行上传，文件上传的目录是服务器所配置的路径</p>
       </div>
     </div>
   </div>

@@ -31,12 +31,15 @@ angular.module('app')
                             deps: ['$ocLazyLoad',
                                 function ($ocLazyLoad) {
                                     return $ocLazyLoad.load(['static/js/controllers/app_index.js']).then(
-                                        function(){
+                                        function () {
                                             return $ocLazyLoad.load(['static/js/controllers/app_index.js']);
                                         }
                                     );
                                 }]
                         }
+                    }).state('app.docs', {
+                    url: '/docs',
+                    templateUrl: 'static/tpl/docs.html'
                     })
 
             }

@@ -33,19 +33,25 @@
             </div>
             <footer class="panel-footer bg-info text-center no-padder">
                 <div class="row no-gutter">
-                    <div class="col-xs-4">
+                    <div class="col-xs-3">
                         <div class="wrapper">
                             <small class="text-muted">处理器</small>
                             <span class="m-b-xs h3 block text-white">{{ server.cpu }}</span>
                         </div>
                     </div>
-                    <div class="col-xs-4 dk">
+                    <div class="col-xs-3 dk">
                         <div class="wrapper">
                             <small class="text-muted">内核</small>
                             <span class="m-b-xs h3 block text-white">{{ server.core }}</span>
                         </div>
                     </div>
-                    <div class="col-xs-4">
+                    <div class="col-xs-3">
+                        <div class="wrapper">
+                            <small class="text-muted">线程</small>
+                            <span class="m-b-xs h3 block text-white">{{ server.processor }}</span>
+                        </div>
+                    </div>
+                    <div class="col-xs-3 dk">
                         <div class="wrapper">
                             <small class="text-muted">内存</small>
                             <span class="m-b-xs h3 block text-white">{{ server.men }}</span>
@@ -85,6 +91,14 @@
 
                         <div class="col-lg-10">
                             <p class="form-control-static">{{ server.name }}</p>
+                        </div>
+                    </div>
+                    <div class="line line-dashed b-b line-lg pull-in"></div>
+                    <div class="form-group">
+                        <label class="col-lg-2 control-label">文件路径:</label>
+
+                        <div class="col-lg-10">
+                            <p class="form-control-static">{{ server.path }}</p>
                         </div>
                     </div>
                 </form>

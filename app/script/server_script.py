@@ -18,11 +18,8 @@ class ServerScript:
         ssh.connect(hostname=self.hostname, username=self.username, password=self.password)
         self.ssh = ssh
 
-    def command(self, shell):
-        transport = self.ssh.get_transport()
-        channel = transport.open_session()
-        channel.exec_command('ifconfig;free;df -h')
-        stdin, stdout, stderr = self.ssh.exec_command(shell)
+    def command(self, shell, timeout=10):
+        stdin, stdout, stderr = self.ssh.exec_command(shell, timeout=timeout)
         return stdout.read(), stderr.read()
 
     def close(self):
