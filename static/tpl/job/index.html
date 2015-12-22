@@ -1,36 +1,41 @@
-
 <div class="hbox hbox-auto-xs hbox-auto-sm" ng-controller="JobCtrl">
-  <div class="col w-md bg-light dk b-r bg-auto">
-    <div class="wrapper b-b bg">
-      <button class="btn btn-sm btn-default pull-right visible-sm visible-xs" ui-toggle-class="show" target="#email-menu"><i class="fa fa-bars"></i></button>
-      <a ui-sref="app.job.new" class="btn btn-sm btn-danger w-xs font-bold">添加任务</a>
-
-    </div>
-
-      <div class="wrapper b-t m-t-xxs">
-        <div class="input-group">
-          <span class="input-group-addon input-sm"><i class="fa fa-search"></i></span>
-          <input type="text" class="form-control input-sm" placeholder="search" ng-model="query">
-        </div>
-      </div>
-
-    <div class="row-row">
-        <div class="cell scrollable hover">
-          <div class="cell-inner">
-            <div class="padder">
-              <div class="list-group">
-                <a  ui-sref="app.job.list({jobId:job.id})"  ng-repeat="job in jobs | filter:query | orderBy:'date':true"  class="list-group-item b-l-3x hover-anchor" ng-class="{'hover': job.selected }">
-                    <span ng-click='deleteJob(job.id)' class="pull-right text-muted hover-action"><i class="fa fa-times"></i></span>
-                    <span  class="block text-ellipsis">{{ job.title}}</span>
-                  <small class="text-muted">{{ job.date | date:'yyyy-MM-dd HH:mm:ss'}}</small>
-                </a>
-              </div>
+    <div class="col w-md bg-light dk b-r bg-auto">
+        <div class="vbox">
+            <div class="wrapper">
+                <button class="btn btn-sm btn-default pull-right visible-sm visible-xs" ui-toggle-class="show"
+                        target="#email-menu"><i class="fa fa-bars"></i></button>
+                <a ui-sref="app.job.new" class="pull-right btn btn-sm btn-info m-t-n-xs">添加任务</a>
+                <div class="h4">任务管理</div>
             </div>
-          </div>
+
+            <div class="wrapper b-t m-t-xxs">
+                <div class="input-group">
+                    <span class="input-group-addon input-sm"><i class="fa fa-search"></i></span>
+                    <input type="text" class="form-control input-sm" placeholder="search" ng-model="query">
+                </div>
+            </div>
+
+            <div class="row-row">
+                <div class="cell scrollable hover">
+                    <div class="cell-inner">
+                        <div class="padder">
+                            <div class="list-group">
+                                <a ui-sref="app.job.list({jobId:job.id})"
+                                   ng-repeat="job in jobs | filter:query | orderBy:'date':true"
+                                   class="list-group-item b-l-3x hover-anchor" ng-class="{'hover': job.selected }">
+                                <span ng-click='deleteJob(job.id)' class="pull-right text-muted hover-action"><i
+                                        class="fa fa-times"></i></span>
+                                    <span class="block text-ellipsis">{{ job.title }}</span>
+                                    <small class="text-muted">{{ job.date | date:'yyyy-MM-dd HH:mm:ss'}}</small>
+                                </a>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
         </div>
-      </div>
-  </div>
-  <div class="col">
-    <div ui-view ></div>
-  </div>
+    </div>
+    <div class="col">
+        <div ui-view></div>
+    </div>
 </div>

@@ -7,80 +7,90 @@
     </div>
     <!-- / header -->
     <div class="wrapper">
-        <form name="newServer" class="form-horizontal m-t-lg" ng-submit="saveServer()">
-            <input type="hidden" class="form-control" ng-model="server.uuid">
-            <input type="hidden" class="form-control" ng-model="server.cpu">
-            <input type="hidden" class="form-control" ng-model="server.core">
-            <input type="hidden" class="form-control" ng-model="server.processor">
-            <input type="hidden" class="form-control" ng-model="server.men">
-
-            <div class="form-group">
-                <label class="col-lg-2 control-label">名称:</label>
-
-                <div class="col-lg-8">
-                    <input type="text" class="form-control" ng-model="server.title">
+        <div class="panel panel-default">
+            <form name="newServer" class="form-horizontal" ng-submit="saveServer()">
+                <div class="panel-heading">
+                    服务器信息
                 </div>
-            </div>
-            <div class="form-group">
-                <label class="col-lg-2 control-label">服务器地址:</label>
-
-                <div class="col-lg-4">
-
-                    <ui-select ng-model="server.version" theme="bootstrap">
-                        <ui-select-match placeholder="选择或检索服务器类型">
-                            {{$select.selected.name}}
-                        </ui-select-match>
-                        <ui-select-choices group-by="'type'" repeat="item in versions | filter: $select.search">
-                            <span ng-bind-html="item.name | highlight: $select.search"></span>
-                        </ui-select-choices>
-                    </ui-select>
-
+                <div class="panel-body">
                 </div>
-            </div>
-            <div class="form-group">
-                <label class="col-lg-2 control-label">服务器地址:</label>
+                <input type="hidden" class="form-control" ng-model="server.uuid">
+                <input type="hidden" class="form-control" ng-model="server.cpu">
+                <input type="hidden" class="form-control" ng-model="server.core">
+                <input type="hidden" class="form-control" ng-model="server.processor">
+                <input type="hidden" class="form-control" ng-model="server.men">
 
-                <div class="col-lg-4">
-                    <input type="text" class="form-control" ng-model="server.host">
-                </div>
-            </div>
-            <div class="form-group">
-                <label class="col-lg-2 control-label">用户名:</label>
+                <div class="form-group">
+                    <label class="col-lg-2 control-label">名称:</label>
 
-                <div class="col-lg-4">
-                    <input type="text" class="form-control" ng-model="server.name">
+                    <div class="col-lg-8">
+                        <input type="text" class="form-control" ng-model="server.title">
+                    </div>
                 </div>
-            </div>
-            <div class="form-group">
-                <label class="col-lg-2 control-label">密码:</label>
+                <div class="form-group">
+                    <label class="col-lg-2 control-label">服务器地址:</label>
 
-                <div class="col-lg-4">
-                    <input type="password" class="form-control" ng-model="server.password">
-                </div>
-            </div>
-            <div class="form-group">
-                <label class="col-lg-2 control-label">文件路径:</label>
+                    <div class="col-lg-4">
 
-                <div class="col-lg-7">
-                    <input type="text" class="form-control" ng-model="server.path">
-                </div>
-            </div>
-            <div class="form-group">
-                <label class="col-sm-2 control-label">描述</label>
+                        <ui-select ng-model="server.version" theme="bootstrap">
+                            <ui-select-match placeholder="选择或检索服务器类型">
+                                {{$select.selected.name}}
+                            </ui-select-match>
+                            <ui-select-choices group-by="'type'" repeat="item in versions | filter: $select.search">
+                                <span ng-bind-html="item.name | highlight: $select.search"></span>
+                            </ui-select-choices>
+                        </ui-select>
 
-                <div class="col-sm-10">
-                    <div text-angular ng-model="server.description" class="btn-groups h-auto"
-                         style="min-height:200px;"></div>
+                    </div>
                 </div>
-            </div>
-            <div class="form-group">
-                <div class="col-lg-8 col-lg-offset-2">
-                    <button ng-disabled="server.success==false" type="button" ng-click="testServer()"
-                            class="btn btn-info w-xs">测试
-                    </button>
-                    <button ng-disabled="server.success==false" class="btn btn-info w-xs">保存</button>
+                <div class="form-group">
+                    <label class="col-lg-2 control-label">服务器地址:</label>
+
+                    <div class="col-lg-4">
+                        <input type="text" class="form-control" ng-model="server.host">
+                    </div>
                 </div>
-            </div>
+                <div class="form-group">
+                    <label class="col-lg-2 control-label">用户名:</label>
+
+                    <div class="col-lg-4">
+                        <input type="text" class="form-control" ng-model="server.name">
+                    </div>
+                </div>
+                <div class="form-group">
+                    <label class="col-lg-2 control-label">密码:</label>
+
+                    <div class="col-lg-4">
+                        <input type="password" class="form-control" ng-model="server.password">
+                    </div>
+                </div>
+                <div class="form-group">
+                    <label class="col-lg-2 control-label">文件路径:</label>
+
+                    <div class="col-lg-7">
+                        <input type="text" class="form-control" ng-model="server.path">
+                    </div>
+                </div>
+                <div class="form-group">
+                    <label class="col-sm-2 control-label">描述</label>
+
+                    <div class="col-sm-9">
+                        <div text-angular ng-model="server.description" class="btn-groups h-auto"
+                             style="min-height:200px;"></div>
+                    </div>
+                </div>
+
+                <div class="panel-footer">
+                    <div class="form-group">
+                        <div class="col-lg-8 col-lg-offset-2">
+                            <button ng-disabled="server.success==false" type="button" ng-click="testServer()"
+                                    class="btn btn-info w-xs">测试
+                            </button>
+                            <button ng-disabled="server.success==false" class="btn btn-info w-xs">保存</button>
+                        </div>
+                    </div>
+                </div>
+        </div>
         </form>
     </div>
 </div>

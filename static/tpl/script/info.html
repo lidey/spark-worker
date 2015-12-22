@@ -1,93 +1,111 @@
 <div ng-controller="ScriptInfoCtrl">
-
+    <div class="wrapper bg-light lter b-b">
+        <div class="btn-group m-r-sm pull-left">
+            <a ui-sref="app.job.list({jobId:script.job_id})" class="btn btn-sm btn-default  m-t-n-xs"><i
+                    class="fa fa-long-arrow-left"></i>取消</a>
+            <button class="btn btn-sm btn-default  m-t-n-xs" ng-hide="editFlag" ng-click='editScript()'>
+                <i class="fa fa-archive"></i>编辑
+            </button>
+            <button ng-hide="editFlag" class="btn btn-sm btn-default  m-t-n-xs"
+                    ng-click='deleteScript(script.id)'>
+                <i class="fa fa-trash-o"></i>删除
+            </button>
+        </div>
+        &nbsp;
+    </div>
     <div class="wrapper">
-        <button class="btn btn-sm btn-default w-xxs w-auto-xs" ng-hide="editFlag" ng-click='editScript()'>
-            <i class="fa fa-archive"></i>编辑
-        </button>
-        <button ng-disabled="editFlag" class="btn btn-sm btn-default w-xxs w-auto-xs"
-                ng-click='deleteScript(script.id)'>
-            <i class="fa fa-trash-o"></i>删除
-        </button>
-        <form name="newScript" role="form" class="form-horizontal m-t-lg form-validation">
-            <div ng-show="!editFlag" class="form-group">
-                <label class="col-sm-2 control-label">标题:</label>
-
-                <div class="col-sm-10">
-                    {{ script.title }}
+        <form name="newScript" role="form" class="form-horizontal form-validation">
+            <div class="panel panel-default">
+                <div class="panel-heading">
+                    脚本信息
                 </div>
-            </div>
-            <div ng-show="editFlag" class="form-group">
-                <label class="col-lg-2 control-label">标题:</label>
+                <div class="panel-body">
+                    <div ng-show="!editFlag" class="form-group">
+                        <label class="col-sm-2 control-label">标题:</label>
 
-                <div class="col-lg-8">
-                    <input type="text" class="form-control" name="title" id="title"
-                           ng-model="script.title" required ng-maxlength="100">
+                        <div class="col-sm-9">
+                            <p class="form-control-static">{{ script.title }}</p>
+                        </div>
+                    </div>
+                    <div ng-show="editFlag" class="form-group">
+                        <label class="col-lg-2 control-label">标题:</label>
+
+                        <div class="col-lg-8">
+                            <input type="text" class="form-control" name="title" id="title"
+                                   ng-model="script.title" required ng-maxlength="100">
+                        </div>
+                    </div>
+                    <div ng-show="!editFlag" class="line line-dashed b-b line-lg pull-in"></div>
+                    <div ng-show="!editFlag" class="form-group">
+                        <label class="col-sm-2 control-label">脚本:</label>
+
+                        <div class="col-sm-9">
+                            <p class="form-control-static">{{ script.script }}</p>
+                        </div>
+                    </div>
+                    <div ng-show="editFlag" class="form-group">
+                        <label class="col-sm-2 control-label">脚本:</label>
+
+                        <div class="col-sm-9">
+                        <textarea class="form-control" rows="4" ng-disabled="testFlag"
+                                  ng-model="script.script"></textarea>
+                        </div>
+                    </div>
+                    <div ng-show="!editFlag" class="line line-dashed b-b line-lg pull-in"></div>
+                    <div ng-show="!editFlag" class="form-group">
+                        <label class="col-sm-2 control-label">描述:</label>
+
+                        <div class="col-sm-9">
+                            <p class="form-control-static" ng-bind-html="script.desc"></p>
+                        </div>
+                    </div>
+                    <div ng-show="editFlag" class="form-group">
+                        <label class="col-sm-2 control-label">描述:</label>
+
+                        <div class="col-sm-9">
+                            <text-angular ng-model="script.desc"></text-angular>
+                        </div>
+                    </div>
+                    <div ng-show="editFlag" class="form-group">
+                        <label class="col-lg-2 control-label">运行服务器:</label>
+
+                        <div class="col-lg-4">
+                            <select required class="col-lg-8 control-label" ng-model="script.server_id">
+                                <option value="">选择运行服务器</option>
+                                <option ng-repeat="obj in servers" value="{{ obj.uuid }}"
+                                        ng-selected="obj.selected">{{ obj.host }}</option>
+                            </select>
+                        </div>
+                    </div>
+                    <div ng-show="editFlag" class="form-group">
+                        <label class="col-lg-2 control-label">结果:</label>
+
+                        <div class="col-lg-8">
+                            <textarea ng-model="result" class="form-control" rows="4" readonly></textarea>
+                        </div>
+                    </div>
+                    <div ng-show="editFlag" class="form-group">
+                        <label class="col-lg-2 control-label">错误:</label>
+
+                        <div class="col-lg-8">
+                            <textarea ng-model="error" class="form-control" rows="4" readonly></textarea>
+                        </div>
+                    </div>
                 </div>
-            </div>
-            <div ng-show="!editFlag" class="form-group">
-                <label class="col-sm-2 control-label">脚本:</label>
-
-                <div class="col-sm-10">
-                    {{ script.script }}
-                </div>
-            </div>
-            <div ng-show="!editFlag" class="form-group">
-                <label class="col-sm-2 control-label">描述:</label>
-
-                <div class="col-sm-10">
-                    <p ng-bind-html="script.desc"></p>
-                </div>
-            </div>
-            <div ng-show="editFlag" class="form-group">
-                <label class="col-sm-2 control-label">脚本:</label>
-
-                <div class="col-sm-10">
-                    <textarea  class="form-control" rows="4" ng-disabled="testFlag"  ng-model="script.script"></textarea>
-                </div>
-            </div>
-             <div ng-show="editFlag" class="form-group">
-                <label class="col-sm-2 control-label">描述:</label>
-
-                <div class="col-sm-10">
-                     <text-angular ng-model="script.desc" ></text-angular>
-                </div>
-            </div>
-            <div ng-show="editFlag" class="form-group">
-                <label class="col-lg-2 control-label">运行服务器:</label>
-
-                <div class="col-lg-4">
-                    <select required class="col-lg-8 control-label" ng-model="script.server_id">
-                        <option value="">选择运行服务器</option>
-                        <option ng-repeat="obj in servers" value="{{ obj.uuid }}"
-                                ng-selected="obj.selected">{{ obj.host }}</option>
-                    </select>
-                </div>
-            </div>
-
-            <div class="form-group" ng-show="editFlag">
-                <div class="col-lg-8 col-lg-offset-2">
-                     <button class="btn btn-info w-xs" ng-disabled="newScript.$invalid" ng-click="testScript()">测试
-                    </button>
-                    <button class="btn btn-info w-xs" ng-disabled="!testFlag" ng-click="saveScript()">保存
-                    </button>
-                     <button class="btn btn-info w-xs" ng-click="reset()">重置
-                    </button>
-                </div>
+                <div class="panel-footer" ng-show="editFlag">
+                    <div class="form-group">
+                        <div class="col-lg-8 col-lg-offset-2">
+                            <button class="btn btn-info w-xs" ng-disabled="newScript.$invalid" ng-click="testScript()">
+                                测试
+                            </button>
+                            <button class="btn btn-info w-xs" ng-disabled="!testFlag" ng-click="saveScript()">保存
+                            </button>
+                            <button class="btn btn-info w-xs" ng-click="reset()">重置
+                            </button>
+                        </div>
 
 
-            </div>
-              <div ng-show="editFlag" class="form-group">
-                <label class="col-lg-2 control-label">结果:</label>
-
-                <div class="col-lg-8">
-                     <textarea ng-model="result" class="form-control" rows="4" ></textarea>
-                </div>
-            </div>
-            <div ng-show="editFlag" class="form-group">
-                <label class="col-lg-2 control-label">错误:</label>
-
-                <div class="col-lg-8">
-                     <textarea ng-model="error" class="form-control" rows="4" ></textarea>
+                    </div>
                 </div>
             </div>
         </form>
