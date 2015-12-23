@@ -29,7 +29,7 @@
         <form action="login" method="post">
             {% module xsrf_form_html() %}
             <div class="" style="color: red;">{{ msg }}</div>
-            <input type="text" name="loginName" class="username" placeholder="用户名">
+            <input type="text" name="loginName" class="username" placeholder="用户名" value="{{ loginName }}">
             <input type="password" name="password" class="password" placeholder="密码">
             <button type="submit">登录</button>
             <div class="error"><span>+</span></div>

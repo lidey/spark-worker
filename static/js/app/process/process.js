@@ -151,8 +151,13 @@ app.controller('shellLogCtrl', ['$scope', '$modalInstance','data', function ($sc
 
 
 app.filter('pageStartFrom', [function() {
-  return function(input, start) {
+
+    return function (input, start) {
         start = +start;
-    return input.slice(start);
-  }
+        try {
+            return input.slice(start);
+        } catch (e) {
+        }
+    }
+
 }]);

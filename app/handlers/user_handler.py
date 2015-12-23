@@ -44,16 +44,16 @@ class UserHandler(BaseHandler):
         hex = user.hex_password()
         try:
             user = User.get(User.login_name == user.login_name)
-            if cmp(user.password, hex):
+            if user.password == hex:
                 self.set_secure_cookie("user", user.uuid)
                 self.redirect("/")
             else:
-                self.render('login.html', msg='您输入的密码错误.')
+                self.render('login.html', msg='您输入的密码错误.', loginName=user.login_name)
         except DoesNotExist:
-            self.render('login.html', msg='您输入的账号信息错误.')
+            self.render('login.html', msg='您输入的账号信息错误.', loginName=user.login_name)
 
     def to_login(self):
-        self.render('login.html', msg='')
+        self.render('login.html', msg='', loginName='')
 
     def logout(self):
         self.clear_all_cookies()
