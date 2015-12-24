@@ -28,6 +28,8 @@ class SchedulerHandler(BaseHandler):
             self.update()
         if url_str == 'runJobs':
             self.runJobs()
+        if url_str == 'shutDownJobs':
+            self.removeJobs()
 
     @tornado.web.authenticated
     @db.commit_on_success
@@ -49,6 +51,8 @@ class SchedulerHandler(BaseHandler):
             self.update()
         if url_str == 'runJobs':
             self.runJobs()
+        if url_str == 'shutDownJobs':
+            self.removeJobs()
 
 
     @tornado.web.authenticated
@@ -109,6 +113,7 @@ class SchedulerHandler(BaseHandler):
                 scheduler.jobId = self.args.get("jobId")
                 scheduler.msg = self.args.get("msg")
                 scheduler.name = self.args.get("name")
+                scheduler.status = 0
                 scheduler.created_time = datetime.now()
                 print("jobId:>>" + scheduler.jobId)
                 scheduler.save(force_insert=True)
@@ -119,6 +124,7 @@ class SchedulerHandler(BaseHandler):
                 scheduler.name = self.args.get("name")
                 scheduler.jobId = self.args.get("jobId")
                 scheduler.msg = self.args.get("msg")
+                scheduler.status = 0
                 print("jobId:>>" + scheduler.jobId)
                 self.write({'success': True, 'message': '保存成功', 'scheduler': scheduler.to_dict()})
                 scheduler.save()
@@ -138,19 +144,38 @@ class SchedulerHandler(BaseHandler):
             print Exception, ':', e
 
     @tornado.web.authenticated
-    def runJobs(self):
+    @db.commit_on_success
+    def runJobs(self):#执行调度任务
         try:
             print('开始执行？？？')
-            scheduler = Scheduler.get(Scheduler.uuid == self.args.get("uuid"))
-            scheduler.jobIds = self.args.get("jobIds")
-            scheduler.cron = self.args.get("cron")
-            #jobIds = self.args.get("jobIds")
-            jobIdsArray = scheduler.jobIds.split(',')
+            scheduler = Scheduler.get(Scheduler.uuid == self.get_argument('uuid'))
+
+            #调用scheduler类
             runSch = RunSchTest()
-            for jobId in jobIdsArray:
-                print jobId
-                runSch.runJob(jobId, scheduler.cron)
+            #执行调度任务
+            runSch.runing(scheduler.jobId, scheduler.cron, scheduler.uuid)
+            #更新调度器状态
+            scheduler.status = 1
+            scheduler.save()
             self.write({'success': False, 'message': '启动成功'})
         except Exception, e:
             self.write({'success': False, 'message': '启动出现异常'})
+            print Exception, ':', e
+
+    @tornado.web.authenticated
+    @db.commit_on_success
+    def removeJobs(self):#终止调度任务
+        try:
+            print("开始remove???")
+            scheduler = Scheduler.get(Scheduler.uuid == self.get_argument('uuid'))
+            #调scheduler类
+            runSch = RunSchTest()
+            #执行调度任务
+            runSch.removeJobTest(scheduler.uuid)
+            #更新调度器状态
+            scheduler.status = 0
+            scheduler.save()
+            self.write({'success': True, 'message': 'remove调度器成功'})
+        except Exception, e:
+            self.write({'success': False, 'message': 'remove调度器失败'})
             print Exception, ':', e

@@ -46,6 +46,17 @@
                             <p class="form-control-static">{{ scheduler.msg }}</p>
                         </div>
                     </div>
+
+                    <div class="line line-dashed b-b line-lg pull-in"></div>
+                    <div class="list-group">Jobs
+                        <a
+                           ng-repeat="job in jobs | filter:query | orderBy:'date':true"
+                           class="list-group-item b-l-3x hover-anchor" ng-class="{'hover': job.selected }">
+                            <span class="block text-ellipsis">{{ job.job.title}}</span>
+                            <small class="text-muted">{{ job.job.date | date:'yyyy-MM-dd HH:mm:ss'}}</small>
+                        </a>
+                    </div>
+
                 </form>
             </div>
         </div>
@@ -53,11 +64,16 @@
 
     <div class="wrapper bg-light lter b-b">
         <div class="pull-left btn-group  m-t-n-xs">
-            <a ng-click="runJobs()" class="btn btn-info btn-addon">
+            <a ng-click="runJobs()" class="btn btn-info btn-addon btn-sm">
                 <i class="fa fa-archive"></i>执行
             </a>
         </div>
         &nbsp;
+        <div class="pull-left btn-group  m-t-n-xs">
+            <a ng-click="shutDownJobs()" class="btn m-b-xs btn-sm btn-warning btn-addon">
+                <i class="fa fa-archive"></i>终止
+            </a>
+        </div>
     </div>
 
 </div>

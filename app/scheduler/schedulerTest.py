@@ -1,22 +1,23 @@
 # coding=utf-8
-from apscheduler.schedulers.blocking import BlockingScheduler
+#from apscheduler.schedulers.blocking import BlockingScheduler
 from apscheduler.schedulers.tornado import TornadoScheduler
+from tornado.ioloop import IOLoop
 from app.core.tools import get_uuid
 from app.model.job_progress_model import JobProgress
 from app.model.script_model import Script
 from app.scheduler.method import runMethod
-from app.script.thread import Thread
+from app.script.job_thread import JobThread
 from datetime import datetime
 import time
 import os
 
 
-def tick(name):
-    print('Tick! The time is: %s' % datetime.now()+name)
+def tick():
+    print('Tick! The time is: %s' % datetime.now()+test+'f u very much')
 
 # if __name__ == '__main__':
 # scheduler = BlockingScheduler()
-scheduler = BlockingScheduler({
+scheduler = TornadoScheduler({
 
     'apscheduler.executors.default': {
 
@@ -33,30 +34,37 @@ scheduler = BlockingScheduler({
 })
 
 
-def runJob(job_uuid):
+def runJob():
     #查询job下所有的脚本
     #job_id = self.args.get("job_id")
-    list = Script.select().where(Script.job_id == job_uuid)
-    max_num = len(list);
-    pro = JobProgress()
-    pro.uuid = get_uuid()
-    pro.job_id = job_uuid
-    pro.max_num = max_num
-    pro.success_num = 0;
-    pro.fail_num = 0;
-    pro.status = 0;
-    pro.result = -1;
-    pro.save(force_insert=True)
-    #开启线程执行脚本 并保存执行记录
-    #for i in list:
-    Thread(pro.uuid);
+    #print(">>>>>>>>>>>>>>>>>>>runDefRunJob<<<<<<<<<<<<<<<<<<<<")
+    for job_uuid in jobIdArrayG:
+        #print(">>>>>>>>>>>>>>>>>>>for<<<<<<<<<<<<<<<<<<<<")
+        print job_uuid
+        list = Script.select().where(Script.job_id == job_uuid)
+        max_num = len(list);
+        pro = JobProgress()
+        pro.uuid = get_uuid()
+        pro.job_id = job_uuid
+        pro.max_num = max_num
+        pro.success_num = 0;
+        pro.fail_num = 0;
+        pro.status = 0;
+        pro.result = -1;
+        pro.save(force_insert=True)
+        #开启线程执行脚本 并保存执行记录
+        #for i in list:
+        JobThread(pro.uuid);
 
+
+jobIdArrayG = []
+test = ''
 
 class RunSchTest:
     def add_job(self, second, hour, uuid, name):
 
         r = runMethod();
-        scheduler.add_job(r.doing, 'cron', second=second, hour=hour, id=uuid, name=name)
+        scheduler.add_job(r.doing, 'cron', seconds=second, hour=hour, id=uuid, name=name)
         print('Press Ctrl+{0} to exit'.format('Break' if os.name == 'nt' else 'C'))
         try:
             scheduler.start()
@@ -69,8 +77,8 @@ class RunSchTest:
         print("finish?")
 
 
-    def runJob(self, jobId, second):
-        scheduler.add_job(runJob(jobId), 'cron', second=second)
+    def runJob1(self, jobId, second):
+        scheduler.add_job(runJob(jobId), 'cron', seconds=second)
         print("job running。。。")
         try:
             scheduler.start()
@@ -82,11 +90,34 @@ class RunSchTest:
     # def runTest(self):
     #     print("I am printed at 00:00:00 on the last Sunday of every month!")
 
-    def runTest(self, name, second):
+    def runing(self, jobIds, second, schedulerUUID):
+        global jobIdArrayG
+        jobIdArrayG = jobIds.split(',')
+        # for jobId in jobIdArrayG:
+        #     print jobId
         #r = runMethod();r.tick
-        scheduler.add_job(tick, [name], 'cron', second=second)
+        print(">>>>>>>>>>>>>>>>>>>runTest<<<<<<<<<<<<<<<<<<<<")
+        scheduler.add_job(runJob, 'cron',  second=int(second), id=schedulerUUID)
         print("runTesting...")
         try:
             scheduler.start()
+            IOLoop.instance().start()
         except Exception, e:
             print Exception, ':', e
+
+    def runTest2(self, name, second, uuid, minute):
+        global test
+        test = name
+        #r = runMethod();r.tick
+        job = scheduler.add_job(tick, 'interval', id=uuid, seconds=second, minutes = minute)
+        #scheduler.add_job(tick, 'interval', id=uuid, trigger='*/1 * * * *')
+        print("runTesting...")
+        try:
+            scheduler.start()
+            IOLoop.instance().start()
+        except Exception, e:
+            print Exception, ':', e
+
+    def removeJobTest(self,uuid):
+        scheduler.remove_job(uuid)
+
