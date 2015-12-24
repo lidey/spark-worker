@@ -18,6 +18,11 @@ class MainHandler(BaseHandler):
             self.index()
 
     @tornado.web.authenticated
+    def post(self, url_str=''):
+        if url_str == '':
+            self.index()
+
+    @tornado.web.authenticated
     def index(self):
         name = tornado.escape.xhtml_escape(self.current_user)
         self.render('index.html', name=name)

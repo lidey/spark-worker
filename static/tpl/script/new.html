@@ -1,62 +1,81 @@
 <div ng-controller="ScriptNewCtrl">
-
+    <!-- header -->
+    <div class="wrapper bg-light lter b-b">
+        <a ui-sref="app.job.list({jobId:script.job_id})" class="pull-left btn btn-sm btn-default  m-t-n-xs"><i
+                class="fa fa-long-arrow-left"></i>取消</a>
+        &nbsp;
+    </div>
+    <!-- / header -->
     <div class="wrapper">
-        <form name="newScript" role="form" class="form-horizontal m-t-lg form-validation">
-            <div class="form-group">
-                <label class="col-lg-2 control-label">标题:</label>
-
-                <div class="col-lg-8">
-                    <input type="text" class="form-control" name="title" id="title" ng-model="script.title" required
-                           ng-maxlength="100">
+        <form name="newScript" role="form" class="form-horizontal form-validation">
+            <div class="panel panel-default">
+                <div class="panel-heading">
+                    脚本信息
                 </div>
-            </div>
-             <div class="form-group">
-                <label class="col-sm-2 control-label">脚本:</label>
+                <div class="panel-body">
+                    <div class="form-group">
+                        <label class="col-lg-2 control-label">标题:</label>
 
-                <div class="col-sm-10">
-                     <textarea ng-model="script.script" ng-disabled="testFlag" class="form-control" rows="4" ></textarea>
+                        <div class="col-lg-8">
+                            <input type="text" class="form-control" name="title" id="title" ng-model="script.title"
+                                   required
+                                   ng-maxlength="100">
+                        </div>
+                    </div>
+                    <div class="form-group">
+                        <label class="col-sm-2 control-label">脚本:</label>
+
+                        <div class="col-sm-10">
+                            <textarea ng-model="script.script" ng-disabled="testFlag" class="form-control"
+                                      rows="4"></textarea>
+                        </div>
+                    </div>
+                    <div class="form-group">
+                        <label class="col-sm-2 control-label">描述:</label>
+
+                        <div class="col-sm-10">
+                            <text-angular ng-model="script.desc"></text-angular>
+                        </div>
+                    </div>
+                    <div class="form-group">
+                        <label class="col-lg-2 control-label">运行服务器:</label>
+
+                        <div class="col-lg-4">
+                            <select required class="col-lg-8 control-label" ng-model="script.server_id">
+                                <option value="">选择运行服务器</option>
+                                <option ng-repeat="server in servers"
+                                        value="{{ server.uuid }}">{{ server.host }}</option>
+                            </select>
+                        </div>
+                    </div>
+
+                    <div class="form-group">
+                        <label class="col-lg-2 control-label">结果:</label>
+
+                        <div class="col-lg-8">
+                            <textarea ng-model="result" class="form-control" rows="4" readonly></textarea>
+                        </div>
+                    </div>
+                    <div class="form-group">
+                        <label class="col-lg-2 control-label">错误:</label>
+
+                        <div class="col-lg-8">
+                            <textarea ng-model="error" class="form-control" rows="4" readonly></textarea>
+                        </div>
+                    </div>
                 </div>
-            </div>
-            <div class="form-group">
-                <label class="col-sm-2 control-label">描述:</label>
-
-                <div class="col-sm-10">
-                    <text-angular ng-model="script.desc" ></text-angular>
-                </div>
-            </div>
-            <div class="form-group">
-                <label class="col-lg-2 control-label">运行服务器:</label>
-
-                <div class="col-lg-4">
-                    <select required class="col-lg-8 control-label" ng-model="script.server_id">
-                        <option value="">选择运行服务器</option>
-                        <option ng-repeat="obj in servers" value="{{ obj.uuid }}">{{ obj.host }}</option>
-                    </select>
-                </div>
-            </div>
-            <div class="form-group">
-                <div class="col-lg-8 col-lg-offset-2">
-                    <button class="btn btn-info w-xs" ng-disabled="newScript.$invalid" ng-click="testScript()">测试
-                    </button>
-                    <button class="btn btn-info w-xs" ng-disabled="!testFlag" ng-click="saveScript()">保存
-                    </button>
-                     <button class="btn btn-info w-xs" ng-click="reset()">重置
-                    </button>
-                </div>
-            </div>
-
-            <div class="form-group">
-                <label class="col-lg-2 control-label">结果:</label>
-
-                <div class="col-lg-8">
-                     <textarea ng-model="result" class="form-control" rows="4" ></textarea>
-                </div>
-            </div>
-            <div class="form-group">
-                <label class="col-lg-2 control-label">错误:</label>
-
-                <div class="col-lg-8">
-                     <textarea ng-model="error" class="form-control" rows="4" ></textarea>
+                <div class="panel-footer">
+                    <div class="form-group">
+                        <div class="col-lg-8 col-lg-offset-2">
+                            <button class="btn btn-info w-xs" ng-disabled="newScript.$invalid" ng-click="testScript()">
+                                测试
+                            </button>
+                            <button class="btn btn-info w-xs" ng-disabled="!testFlag" ng-click="saveScript()">保存
+                            </button>
+                            <button class="btn btn-info w-xs" ng-click="reset()">重置
+                            </button>
+                        </div>
+                    </div>
                 </div>
             </div>
         </form>

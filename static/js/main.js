@@ -3,8 +3,15 @@
 /* Controllers */
 
 angular.module('app')
-    .controller('AppCtrl', ['$scope', '$translate', '$localStorage', '$window', '$modal',
-        function ($scope, $translate, $localStorage, $window, $modal) {
+    .value('config', {
+        name: '大数据云--数据调度系统',
+        hostname: '127.0.0.1',
+        port: '8880',
+        company: '软通动力信息技术（集团）有限公司',
+        version: '0.0.1',
+    })
+    .controller('AppCtrl', ['$scope', '$translate', '$localStorage', '$window', '$modal', '$http', 'config',
+        function ($scope, $translate, $localStorage, $window, $modal, $http, config) {
 
             $scope.showMessage = function (message) {
                 return $modal.open({
@@ -18,16 +25,22 @@ angular.module('app')
                     }
                 });
             };
+
             // add 'ie' classes to html
             var isIE = !!navigator.userAgent.match(/MSIE/i);
             isIE && angular.element($window.document.body).addClass('ie');
             isSmartDevice($window) && angular.element($window.document.body).addClass('smart');
 
             // config
+            $http.get("user/current").then(function (resp) {
+                $scope.user = resp.data;
+            });
             $scope.app = {
-                name: '大数据云--数据调度系统',
-                company: '软通动力信息技术（集团）有限公司',
-                version: '0.0.1',
+                name: config.name,
+                hostname: config.hostname,
+                port: config.port,
+                company: config.company,
+                version: config.version,
                 // for chart colors
                 color: {
                     primary: '#7266ba',
@@ -50,7 +63,7 @@ angular.module('app')
                     asideDock: false,
                     container: false
                 }
-            }
+            };
 
             // save settings to local storage
             if (angular.isDefined($localStorage.settings)) {

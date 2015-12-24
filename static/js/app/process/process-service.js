@@ -1,48 +1,47 @@
 // A RESTful factory for retreiving mails from 'mails.json'
-app.factory('pros', ['$http','$rootScope', function ($http,$rootScope) {
+app.factory('pros', ['$http', '$rootScope','config', function ($http, $rootScope,config) {
 
     var factory = {};
     var webs;
 
-    factory.get = function(proID){
-          var path = 'process/get';
-          return  $http.post(path,{'pro_id':proID}).then(function (resp) {
-              return resp;
-      })
+    factory.get = function (proID) {
+        var path = 'process/get';
+        return $http.post(path, {'pro_id': proID}).then(function (resp) {
+            return resp;
+        })
 
     }
 
-    factory.list = function(status){
-          var path = 'process/list';
-          return  $http.post(path,{'status':status}).then(function (resp) {
-              return resp;
-      })
+    factory.list = function (status) {
+        var path = 'process/list';
+        return $http.post(path, {'status': status}).then(function (resp) {
+            return resp;
+        })
 
     }
-    factory.sorket = function(){
-       webs = new WebSocket('ws://localhost:8880/job-socket');
-            webs.onmessage = function(event) {
-                   console.log('onmessage')
-                 console.log(eval('('+event.data+')').type)
-                 var type = eval('('+event.data+')').type;
-                if(type=='all'){
-                      $rootScope.$broadcast('list',eval('('+event.data+')').list)
-                }else{
-                      $rootScope.$broadcast('zxz', eval('('+event.data+')').progress)
-                }
+    factory.sorket = function () {
+        webs = new WebSocket('ws://' + config.hostname + ':' + config.port + '/job-socket');
+        webs.onmessage = function (event) {
+            console.log('onmessage')
+            console.log(eval('(' + event.data + ')').type)
+            var type = eval('(' + event.data + ')').type;
+            if (type == 'all') {
+                $rootScope.$broadcast('list', eval('(' + event.data + ')').list)
+            } else {
+                $rootScope.$broadcast('zxz', eval('(' + event.data + ')').progress)
+            }
 
 
-
-           };
-        webs.onopen = function(event) {
+        };
+        webs.onopen = function (event) {
             console.log("onopen")
-           };
+        };
 
     }
-    factory.colse = function(){
-        if(webs != null){
-             webs.close()
-             webs = null;
+    factory.colse = function () {
+        if (webs != null) {
+            webs.close()
+            webs = null;
         }
 
     }
