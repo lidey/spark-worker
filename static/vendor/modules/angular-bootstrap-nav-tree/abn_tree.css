@@ -1,19 +1,15 @@
 /* 
    abn-tree.css
-
    style for the angular-bootstrap-nav-tree
    for both Bootstrap 2 and Bootstrap 3
-
 */
 
 
 
 /* ------------------------------------------
 AngularJS Animations...
-
 The first selector is for Angular 1.1.5
 The second selector is for Angular 1.2.0
-
 */
 .abn-tree-animate-enter,
 li.abn-tree-row.ng-enter {
@@ -39,16 +35,16 @@ li.abn-tree-row.ng-leave {
   opacity: 1;
 }
 .abn-tree-animate-leave.abn-tree-animate-leave-active,
-li.abn-tree-row.ng-leave-active {  
+li.abn-tree-row.ng-leave-active {
   height: 0px;
   max-height:0px;
   opacity: 0;
 }
 
 
-/* 
+/*
 ------------------------------------------
-Angular 1.2.0 Animation 
+Angular 1.2.0 Animation
 */
 
 
@@ -67,7 +63,7 @@ Angular 1.2.0 Animation
 -----------------------------------------
    begin normal css stuff
 */
-ul.abn-tree li.abn-tree-row {  
+ul.abn-tree li.abn-tree-row {
   padding: 0px;
   margin:0px;
 }
@@ -78,6 +74,7 @@ ul.abn-tree li.abn-tree-row a {
 
 ul.abn-tree i.indented {
   padding: 2px;
+  margin-right: 7px;
 }
 
 .abn-tree {

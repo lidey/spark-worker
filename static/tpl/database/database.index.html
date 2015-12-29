@@ -1,0 +1,91 @@
+<div ng-controller="DatabaseIndexCtrl">
+    <alert ng-repeat="alert in alerts" type="{{ alert.type }}" close="closeAlert($index)">{{ alert.msg }}</alert>
+    <div ng-show="database_detail" class="form-horizontal">
+        <div class="panel panel-default">
+            <div class="panel-heading">
+                基本信息
+            </div>
+            <div class="panel-body">
+                <div class="form-group">
+                    <label class="col-lg-2 control-label">名称:</label>
+
+                    <div class="col-lg-4">
+                        <p class="form-control-static">{{ database.title }}</p>
+                    </div>
+                    <label class="col-lg-2 control-label">创建时间:</label>
+
+                    <div class="col-lg-4">
+                        <p class="form-control-static">{{ database.created_time | date:'yyyy年MM月dd日 hh:mm' }}</p>
+                    </div>
+                </div>
+                <div class="line line-dashed b-b line-lg"></div>
+                <div class="form-group">
+                    <label class="col-lg-2 control-label">描述:</label>
+
+                    <div class="col-lg-10">
+                        <p class="form-control-static" ng-bind-html="database.description"></p>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="panel panel-default">
+            <div class="panel-heading">
+                链接信息
+            </div>
+            <div class="panel-body">
+                <div class="form-group">
+                    <label class="col-lg-2 control-label">数据库类型:</label>
+
+                    <div class="col-lg-4">
+                        <p class="form-control-static">{{ database.type }}</p>
+                    </div>
+                    <label class="col-lg-2 control-label">访问方式</label>
+
+                    <div class="col-lg-4">
+                        <p class="form-control-static">密码访问</p>
+                    </div>
+                </div>
+                <div class="line line-dashed b-b line-lg"></div>
+                <div class="form-group">
+                    <label class="col-lg-2 control-label">服务器地址:</label>
+
+                    <div class="col-lg-4">
+                        <p class="form-control-static">{{ database.hostname }}</p>
+                    </div>
+                    <label class="col-lg-2 control-label">服务器端口:</label>
+
+                    <div class="col-lg-4">
+                        <p class="form-control-static">{{ database.port }}</p>
+                    </div>
+                </div>
+                <div class="line line-dashed b-b line-lg"></div>
+                <div class="form-group">
+                    <label class="col-lg-2 control-label">数据库名:</label>
+
+                    <div class="col-lg-4">
+                        <p class="form-control-static">{{ database.name }}</p>
+                    </div>
+                    <label class="col-lg-2 control-label">用户名:</label>
+
+                    <div class="col-lg-4">
+                        <p class="form-control-static">{{ database.username }}</p>
+                    </div>
+                </div>
+            </div>
+            <div class="hbox text-center b-b b-light text-sm b-t">
+                <a href="" ng-click="testDatabase()" class="col padder-v text-muted b-r b-light">
+                    <i class="fa fa-play block m-b-xs fa-2x"></i>
+                    <span>测试链接</span>
+                </a>
+                <a href="" class="col padder-v text-muted b-r b-light">
+                    <i class="icon-pointer block m-b-xs fa-2x"></i>
+                    <span>Location</span>
+                </a>
+                <a href="" class="col padder-v text-muted">
+                    <i class="icon-cursor block m-b-xs fa-2x"></i>
+                    <span>Direction</span>
+                </a>
+            </div>
+        </div>
+    </div>
+</div>

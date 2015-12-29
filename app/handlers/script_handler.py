@@ -63,7 +63,7 @@ class ScriptHandler(BaseHandler):
     @tornado.web.authenticated
     def list(self):
         try:
-           # Script.create_table()
+            # Script.create_table()
             job_id = self.args.get("job_id")
             list = Script.select().where(Script.job_id == job_id)
             resp = []
@@ -99,10 +99,10 @@ class ScriptHandler(BaseHandler):
         except Exception, e:
             self.write({'success': False, 'message': '修改失败'})
             print Exception, ':', e
+
     @tornado.web.authenticated
     def test(self):
         try:
-
             s = Server().get(Server.uuid == self.args.get("server_id"))
             test = ServerScript(server=s)
             out, err = test.command(self.args.get("script"))

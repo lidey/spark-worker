@@ -109,8 +109,11 @@ app.controller('ServerModalCtrl', ['$scope', '$modalInstance', '$timeout', 'mess
         $modalInstance.close();
         //$modalInstance.dismiss('cancel');
     };
-
-    $timeout(function () {
-        $scope.cancel();
-    }, 3 * 1000);
+    if (message.success) {
+        $timeout(function () {
+            $scope.cancel();
+        }, 3 * 1000);
+    } else {
+        $scope.theme = "text-danger"
+    }
 }]);
