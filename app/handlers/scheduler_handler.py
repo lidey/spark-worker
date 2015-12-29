@@ -153,7 +153,7 @@ class SchedulerHandler(BaseHandler):
             #调用scheduler类
             runSch = RunSchTest()
             #执行调度任务
-            runSch.runing(scheduler.jobId, scheduler.cron, scheduler.uuid)
+            runSch.runingJobs(scheduler.jobId, scheduler.cron, scheduler.uuid)
             #更新调度器状态
             scheduler.status = 1
             scheduler.save()
@@ -171,7 +171,7 @@ class SchedulerHandler(BaseHandler):
             #调scheduler类
             runSch = RunSchTest()
             #执行调度任务
-            runSch.removeJobTest(scheduler.uuid)
+            runSch.removeJob(scheduler.uuid)
             #更新调度器状态
             scheduler.status = 0
             scheduler.save()

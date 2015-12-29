@@ -12,9 +12,6 @@ import time
 import os
 
 
-def tick():
-    print('Tick! The time is: %s' % datetime.now()+test+'f u very much')
-
 # if __name__ == '__main__':
 # scheduler = BlockingScheduler()
 scheduler = TornadoScheduler({
@@ -33,7 +30,11 @@ scheduler = TornadoScheduler({
     'apscheduler.timezone': 'UTC',
 })
 
+#测试方法
+def tick():
+    print('Tick! The time is: %s' % datetime.now()+test+'f u very much')
 
+#定时job任务方法
 def runJob():
     #查询job下所有的脚本
     #job_id = self.args.get("job_id")
@@ -56,46 +57,15 @@ def runJob():
         #for i in list:
         JobThread(pro.uuid);
 
-
+#全局变量
 jobIdArrayG = []
 test = ''
 
 class RunSchTest:
-    def add_job(self, second, hour, uuid, name):
-
-        r = runMethod();
-        scheduler.add_job(r.doing, 'cron', seconds=second, hour=hour, id=uuid, name=name)
-        print('Press Ctrl+{0} to exit'.format('Break' if os.name == 'nt' else 'C'))
-        try:
-            scheduler.start()
-        except (KeyboardInterrupt, SystemExit):
-            scheduler.shutdown()
-
-    def remove_job(self, uuid):
-        scheduler.remove_job(self, uuid)
-        #scheduler.remove_all_jobs(self);
-        print("finish?")
-
-
-    def runJob1(self, jobId, second):
-        scheduler.add_job(runJob(jobId), 'cron', seconds=second)
-        print("job running。。。")
-        try:
-            scheduler.start()
-        except Exception, e:
-            print Exception, ':', e
-
-
-    # @scheduler.scheduled_job('cron', id='my_job_id', day='last sun')
-    # def runTest(self):
-    #     print("I am printed at 00:00:00 on the last Sunday of every month!")
 
     def runing(self, jobIds, second, schedulerUUID):
         global jobIdArrayG
         jobIdArrayG = jobIds.split(',')
-        # for jobId in jobIdArrayG:
-        #     print jobId
-        #r = runMethod();r.tick
         print(">>>>>>>>>>>>>>>>>>>runTest<<<<<<<<<<<<<<<<<<<<")
         scheduler.add_job(runJob, 'cron',  second=int(second), id=schedulerUUID)
         print("runTesting...")
@@ -118,6 +88,43 @@ class RunSchTest:
         except Exception, e:
             print Exception, ':', e
 
-    def removeJobTest(self,uuid):
+    def removeJob(self, uuid):
         scheduler.remove_job(uuid)
 
+
+    def cronTest(self, year, month, day, week, day_of_week, hour, minute, second):
+        scheduler.add_job(tick, 'cron', minute=minute, second=second)
+        #scheduler.add_job(tick, 'cron', timezone='30 21 * * *')
+        print("runTesting...")
+        try:
+            scheduler.start()
+            IOLoop.instance().start()
+        except Exception, e:
+            print Exception, ':', e
+
+    def runingJobs(self, jobIds, cron, schedulerUUID):
+        global jobIdArrayG
+        jobIdArrayG = jobIds.split(',')#处理jobId，放到全局数组变量中
+        cronArray = [] #前台传来的表达式数组
+        cronArray = cron.split(' ')
+        #trigger = '' #那种类型的表达式 包括 cron interval date
+        #year = '' #年
+        week = '' #周
+        month = '' #月
+        day = '' #日
+        hour = '' #小时
+        minute = '' #分钟
+        second = '' #秒
+        #second = cronArray[5]
+        #print 'second:'+second
+        week = cronArray[4]
+        month = cronArray[3]
+        day = cronArray[2]
+        hour = cronArray[1]
+        minute = cronArray[0]
+        scheduler.add_job(runJob, 'cron', month=month, week=week, day=day, hour=hour, minute=minute, id=schedulerUUID)
+        try:
+            scheduler.start()
+            IOLoop.instance().start()
+        except Exception, e:
+            print Exception, ':', e

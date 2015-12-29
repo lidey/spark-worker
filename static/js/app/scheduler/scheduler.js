@@ -116,7 +116,7 @@ app.controller('SchedulerDetailCtrl', ['$scope', 'schedulerService', '$statePara
         });
     }
 
-    $scope.runJobs = function () {
+    $scope.runJobs = function () {//开启调度器
         console.log("runJobsController.$scope.scheduler.name>>>" + $scope.scheduler.uuid);
         schedulerService.runJobs($scope.scheduler.uuid).then(function (req) {
             $scope.showMessage({content: req.message})

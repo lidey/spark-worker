@@ -24,6 +24,13 @@
                     <input type="text" class="form-control" ng-model="scheduler.cron">
                 </div>
             </div>
+            <div class="form-group">
+                <label class="col-lg-2 control-label">周期模板:</label>
+
+                <div class="col-lg-10">
+                    <span class="ng-binding ng-scope">基本规则同Linux crontab表达式，五个占位符分别表示，分 时 日 月 周。例如：30 21 * * *，表示每晚21:30；* */1 * * *，表示每一小时</span>
+                </div>
+            </div>
             <div ng-controller="ModalDemoCtrl">
                 <div class="form-group">
                     <script type="text/ng-template" id="myModalContent.html">
