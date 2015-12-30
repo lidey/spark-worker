@@ -29,7 +29,12 @@ app.factory('databaseService', ['$http', function ($http) {
         return databases;
     };
 
-    factory.save = function (database) {
+    factory.save_folder = function (folder) {
+        return $http.post("database/folder/save", folder).then(function (resp) {
+            return resp.data;
+        });
+    };
+    factory.save_database = function (database) {
         return $http.post("database/save", database).then(function (resp) {
             return resp.data;
         });
@@ -41,26 +46,17 @@ app.factory('databaseService', ['$http', function ($http) {
         });
     };
 
-    factory.delete = function (uuid) {
+    factory.delete_database = function (uuid) {
         return databases = $http.get("database/remove", {params: {uuid: uuid}}).then(function (resp) {
             return resp.data;
         });
     };
-
-    factory.getVersionArrayAll = function () {
-        return versionArray;
-    };
-
-    factory.getVersion = function (key) {
-        var version = key;
-        angular.forEach(versionArray, function (tmp) {
-
-            if (tmp.key == key) {
-                version = tmp;
-            }
+    factory.delete_folder = function (uuid) {
+        return databases = $http.get("database/folder/remove", {params: {uuid: uuid}}).then(function (resp) {
+            return resp.data;
         });
-        return version;
     };
+
 
     return factory;
 }]);

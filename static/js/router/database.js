@@ -17,7 +17,8 @@ angular.module('app')
                             deps: ['$ocLazyLoad', 'uiLoad',
                                 function ($ocLazyLoad, uiLoad) {
                                     return $ocLazyLoad.load(['angularBootstrapNavTree']).then(function () {
-                                        return uiLoad.load(['static/js/app/database/database.js',
+                                        return uiLoad.load([
+                                            'static/js/app/database/database.js',
                                             'static/js/app/database/database-service.js',
                                             'static/vendor/libs/moment.min.js']);
                                     })
@@ -27,26 +28,6 @@ angular.module('app')
                     .state('database.index', {
                         url: '/index',
                         templateUrl: 'static/tpl/database/database.index.html'
-                    })
-                    .state('database.add', {
-                        url: '/add',
-                        templateUrl: 'static/tpl/database/database.info.html',
-                        resolve: {
-                            deps: ['$ocLazyLoad',
-                                function ($ocLazyLoad) {
-                                    return $ocLazyLoad.load(['ui.select', 'textAngular']);
-                                }]
-                        }
-                    })
-                    .state('database.update', {
-                        url: '/update/{uuid}',
-                        templateUrl: 'static/tpl/database/database.info.html',
-                        resolve: {
-                            deps: ['$ocLazyLoad',
-                                function ($ocLazyLoad) {
-                                    return $ocLazyLoad.load(['ui.select', 'textAngular']);
-                                }]
-                        }
                     });
             }
         ]

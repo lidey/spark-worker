@@ -15,12 +15,25 @@ angular.module('app')
 
             $scope.showMessage = function (message) {
                 return $modal.open({
-                    templateUrl: 'serverModalContent.html',
-                    controller: 'ServerModalCtrl',
+                    templateUrl: 'messageModalContent.html',
+                    controller: 'ModalCtrl',
                     size: '',
                     resolve: {
                         message: function () {
                             return message;
+                        }
+                    }
+                });
+            };
+
+            $scope.showConfirm = function (content) {
+                return $modal.open({
+                    templateUrl: 'confirmModalContent.html',
+                    controller: 'ModalCtrl',
+                    size: '',
+                    resolve: {
+                        message: function () {
+                            return {success: false, content: content};
                         }
                     }
                 });
@@ -102,14 +115,19 @@ angular.module('app')
         }]);
 
 
-app.controller('ServerModalCtrl', ['$scope', '$modalInstance', '$timeout', 'message', function ($scope, $modalInstance, $timeout, message) {
+app.controller('ModalCtrl', ['$scope', '$modalInstance', '$timeout', 'message', function ($scope, $modalInstance, $timeout, message) {
     $scope.message = message;
 
+    $scope.ok = function () {
+        $modalInstance.close(true);
+    };
+
     $scope.cancel = function () {
-        $modalInstance.close();
+        $modalInstance.close(false);
         //$modalInstance.dismiss('cancel');
     };
     if (message.success) {
+        $scope.theme = "text-success"
         $timeout(function () {
             $scope.cancel();
         }, 3 * 1000);

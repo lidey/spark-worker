@@ -23,6 +23,29 @@
      ng-class="{'app-header-fixed':app.settings.headerFixed, 'app-aside-fixed':app.settings.asideFixed, 'app-aside-folded':app.settings.asideFolded, 'app-aside-dock':app.settings.asideDock, 'container':app.settings.container}"
      ui-view></div>
 
+<!-- modal -->
+<script type="text/ng-template" id="messageModalContent.html">
+    <div class="modal-header">
+        <h4 class="modal-title">提示</h4>
+    </div>
+    <div class="modal-body" ng-class="theme" style="min-height: 70px" ng-bind-html="message.content">
+    </div>
+    <div class="modal-footer">
+        <button class="btn btn-default" ng-click="cancel()">关闭</button>
+    </div>
+</script>
+<script type="text/ng-template" id="confirmModalContent.html">
+    <div class="modal-header">
+        <h4 class="modal-title">提示</h4>
+    </div>
+    <div class="modal-body" ng-bind-html="message.content" style="min-height: 70px">
+    </div>
+    <div class="modal-footer">
+        <button class="btn btn-warning" ng-click="ok()">确定</button>
+        <button class="btn btn-default" ng-click="cancel()">取消</button>
+    </div>
+</script>
+<!-- /modal -->
 
 <!-- jQuery -->
 <script src="static/vendor/jquery/jquery.min.js"></script>
@@ -49,30 +72,30 @@
 <script src="static/vendor/angular/angular-translate/storage-cookie.js"></script>
 <script src="static/vendor/angular/angular-translate/storage-local.js"></script>
 
-  <!-- App -->
-  <script src="static/js/app.js"></script>
-  <script src="static/js/config.js"></script>
-  <script src="static/js/config.lazyload.js"></script>
-  <script src="static/js/config.router.js"></script>
-  <script src="static/js/main.js"></script>
-  <script src="static/js/services/ui-load.js"></script>
-  <script src="static/js/filters/fromNow.js"></script>
-  <script src="static/js/directives/setnganimate.js"></script>
-  <script src="static/js/directives/ui-butterbar.js"></script>
-  <script src="static/js/directives/ui-focus.js"></script>
-  <script src="static/js/directives/ui-fullscreen.js"></script>
-  <script src="static/js/directives/ui-jq.js"></script>
-  <script src="static/js/directives/ui-module.js"></script>
-  <script src="static/js/directives/ui-nav.js"></script>
-  <script src="static/js/directives/ui-scroll.js"></script>
-  <script src="static/js/directives/ui-shift.js"></script>
-  <script src="static/js/directives/ui-toggleclass.js"></script>
-  <script src="static/js/directives/ui-validate.js"></script>
-  <script src="static/js/controllers/bootstrap.js"></script>
-  <!-- auto route file -->
-    {% for route in routes %}
-  <script src="static/js/router/{{ route }}"></script>
-    {% end %}
-  <!-- Lazy loading -->
+<!-- App -->
+<script src="static/js/app.js"></script>
+<script src="static/js/config.js"></script>
+<script src="static/js/config.lazyload.js"></script>
+<script src="static/js/config.router.js"></script>
+<script src="static/js/main.js"></script>
+<script src="static/js/services/ui-load.js"></script>
+<script src="static/js/filters/fromNow.js"></script>
+<script src="static/js/directives/setnganimate.js"></script>
+<script src="static/js/directives/ui-butterbar.js"></script>
+<script src="static/js/directives/ui-focus.js"></script>
+<script src="static/js/directives/ui-fullscreen.js"></script>
+<script src="static/js/directives/ui-jq.js"></script>
+<script src="static/js/directives/ui-module.js"></script>
+<script src="static/js/directives/ui-nav.js"></script>
+<script src="static/js/directives/ui-scroll.js"></script>
+<script src="static/js/directives/ui-shift.js"></script>
+<script src="static/js/directives/ui-toggleclass.js"></script>
+<script src="static/js/directives/ui-validate.js"></script>
+<script src="static/js/controllers/bootstrap.js"></script>
+<!-- auto route file -->
+{% for route in routes %}
+<script src="static/js/router/{{ route }}"></script>
+{% end %}
+<!-- Lazy loading -->
 </body>
 </html>
