@@ -70,34 +70,6 @@
     <li class="hidden-folded padder m-t m-b-sm text-muted text-xs">
         <span>数据分析</span>
     </li>
-    <li>
-        <a href class="auto">
-            <span class="pull-right text-muted">
-                <i class="fa fa-fw fa-angle-right text"></i>
-                <i class="fa fa-fw fa-angle-down text-active"></i>
-            </span>
-            <i class="fa fa-crop icon text-success"></i>
-            <span class="font-bold">数据模型</span>
-        </a>
-        <ul class="nav nav-sub dk">
-            <li ui-sref-active="active">
-                <a ui-sref="database.index">
-                    <span>数据库链接</span>
-                </a>
-            </li>
-            <li ui-sref-active="active">
-                <a ui-sref="model.index">
-                    <span>数据模型</span>
-                </a>
-            </li>
-
-        </ul>
-    </li>
-
-    <li class="line dk hidden-folded"></li>
-    <li class="hidden-folded padder m-t m-b-sm text-muted text-xs">
-        <span>数据分析</span>
-    </li>
     <li ng-class="{active:($state.includes('database') || $state.includes('model') )}">
         <a href class="auto">
             <span class="pull-right text-muted">
