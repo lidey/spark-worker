@@ -1,0 +1,13 @@
+<div class="modal-header">
+    <h5 class="modal-title">字段列表</h5>
+</div>
+<div class="modal-body table-responsive">
+    <alert ng-repeat="alert in alerts" type="{{ alert.type }}" close="closeAlert($index)">{{ alert.msg }}</alert>
+    <table id="columns" ui-jq="dataTable" ui-options="dt_option" ui-controller="grid"
+           class="table table-striped m-b-none">
+    </table>
+</div>
+<div class="modal-footer">
+    <button type="button" class="btn btn-default w-xs" ng-click="cancel()">关闭</button>
+    <button type="button" class="btn btn-danger w-xs" ng-click="reload_column(table.uuid)">更新字段</button>
+</div>

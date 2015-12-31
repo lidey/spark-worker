@@ -1,5 +1,5 @@
 <div ng-controller="DatabaseIndexCtrl">
-    <div ng-show="database_detail" class="form-horizontal">
+    <div ng-if="database_detail" class="form-horizontal">
         <div class="panel panel-default">
             <div class="panel-heading">
                 基本信息
@@ -77,23 +77,13 @@
             </div>
         </div>
     </div>
-    <div ng-show="database_table" class="panel panel-default">
+    <div ng-if="database_table" class="panel panel-default">
         <div class="panel-heading">
-            DataTables<button ng-click="ook()">123</button>
+            数据表
         </div>
-        <div class="table-responsive">
-            <table id="Td123" ng-if="database_table" ui-jq="dataTable" ui-options="dt_option" ui-controller="tableGrid" class="table table-striped m-b-none">
-                <thead>
-                <tr>
-                    <th style="width:20%">Rendering engine</th>
-                    <th style="width:25%">Browser</th>
-                    <th style="width:25%">Platform(s)</th>
-                    <th style="width:15%">Engine version</th>
-                    <th style="width:15%">CSS grade</th>
-                </tr>
-                </thead>
-                <tbody>
-                </tbody>
+        <div class="panel-body table-responsive">
+            <table id="tables" ui-jq="dataTable" ui-options="dt_option" ui-controller="tableGrid"
+                   class="table table-striped m-b-none">
             </table>
         </div>
     </div>
