@@ -38,6 +38,16 @@ app.factory('schedulerService', ['$http', function ($http) {
             return resp.data;
         });
     };
+    factory.runJobs = function (uuid){
+        return $http.get("scheduler/runJobs",{params:{uuid: uuid}}).then(function(resp){
+            return resp.data;
+        });
+    }
+    factory.shutDownJobs= function (uuid){
+        return $http.get("scheduler/shutDownJobs",{params: {uuid: uuid}}).then(function(resp){
+            return resp.data;
+        })
+    }
 factory.uuid =  function () {
     function S4() {
        return (((1+Math.random())*0x10000)|0).toString(16).substring(1);

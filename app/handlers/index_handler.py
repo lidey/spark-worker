@@ -5,8 +5,6 @@
 # File Author: lidey
 # File Created Date: 2015-11-26 20:13
 import tornado.web
-import tornado.escape
-import os
 from app.core.base_handler import BaseHandler
 
 
@@ -27,5 +25,4 @@ class MainHandler(BaseHandler):
     @tornado.web.authenticated
     def index(self):
         name = tornado.escape.xhtml_escape(self.current_user)
-        routes = os.listdir(os.getcwd() + "/static/js/router")
-        self.render('index.html', routes=routes)
+        self.render('index.html', name=name)

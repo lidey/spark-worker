@@ -1,0 +1,79 @@
+<div ng-controller="SchedulerDetailCtrl">
+    <!-- header -->
+    <div class="wrapper bg-light lter b-b">
+        <div class="pull-left btn-group  m-t-n-xs">
+            <a ui-sref="scheduler.update({uuid:scheduler.uuid})" class="btn btn-sm btn-default w-xxs w-auto-xs">
+                <i class="fa fa-archive"></i>编辑
+            </a>
+        </div>
+        &nbsp;
+    </div>
+    <!-- / header -->
+    <div class="wrapper-md ng-scope">
+        <alert ng-repeat="alert in alerts" type="{{alert.type}}" close="closeAlert($index)">{{alert.msg}}</alert>
+        <div class="panel panel-default">
+            <div class="panel-body">
+                <form class="form-horizontal ng-pristine ng-valid ng-valid-date ng-valid-required ng-valid-parse ng-valid-date-disabled"
+                      method="get">
+                    <div class="form-group">
+                        <label class="col-lg-2 control-label">创建时间:</label>
+
+                        <div class="col-lg-10">
+                            <p class="form-control-static">{{ scheduler.created_time | date:'yyyy-MM-dd hh:MM:ss' }}</p>
+                        </div>
+                    </div>
+                    <div class="line line-dashed b-b line-lg pull-in"></div>
+                    <div class="form-group">
+                        <label class="col-lg-2 control-label">执行周期或时间:</label>
+
+                        <div class="col-lg-10">
+                            <p class="form-control-static">{{ scheduler.cron }}</p>
+                        </div>
+                    </div>
+                    <div class="line line-dashed b-b line-lg pull-in"></div>
+                    <div class="form-group">
+                        <label class="col-lg-2 control-label">用户名:</label>
+
+                        <div class="col-lg-10">
+                            <p class="form-control-static">{{ scheduler.name }}</p>
+                        </div>
+                    </div>
+                    <div class="line line-dashed b-b line-lg pull-in"></div>
+                    <div class="form-group">
+                        <label class="col-lg-2 control-label">详细信息:</label>
+
+                        <div class="col-lg-10">
+                            <p class="form-control-static">{{ scheduler.msg }}</p>
+                        </div>
+                    </div>
+
+                    <div class="line line-dashed b-b line-lg pull-in"></div>
+                    <div class="list-group">Jobs
+                        <a
+                           ng-repeat="job in jobs | filter:query | orderBy:'date':true"
+                           class="list-group-item b-l-3x hover-anchor" ng-class="{'hover': job.selected }">
+                            <span class="block text-ellipsis">{{ job.job.title}}</span>
+                            <small class="text-muted">{{ job.job.date | date:'yyyy-MM-dd HH:mm:ss'}}</small>
+                        </a>
+                    </div>
+
+                </form>
+            </div>
+        </div>
+    </div>
+
+    <div class="wrapper bg-light lter b-b">
+        <div class="pull-left btn-group  m-t-n-xs">
+            <a ng-click="runJobs()" class="btn btn-info btn-addon btn-sm">
+                <i class="fa fa-archive"></i>执行
+            </a>
+        </div>
+        &nbsp;
+        <div class="pull-left btn-group  m-t-n-xs">
+            <a ng-click="shutDownJobs()" class="btn m-b-xs btn-sm btn-warning btn-addon">
+                <i class="fa fa-archive"></i>终止
+            </a>
+        </div>
+    </div>
+
+</div>

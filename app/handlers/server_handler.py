@@ -7,12 +7,10 @@
 import commands
 import uuid
 from datetime import datetime
-import select
-
-import thread
 import tornado
 from paramiko import AuthenticationException
 from paramiko.ssh_exception import NoValidConnectionsError
+
 from app.core.base_handler import BaseHandler
 from app.model.server_model import Server
 from app.script.server_script import ServerScript
@@ -35,10 +33,8 @@ class ServerHandler(BaseHandler):
         server.version = self.args.get('version').get('key')
         server.name = self.args.get('name')
         server.password = self.args.get('password')
-        server.path = self.args.get('path')
         server.cpu = self.args.get('cpu')
         server.core = self.args.get('core')
-        server.processor = self.args.get('processor')
         server.men = self.args.get('men')
         self.server = server
 
@@ -67,7 +63,6 @@ class ServerHandler(BaseHandler):
             server.save(force_insert=True)
         else:
             server.save()
-            server.created_time = datetime.now()
         self.write({'success': True, 'content': '服务器保存成功.', 'server': server.to_dict()})
 
     @tornado.web.authenticated
@@ -94,12 +89,9 @@ class ServerHandler(BaseHandler):
             script = ServerScript(server=self.server)
             cpu_num, _ = script.command("cat /proc/cpuinfo |grep 'physical id'|sort |uniq|wc -l")
             core_num, _ = script.command("cat /proc/cpuinfo |grep 'cores'|uniq|awk '{print $4}'")
-            processor_num, _ = script.command("cat /proc/cpuinfo |grep 'processor'|sort |uniq|wc -l")
             men, _ = script.command("free -m | grep Mem | awk '{print $2}'")
             script.close()
-            self.write(
-                {'success': True, 'content': '服务器链接测试通过.', 'cpu': cpu_num, 'core': core_num, 'processor': processor_num,
-                 'men': men})
+            self.write({'success': True, 'content': '服务器链接测试通过.', 'cpu': cpu_num, 'core': core_num, 'men': men})
         except NoValidConnectionsError:
             self.write({'success': False, 'content': '服务器链接错误.'})
         except AuthenticationException:
