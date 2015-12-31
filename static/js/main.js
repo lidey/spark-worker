@@ -3,13 +3,7 @@
 /* Controllers */
 
 angular.module('app')
-    .value('config', {
-        name: '大数据云--数据调度系统',
-        hostname: '127.0.0.1',
-        port: '8880',
-        company: '软通动力信息技术（集团）有限公司',
-        version: '0.0.1',
-    })
+    .value('config', _system_info)
     .controller('AppCtrl', ['$scope', '$translate', '$localStorage', '$window', '$modal', '$http', 'config',
         function ($scope, $translate, $localStorage, $window, $modal, $http, config) {
 
@@ -32,9 +26,6 @@ angular.module('app')
             isSmartDevice($window) && angular.element($window.document.body).addClass('smart');
 
             // config
-            $http.get("user/current").then(function (resp) {
-                $scope.user = resp.data;
-            });
             $scope.app = {
                 name: config.name,
                 hostname: config.hostname,
@@ -51,34 +42,22 @@ angular.module('app')
                     light: '#e8eff0',
                     dark: '#3a3f51',
                     black: '#1c2b36'
-                },
-                settings: {
-                    themeID: 1,
-                    navbarHeaderColor: 'bg-black',
-                    navbarCollapseColor: 'bg-white-only',
-                    asideColor: 'bg-black',
-                    headerFixed: true,
-                    asideFixed: false,
-                    asideFolded: false,
-                    asideDock: false,
-                    container: false
                 }
             };
+            $http.get("user/current").then(function (resp) {
+                $scope.user = resp.data.user;
+                $scope.app.settings = resp.data.settings;
+                console.log($scope.app.settings);
+                $scope.$watch('app.settings', function () {
+                    console.log($scope.app.settings);
+                    if ($scope.app.settings.asideDock && $scope.app.settings.asideFixed) {
+                        // aside dock and fixed must set the header fixed.
+                        $scope.app.settings.headerFixed = true;
+                    }
+                    $http.post("user/setting", $scope.app.settings);
+                }, true);
+            });
 
-            // save settings to local storage
-            if (angular.isDefined($localStorage.settings)) {
-                $scope.app.settings = $localStorage.settings;
-            } else {
-                $localStorage.settings = $scope.app.settings;
-            }
-            $scope.$watch('app.settings', function () {
-                if ($scope.app.settings.asideDock && $scope.app.settings.asideFixed) {
-                    // aside dock and fixed must set the header fixed.
-                    $scope.app.settings.headerFixed = true;
-                }
-                // save to local storage
-                $localStorage.settings = $scope.app.settings;
-            }, true);
 
             // angular translate
             $scope.lang = {isopen: false};

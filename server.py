@@ -16,8 +16,8 @@ peewee_log.addHandler(logging.StreamHandler())
 # gen_log = logging.getLogger("tornado.general")
 # gen_log.setLevel(config.logger['level'])
 
-application.listen(config.port)
+application.listen(config.system['port'])
 
-print 'Development server is running at http://127.0.0.1:%s/' % config.port
+print 'Development server is running at http://127.0.0.1:%s/' % config.system['port']
 print 'Quit the server with CONTROL-C'
 tornado.ioloop.IOLoop.instance().start()
