@@ -3,7 +3,6 @@
 
 import threading
 import datetime
-import time
 from app.core.tools import get_uuid
 from app.model.job_progress_model import JobProgress
 from app.model.script_model import Script
@@ -15,26 +14,27 @@ from app.handlers.job_socket_handler import JobSocketHandler
 
 class JobThread(threading.Thread):
     process_id = ""
-    success = 0;
-    fail = 0;
+    success = 0
+    fail = 0
+
     def __init__(self, process_id):
         threading.Thread.__init__(self)
         self.process_id = process_id
-        self.start();
+        self.start()
 
     def run(self):
         pro = JobProgress.get(JobProgress.uuid == self.process_id)
         list = Script.select().where(Script.job_id == pro.job_id)
         pro.startTime = datetime.datetime.now()
-        pro.save();
+        pro.save()
         JobSocketHandler.send_to_all({'progress': pro.to_dict()})
         for obj in list:
             job_progress = JobProgress.get(JobProgress.uuid == self.process_id)
-            script = obj;
+            script = obj
             host = Server.get(Server.uuid == script.server_id)
             server = ServerScript(host)
-            success = job_progress.success_num;
-            fail = job_progress.fail_num;
+            success = job_progress.success_num
+            fail = job_progress.fail_num
             try:
                 out, err = server.command(script.script)  # 执行脚本
                 if len(err) == 0:
@@ -47,10 +47,10 @@ class JobThread(threading.Thread):
                     shell_log.status = 1
 
                     shell_log.save(force_insert=True)
-                    print('执行成功前状态%d'%( job_progress.status))
-                    print('执行成功前%d'%( job_progress.success_num))
+                    print('执行成功前状态%d' % (job_progress.status))
+                    print('执行成功前%d' % (job_progress.success_num))
                     success = job_progress.success_num + 1
-                    print('执行成功后%d'%(success))
+                    print('执行成功后%d' % (success))
                 else:
                     # 执行失败
                     shell_log = ShellLog()
@@ -64,8 +64,7 @@ class JobThread(threading.Thread):
 
                 num = job_progress.max_num
 
-
-                 # 更新进程
+                # 更新进程
                 if num == success + fail:
                     job_progress.status = 2  # 执行完成
                     job_progress.endTime = datetime.datetime.now()
@@ -77,12 +76,12 @@ class JobThread(threading.Thread):
                 elif job_progress.status == 2 and fail > 0:
                     job_progress.result = 2  # 失败
 
-                job_progress.success_num = success;
-                job_progress.fail_num = fail;
-                print('执行数量成功%d,失败%d'%( success, fail))
+                job_progress.success_num = success
+                job_progress.fail_num = fail
+                print('执行数量成功%d,失败%d' % (success, fail))
 
                 JobSocketHandler.send_to_all({'type': 'simple', 'progress': job_progress.to_dict()})
                 job_progress.save()
 
             except Exception, e:
-                print Exception, e;  # 异常捕获
+                print Exception, e  # 异常捕获

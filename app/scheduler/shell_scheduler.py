@@ -6,10 +6,9 @@
 # File Created Date: 2015-11-29 21:47
 import datetime
 from apscheduler.schedulers.tornado import TornadoScheduler
-from app.script.thread import Thread
 
-import config
 from app.model.user_model import User
+from app.script.job_thread import JobThread
 
 scheduler = TornadoScheduler({
     'apscheduler.executors.default': {
@@ -33,8 +32,9 @@ def tick(name):
     entity = User().find_uuid('asdas').to_json()
     print('%s say : The time is: %s. %s' % (name, datetime.datetime.now(), entity))
 
+
 def run(job_uuid):
-    Thread(job_uuid);
+    JobThread(job_uuid);
 
 
 class ShellScheduler:
