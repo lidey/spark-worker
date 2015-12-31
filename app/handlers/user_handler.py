@@ -10,7 +10,8 @@ from tornado import web
 from tornado import escape
 
 from app.core.base_handler import BaseHandler
-from app.model.user_model import User
+from app.model.user_model import User, Setting
+from config import system
 
 
 class UserHandler(BaseHandler):
@@ -32,6 +33,8 @@ class UserHandler(BaseHandler):
             return
         if url_str == 'login':
             self.login()
+        if url_str == 'setting':
+            self.setting()
 
     @web.asynchronous
     @gen.coroutine
@@ -48,12 +51,12 @@ class UserHandler(BaseHandler):
                 self.set_secure_cookie("user", user.uuid)
                 self.redirect("/")
             else:
-                self.render('login.html', msg='您输入的密码错误.', loginName=user.login_name)
+                self.render('login.html', msg='您输入的密码错误.', loginName=user.login_name, system=system)
         except DoesNotExist:
-            self.render('login.html', msg='您输入的账号信息错误.', loginName=user.login_name)
+            self.render('login.html', msg='您输入的账号信息错误.', loginName=user.login_name, system=system)
 
     def to_login(self):
-        self.render('login.html', msg='', loginName='')
+        self.render('login.html', msg='', loginName='', system=system)
 
     def logout(self):
         self.clear_all_cookies()
@@ -62,4 +65,20 @@ class UserHandler(BaseHandler):
     def current(self):
         uuid = escape.xhtml_escape(self.current_user)
         user = User.get(User.uuid == uuid)
-        self.write(user.to_dict())
+        setting = Setting.select().join(User).where(User.uuid == uuid).get()
+        self.write({'user': user.to_dict(), 'settings': setting.to_dict()})
+
+    def setting(self):
+        uuid = escape.xhtml_escape(self.current_user)
+        setting = Setting.select().join(User).where(User.uuid == uuid).get()
+        setting.header_fixed = self.args.get('headerFixed')
+        setting.aside_fixed = self.args.get('asideFixed')
+        setting.aside_folded = self.args.get('asideFolded')
+        setting.aside_dock = self.args.get('asideDock')
+        setting.container = self.args.get('container')
+        setting.theme_id = self.args.get('themeID')
+        setting.navbar_header_color = self.args.get('navbarHeaderColor')
+        setting.navbar_collapse_color = self.args.get('navbarCollapseColor')
+        setting.aside_color = self.args.get('asideColor')
+        setting.save()
+        self.write('')

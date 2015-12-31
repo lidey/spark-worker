@@ -8,6 +8,7 @@ import tornado.web
 import tornado.escape
 import os
 from app.core.base_handler import BaseHandler
+from config import system
 
 
 class MainHandler(BaseHandler):
@@ -15,16 +16,10 @@ class MainHandler(BaseHandler):
         pass
 
     @tornado.web.authenticated
-    def get(self, url_str=''):
-        if url_str == '':
-            self.index()
-
-    @tornado.web.authenticated
-    def post(self, url_str=''):
-        if url_str == '':
-            self.index()
-
-    @tornado.web.authenticated
-    def index(self):
+    def get(self):
         routes = os.listdir(os.getcwd() + "/static/js/router")
-        self.render('index.html', routes=routes)
+        self.render('index.html', routes=routes, system=system, system_str=str(system))
+
+    @tornado.web.authenticated
+    def post(self):
+        pass
