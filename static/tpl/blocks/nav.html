@@ -16,9 +16,7 @@
     <li class="hidden-folded padder m-t m-b-sm text-muted text-xs">
         <span>基础配置</span>
     </li>
-    <li ng-class="{active: ('server.manager' |
-            includedByState) || ('server.add' | includedByState) ||
-            ('server.update' | includedByState)}">
+    <li ng-class="{active:$state.includes('server')}">
         <a ui-sref="server.manager">
             <i class="glyphicon glyphicon-cloud icon text-info-lter"></i>
             <span class="font-bold">服务器</span>
@@ -39,13 +37,13 @@
     <li class="hidden-folded padder m-t m-b-sm text-muted text-xs">
         <span>调度任务</span>
     </li>
-    <li ui-sref-active="active">
+    <li ng-class="{active:$state.includes('scheduler')}">
         <a ui-sref="scheduler.manager">
             <i class="glyphicon glyphicon-calendar icon text-info-dker"></i>
             <span class="font-bold">调度器</span>
         </a>
     </li>
-    <li>
+    <li ng-class="{active:($state.includes('app.job') || $state.includes('app.process') )}">
         <a href class="auto">
             <span class="pull-right text-muted">
                 <i class="fa fa-fw fa-angle-right text"></i>
@@ -55,17 +53,16 @@
             <span class="font-bold">任务进程</span>
         </a>
         <ul class="nav nav-sub dk">
-            <li ui-sref-active="active">
+            <li ng-class="{active:$state.includes('app.job')}">
                 <a ui-sref="app.job.new">
                     <span>任务管理</span>
                 </a>
             </li>
-            <li ui-sref-active="active">
+            <li ng-class="{active:$state.includes('app.process')}">
                 <a ui-sref="app.process.manager">
                     <span>执行管理</span>
                 </a>
             </li>
-
         </ul>
     </li>
 
