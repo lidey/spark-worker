@@ -9,7 +9,7 @@ angular.module('app')
             function ($stateProvider, $urlRouterProvider) {
                 $stateProvider
                 // database
-                    .state('database', {
+                    .state('app.database', {
                         abstract: true,
                         url: '/database',
                         templateUrl: 'static/tpl/database/database.html',
@@ -25,7 +25,7 @@ angular.module('app')
                                 }]
                         }
                     })
-                    .state('database.index', {
+                    .state('app.database.index', {
                         url: '/index',
                         templateUrl: 'static/tpl/database/database.index.html'
                     });

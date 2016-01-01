@@ -1,125 +1,81 @@
-<!-- navbar -->
-<div data-ng-include=" 'static/tpl/blocks/header.html' " class="app-header navbar">
-</div>
-<!-- / navbar -->
+<!-- hbox layout -->
+<div class="hbox hbox-auto-xs bg-light " ng-controller="DatabaseCtrl">
+    <!-- column -->
+    <div class="col w-lg lt b-r ng-scope bg-auto">
+        <div class="wrapper b-b">
+            <button type="button" ng-click="reload()" class="pull-right btn btn-sm btn-info m-t-n-xs">
+                <i class="fa fa-refresh"></i>刷新
+            </button>
 
-<!-- menu -->
-<div data-ng-include=" 'static/tpl/blocks/aside.html' " class="app-aside hidden-xs {{ app.settings.asideColor }}"
-     ng-class="{'hide': app.hideAside }">
-</div>
-<!-- / menu -->
-
-<!-- view -->
-<div class="app-content" ng-class="{'m-n': app.hideAside, 'h-full': app.hideFooter }">
-    <div class="app-content-body fade-in-up" ng-class="{'h-full': app.hideFooter }">
-        <!-- hbox layout -->
-        <div class="hbox hbox-auto-xs bg-light " ng-init="
-                                          app.settings.asideFixed = true;
-                                          app.settings.asideDock = false;
-                                          app.settings.container = false;
-                                          app.hideAside = false;
-                                          app.hideFooter = true;
-                                          " ng-controller="DatabaseCtrl">
-            <!-- column -->
-            <div class="col w-lg lt b-r ng-scope bg-auto">
-                <div class="wrapper b-b">
-                    <button type="button" ng-click="reload()" class="pull-right btn btn-sm btn-info m-t-n-xs">
-                        <i class="fa fa-refresh"></i>刷新
-                    </button>
-
-                    <div class="h4">数据库链接</div>
-                </div>
-                <div class="vbox">
-                    <div class="row-row">
-                        <div class="wrapper-md" ng-init="reload()">
-                            <span ng-if="doing_async">数据加载中...</span>
-                            <abn-tree ng-show="doing_async==false"
-                                      tree-data="my_data"
-                                      tree-control="my_tree"
-                                      on-select="my_tree_handler(branch)"
-                                      expand-level="3"
-                                      initial-selection="Granny Smith"
-                                      icon-leaf=""
-                                      icon-expand="fa fa-plus"
-                                      icon-collapse="fa fa-minus"
-                            >
-                            </abn-tree>
-                        </div>
-                    </div>
-                </div>
-            </div>
-            <!-- /column -->
-
-            <!-- column -->
-            <div class="col">
-                <!-- header -->
-                <div class="wrapper bg-light lter b-b">
-
-                    <button ng-if="branch.type.indexOf('folder') == 0"
-                            class="pull-right btn btn-sm btn-default m-t-n-xs m-l-xs"
-                            ng-click="import_table(branch)">
-                        <i class="glyphicon glyphicon-import"></i>数据表
-                    </button>
-
-                    <div class="pull-right btn-group  m-t-n-xs m-l-xs">
-                        <button ng-if="branch.type=='database'" class="btn btn-sm btn-default"
-                                ng-click="add_folder(branch.data.uuid)">
-                            <i class="fa fa-plus"></i>目录
-                        </button>
-                        <button ng-if="branch.type=='folder'" class="btn btn-sm btn-default"
-                                ng-click="edit_folder(branch)">
-                            <i class="fa fa-pencil"></i>目录
-                        </button>
-                        <button ng-if="branch.type=='folder'" class="btn btn-sm btn-default"
-                                ng-click="delete_folder(branch)">
-                            <i class="glyphicon glyphicon-trash"></i>目录
-                        </button>
-                    </div>
-
-                    <div class="pull-right btn-group  m-t-n-xs">
-                        <button ng-if="branch.type=='root'" class="btn btn-sm btn-default" ng-click="add_database()">
-                            <i class="fa fa-plus"></i>链接
-                        </button>
-                        <button ng-if="branch.type=='database'" class="btn btn-sm btn-default"
-                                ng-click="edit_database(branch)">
-                            <i class="fa fa-pencil"></i>链接
-                        </button>
-                        <button ng-if="branch.type=='database'" class="btn btn-sm btn-default"
-                                ng-click="delete_database(branch)">
-                            <i class="glyphicon glyphicon-trash"></i>链接
-                        </button>
-                    </div>
-
-                    {{ branch.label }}&nbsp;
-                </div>
-                <!-- / header -->
-                <div class="wrapper-md ng-scope" ui-view>
-                </div>
-            </div>
-            <!-- /column -->
+            <div class="h4">数据库链接</div>
         </div>
-        <!-- /hbox layout -->
+        <div class="vbox">
+            <div class="row-row">
+                <div class="wrapper-md" ng-init="reload()">
+                    <span ng-if="doing_async">数据加载中...</span>
+                    <abn-tree ng-show="doing_async==false"
+                              tree-data="my_data"
+                              tree-control="my_tree"
+                              on-select="my_tree_handler(branch)"
+                              expand-level="3"
+                              initial-selection="Granny Smith"
+                              icon-leaf=""
+                              icon-expand="fa fa-plus"
+                              icon-collapse="fa fa-minus"
+                    >
+                    </abn-tree>
+                </div>
+            </div>
+        </div>
     </div>
+    <!-- /column -->
+
+    <!-- column -->
+    <div class="col">
+        <!-- header -->
+        <div class="wrapper bg-light lter b-b">
+
+            <button ng-if="branch.type.indexOf('folder') == 0"
+                    class="pull-right btn btn-sm btn-default m-t-n-xs m-l-xs"
+                    ng-click="import_table(branch)">
+                <i class="glyphicon glyphicon-import"></i>数据表
+            </button>
+
+            <div class="pull-right btn-group  m-t-n-xs m-l-xs">
+                <button ng-if="branch.type=='database'" class="btn btn-sm btn-default"
+                        ng-click="add_folder(branch.data.uuid)">
+                    <i class="fa fa-plus"></i>目录
+                </button>
+                <button ng-if="branch.type=='folder'" class="btn btn-sm btn-default"
+                        ng-click="edit_folder(branch)">
+                    <i class="fa fa-pencil"></i>目录
+                </button>
+                <button ng-if="branch.type=='folder'" class="btn btn-sm btn-default"
+                        ng-click="delete_folder(branch)">
+                    <i class="glyphicon glyphicon-trash"></i>目录
+                </button>
+            </div>
+
+            <div class="pull-right btn-group  m-t-n-xs">
+                <button ng-if="branch.type=='root'" class="btn btn-sm btn-default" ng-click="add_database()">
+                    <i class="fa fa-plus"></i>链接
+                </button>
+                <button ng-if="branch.type=='database'" class="btn btn-sm btn-default"
+                        ng-click="edit_database(branch)">
+                    <i class="fa fa-pencil"></i>链接
+                </button>
+                <button ng-if="branch.type=='database'" class="btn btn-sm btn-default"
+                        ng-click="delete_database(branch)">
+                    <i class="glyphicon glyphicon-trash"></i>链接
+                </button>
+            </div>
+
+            {{ branch.label }}&nbsp;
+        </div>
+        <!-- / header -->
+        <div class="wrapper-md ng-scope" ui-view>
+        </div>
+    </div>
+    <!-- /column -->
 </div>
-<!-- / view -->
-<!-- navbar -->
-<div class="app-footer navbar navbar-fixed-bottom bg-light lt b-t"
-     ng-class="{'m-n': app.hideAside, 'hide': app.hideFooter}" ui-view="footer">
-
-
-</div>
-<!-- /navbar -->
-
-
-<!-- footer -->
-<div class="app-footer wrapper b-t bg-light">
-    <span class="pull-right">版本:{{ app.version }} <a href ui-scroll="app" class="m-l-xs text-muted"><i
-            class="fa fa-long-arrow-up"></i></a></span>
-    {{ app.name }} <br/>
-    &copy; 2015 版权所有 {{ app.company }}
-</div>
-<!-- / footer -->
-
-<div data-ng-include=" 'static/tpl/blocks/settings.html' " class="settings panel panel-default">
-</div>
-
+<!-- /hbox layout -->
