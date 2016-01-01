@@ -47,9 +47,7 @@ angular.module('app')
             $http.get("user/current").then(function (resp) {
                 $scope.user = resp.data.user;
                 $scope.app.settings = resp.data.settings;
-                console.log($scope.app.settings);
                 $scope.$watch('app.settings', function () {
-                    console.log($scope.app.settings);
                     if ($scope.app.settings.asideDock && $scope.app.settings.asideFixed) {
                         // aside dock and fixed must set the header fixed.
                         $scope.app.settings.headerFixed = true;
