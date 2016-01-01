@@ -43,7 +43,6 @@ app.controller('ServerDetailCtrl', ['$scope', 'serverService', '$stateParams', '
     });
 
     $scope.delete = function (server) {
-        console.log(server);
         $modal.open({
             templateUrl: 'serverConfirmContent.html',
             controller: 'ServerConfirmCtrl',
@@ -68,7 +67,6 @@ app.controller('ServerDetailCtrl', ['$scope', 'serverService', '$stateParams', '
 }]);
 
 app.controller('ServerEditCtrl', ['$scope', 'serverService', '$state', '$stateParams', function ($scope, serverService, $state, $stateParams) {
-    console.log($scope.server);
     if ($stateParams.uuid != null) {
         serverService.get($stateParams.uuid).then(function (data) {
             $scope.server = data;
@@ -86,13 +84,12 @@ app.controller('ServerEditCtrl', ['$scope', 'serverService', '$state', '$statePa
     }
     $scope.versions = serverService.getVersionArrayAll();
     $scope.saveServer = function () {
-        console.log($scope.server);
         serverService.save($scope.server).then(function (message) {
             $scope.showMessage(message).result.then(function () {
                 $scope.refresh();
             }, function () {
             });
-            $state.go('server.manager');
+            $state.go('app.server.manager');
         });
     };
 
@@ -104,7 +101,6 @@ app.controller('ServerEditCtrl', ['$scope', 'serverService', '$state', '$statePa
                 $scope.server.core = message.core;
                 $scope.server.processor = message.processor;
                 $scope.server.men = message.men;
-                console.log(message);
             }
             $scope.showMessage(message)
         });

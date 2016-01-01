@@ -9,10 +9,10 @@ angular.module('app')
             function ($stateProvider, $urlRouterProvider) {
                 $stateProvider
                 // server
-                    .state('server', {
+                    .state('app.server', {
                         abstract: true,
                         url: '/server',
-                        templateUrl: 'static/tpl/server/index.html',
+                        templateUrl: 'static/tpl/server/server.html',
                         resolve: {
                             deps: ['uiLoad',
                                 function (uiLoad) {
@@ -22,11 +22,11 @@ angular.module('app')
                                 }]
                         }
                     })
-                    .state('server.manager', {
+                    .state('app.server.manager', {
                         url: '/manager',
                         templateUrl: 'static/tpl/server/server.detail.html'
                     })
-                    .state('server.add', {
+                    .state('app.server.add', {
                         url: '/add',
                         templateUrl: 'static/tpl/server/server.info.html',
                         resolve: {
@@ -36,7 +36,7 @@ angular.module('app')
                                 }]
                         }
                     })
-                    .state('server.update', {
+                    .state('app.server.update', {
                         url: '/update/{uuid}',
                         templateUrl: 'static/tpl/server/server.info.html',
                         resolve: {
