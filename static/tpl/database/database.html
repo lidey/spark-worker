@@ -36,35 +36,35 @@
         <div class="wrapper bg-light lter b-b">
 
             <button ng-if="branch.type.indexOf('folder') == 0"
-                    class="pull-right btn btn-sm btn-default m-t-n-xs m-l-xs"
+                    class="pull-right btn btn-sm btn-info m-t-n-xs m-l-xs"
                     ng-click="import_table(branch)">
                 <i class="glyphicon glyphicon-import"></i>数据表
             </button>
 
             <div class="pull-right btn-group  m-t-n-xs m-l-xs">
-                <button ng-if="branch.type=='database'" class="btn btn-sm btn-default"
+                <button ng-if="branch.type=='database'" class="btn btn-sm btn-info"
                         ng-click="add_folder(branch.data.uuid)">
                     <i class="fa fa-plus"></i>目录
                 </button>
-                <button ng-if="branch.type=='folder'" class="btn btn-sm btn-default"
+                <button ng-if="branch.type=='folder'" class="btn btn-sm btn-info"
                         ng-click="edit_folder(branch)">
                     <i class="fa fa-pencil"></i>目录
                 </button>
-                <button ng-if="branch.type=='folder'" class="btn btn-sm btn-default"
+                <button ng-if="branch.type=='folder'" class="btn btn-sm btn-warning"
                         ng-click="delete_folder(branch)">
                     <i class="glyphicon glyphicon-trash"></i>目录
                 </button>
             </div>
 
             <div class="pull-right btn-group  m-t-n-xs">
-                <button ng-if="branch.type=='root'" class="btn btn-sm btn-default" ng-click="add_database()">
+                <button ng-if="branch.type=='root'" class="btn btn-sm btn-info" ng-click="add_database()">
                     <i class="fa fa-plus"></i>链接
                 </button>
-                <button ng-if="branch.type=='database'" class="btn btn-sm btn-default"
+                <button ng-if="branch.type=='database'" class="btn btn-sm btn-info"
                         ng-click="edit_database(branch)">
                     <i class="fa fa-pencil"></i>链接
                 </button>
-                <button ng-if="branch.type=='database'" class="btn btn-sm btn-default"
+                <button ng-if="branch.type=='database'" class="btn btn-sm btn-warning"
                         ng-click="delete_database(branch)">
                     <i class="glyphicon glyphicon-trash"></i>链接
                 </button>
