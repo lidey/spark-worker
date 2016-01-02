@@ -1,9 +1,9 @@
 app.controller('DatabaseCtrl', ['$scope', 'databaseService', '$timeout', '$modal', function ($scope, databaseService, $timeout, $modal) {
     var tree;
-    $scope.my_data = [];
-    $scope.my_tree = tree = {};
+    $scope.database_data = [];
+    $scope.database_tree = tree = {};
     $scope.reload = function () {
-        $scope.my_data = [];
+        $scope.database_data = [];
         var data_root = {
             uid: 'root-node',
             type: 'root',
@@ -12,7 +12,7 @@ app.controller('DatabaseCtrl', ['$scope', 'databaseService', '$timeout', '$modal
         };
         databaseService.tree().then(function (data) {
             data_root.children = data;
-            $scope.my_data = [data_root];
+            $scope.database_data = [data_root];
         });
         $scope.doing_async = true;
         $timeout(function () {
@@ -23,7 +23,7 @@ app.controller('DatabaseCtrl', ['$scope', 'databaseService', '$timeout', '$modal
                     $scope.$broadcast('branch', null);
         }, 1000);
     };
-    $scope.my_tree_handler = function (branch) {
+    $scope.database_tree_handler = function (branch) {
         if (branch.type != null) {
             $scope.branch = branch;
             $scope.$broadcast('branch', branch);

@@ -1,0 +1,64 @@
+<!-- hbox layout -->
+<div class="hbox hbox-auto-xs bg-light " ng-controller="ModelCtrl">
+    <!-- column -->
+    <div class="col w-lg lt b-r ng-scope bg-auto">
+        <div class="wrapper b-b">
+            <button type="button" ng-click="reload()" class="pull-right btn btn-sm btn-info m-t-n-xs">
+                <i class="fa fa-refresh"></i>刷新
+            </button>
+
+            <div class="h4">数据模型</div>
+        </div>
+        <div class="vbox">
+            <div class="row-row">
+                <div class="wrapper-md" ng-init="reload()">
+                    <span ng-if="doing_async">数据加载中...</span>
+                    <abn-tree ng-show="doing_async==false"
+                              tree-data="model_data"
+                              tree-control="model_tree"
+                              on-select="model_tree_handler(branch)"
+                              icon-leaf=""
+                              icon-expand="fa fa-plus"
+                              icon-collapse="fa fa-minus"
+                    >
+                    </abn-tree>
+                </div>
+            </div>
+        </div>
+    </div>
+    <!-- /column -->
+
+    <!-- column -->
+    <div class="col">
+        <!-- header -->
+        <div class="wrapper bg-light lter b-b">
+
+            <button ng-if="branch.type=='category'"
+                    class="pull-right btn btn-sm btn-info m-t-n-xs m-l-xs"
+                    ng-click="import_table(branch)">
+                <i class="glyphicon glyphicon-import"></i>模型
+            </button>
+
+            <div class="pull-right btn-category  m-t-n-xs">
+                <button ng-if="branch!=undefined" class="btn btn-sm btn-info" ng-click="add_category(branch)">
+                    <i class="fa fa-plus"></i>目录
+                </button>
+                <button ng-if="branch.type=='category'" class="btn btn-sm btn-info"
+                        ng-click="edit_category(branch)">
+                    <i class="fa fa-pencil"></i>目录
+                </button>
+                <button ng-if="branch.type=='category'" class="btn btn-sm btn-warning"
+                        ng-click="delete_category(branch)">
+                    <i class="glyphicon glyphicon-trash"></i>目录
+                </button>
+            </div>
+
+            {{ branch.label }}&nbsp;
+        </div>
+        <!-- / header -->
+        <div class="wrapper-md ng-scope" ui-view>
+        </div>
+    </div>
+    <!-- /column -->
+</div>
+<!-- /hbox layout -->

@@ -28,7 +28,29 @@ angular.module('app')
                     .state('app.database.index', {
                         url: '/index',
                         templateUrl: 'static/tpl/database/database.index.html'
+                    })
+                    //model
+                    .state('app.model', {
+                        abstract: true,
+                        url: '/model',
+                        templateUrl: 'static/tpl/database/model.html',
+                        resolve: {
+                            deps: ['$ocLazyLoad', 'uiLoad',
+                                function ($ocLazyLoad, uiLoad) {
+                                    return $ocLazyLoad.load(['angularBootstrapNavTree']).then(function () {
+                                        return uiLoad.load([
+                                            'static/js/app/database/model.js',
+                                            'static/js/app/database/model-service.js',
+                                            'static/vendor/libs/moment.min.js']);
+                                    })
+                                }]
+                        }
+                    })
+                    .state('app.model.index', {
+                        url: '/index',
+                        templateUrl: 'static/tpl/database/model.index.html'
                     });
+
             }
         ]
     );

@@ -10,7 +10,7 @@ import tornado.web
 from app.connect.connect_manager import DatabaseConnect
 from app.core.base_exception import ConnectException
 from app.core.base_handler import BaseHandler
-from app.model.database_model import Database, Folder, Table, Column
+from app.model.database_model import Database, Folder, Table, Column, Category
 
 
 class DatabaseHandler(BaseHandler):
@@ -42,6 +42,13 @@ class DatabaseHandler(BaseHandler):
             return self.save_folder(folder)
         if url_second == 'import_tables':
             return self.import_tables(url_first)
+        if url_first == 'category' and url_second == 'save':
+            category = Category()
+            category.uuid = self.args.get('uuid')
+            category.p_uuid = self.args.get('p_uuid')
+            category.title = self.args.get('title')
+            category.description = self.args.get('description')
+            return self.save_category(category)
 
     @tornado.web.authenticated
     def get(self, url_first='', url_second=''):
@@ -67,6 +74,10 @@ class DatabaseHandler(BaseHandler):
             return self.column_reload(url_first)
         if url_first == 'column' and url_second == 'remove':
             return self.remove_column()
+        if url_first == 'model' and url_second == 'tree':
+            return self.model_tree()
+        if url_first == 'category' and url_second == 'remove':
+            return self.remove_category()
 
     def tree(self):
         """
@@ -243,3 +254,37 @@ class DatabaseHandler(BaseHandler):
         """
         Column.get(Column.uuid == self.get_argument('uuid')).delete_instance()
         self.write({'success': True, 'content': '字段删除成功.'})
+
+    def model_tree(self):
+        """
+        获取数据模型分类树
+        :return: 模型分类树
+        """
+        tree = []
+        for group in Category.select().where(Category.parent.is_null(True)):
+            tree.append(group.to_tree())
+        self.write({'tree': tree})
+
+    def save_category(self, category):
+        """
+        保存模型分类信息
+        :param category: 分类信息
+        :return: 处理结构
+        """
+        if category.uuid is None:
+            category.uuid = str(uuid.uuid1())
+            if category.p_uuid:
+                category.parent = Category.get(Category.uuid == category.p_uuid)
+            category.save(force_insert=True)
+        else:
+            category.save()
+        self.write({'success': True, 'content': '目录保存成功.'})
+
+
+    def remove_category(self):
+        """
+        删除目录
+        :return: 处理结果
+        """
+        Category.get(Category.uuid == self.get_argument('uuid')).delete_instance()
+        self.write({'success': True, 'content': '目录删除成功.'})
