@@ -70,7 +70,7 @@
     <li class="hidden-folded padder m-t m-b-sm text-muted text-xs">
         <span>数据分析</span>
     </li>
-    <li ng-class="{active:($state.includes('app.database') || $state.includes('model') )}">
+    <li ng-class="{active:($state.includes('app.database') || $state.includes('app.model') )}">
         <a href class="auto">
             <span class="pull-right text-muted">
                 <i class="fa fa-fw fa-angle-right text"></i>
@@ -80,12 +80,12 @@
             <span class="font-bold">数据模型</span>
         </a>
         <ul class="nav nav-sub dk">
-            <li ui-sref-active="active">
+            <li ng-class="{active:$state.includes('app.database')}">
                 <a ui-sref="app.database.index">
                     <span>数据库链接</span>
                 </a>
             </li>
-            <li ui-sref-active="active">
+            <li ng-class="{active:$state.includes('app.model')}">
                 <a ui-sref="app.model.index">
                     <span>数据模型</span>
                 </a>
