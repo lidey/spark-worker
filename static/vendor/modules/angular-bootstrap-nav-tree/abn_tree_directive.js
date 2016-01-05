@@ -13,7 +13,7 @@
         '$timeout', function ($timeout) {
             return {
                 restrict: 'E',
-                template: "<ul class=\"nav nav-list nav-pills nav-stacked abn-tree\">\n  <li ng-repeat=\"row in tree_rows | filter:{visible:true} track by row.branch.uid\" ng-animate=\"'abn-tree-animate'\" ng-class=\"'level-' + {{ row.level }} + (row.branch.selected ? ' active':'') + ' ' +row.classes.join(' ')\" class=\"abn-tree-row\"><a ng-click=\"user_clicks_branch(row.branch)\"><i ng-class=\"row.tree_icon\" ng-click=\"row.branch.expanded = !row.branch.expanded\" class=\"indented tree-icon\"> </i><span class=\"indented tree-label\"><i ng-class=\"row.icon\" style=\"margin-right: 5px;\"></i>{{ row.label }} </span></a></li>\n</ul>",
+                template: "<ul class=\"nav nav-list nav-pills nav-stacked abn-tree\">\n  <li  ui-draggable=\"row.draggable\" drag=\"row.branch\" ng-repeat=\"row in tree_rows | filter:{visible:true} track by row.branch.uid\" ng-animate=\"'abn-tree-animate'\" ng-class=\"'level-' + {{ row.level }} + (row.branch.selected ? ' active':'') + ' ' +row.classes.join(' ')\" class=\"abn-tree-row\"><a ng-click=\"user_clicks_branch(row.branch)\"><i ng-class=\"row.tree_icon\" ng-click=\"row.branch.expanded = !row.branch.expanded\" class=\"indented tree-icon\"> </i><span class=\"indented tree-label\"><i ng-class=\"row.icon\" style=\"margin-right: 5px;\"></i>{{ row.label }} </span></a></li>\n</ul>",
                 replace: true,
                 scope: {
                     treeData: '=',
@@ -22,7 +22,7 @@
                     treeControl: '='
                 },
                 link: function (scope, element, attrs) {
-                    var error, expand_all_parents, expand_level, for_all_ancestors, for_each_branch, get_parent, n, on_treeData_change, select_branch, selected_branch, tree;
+                    var error, expand_all_parents, expand_level, for_all_ancestors, for_each_branch, get_parent, n, on_treeData_change, select_branch, selected_branch, tree, draggable;
                     error = function (s) {
                         console.log('ERROR:' + s);
                         debugger;
@@ -40,6 +40,10 @@
                     if (attrs.expandLevel == null) {
                         attrs.expandLevel = '3';
                     }
+                    if (attrs.treeDraggable == null) {
+                        attrs.treeDraggable = false;
+                    }
+                    draggable = attrs.treeDraggable == 'true';
                     expand_level = parseInt(attrs.expandLevel, 10);
                     if (!scope.treeData) {
                         alert('no treeData defined for the tree!');
@@ -201,12 +205,14 @@
                                 if (__indexOf.call(branch.classes, "leaf") < 0) {
                                     branch.classes.push("leaf");
                                 }
+                                branch.draggable = draggable;
                             } else {
                                 if (branch.expanded) {
                                     tree_icon = attrs.iconCollapse;
                                 } else {
                                     tree_icon = attrs.iconExpand;
                                 }
+                                branch.draggable = false;
                             }
                             scope.tree_rows.push({
                                 level: level,
@@ -214,6 +220,7 @@
                                 label: branch.label,
                                 classes: branch.classes,
                                 icon: branch.icon,
+                                draggable: branch.draggable,
                                 tree_icon: tree_icon,
                                 visible: visible
                             });
@@ -247,7 +254,7 @@
                         });
                     }
                     n = scope.treeData.length;
-                    console.log('num root branches = ' + n);
+                    //console.log('num root branches = ' + n);
                     for_each_branch(function (b, level) {
                         b.level = level;
                         return b.expanded = b.level < expand_level;
