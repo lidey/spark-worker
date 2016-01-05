@@ -8,6 +8,7 @@ angular.module('app', [
     'ngSanitize',
     'ngTouch',
     'ngStorage',
+    'ang-drag-drop',
     'ui.router',
     'ui.bootstrap',
     'ui.load',
