@@ -43,17 +43,8 @@ app.controller('ServerDetailCtrl', ['$scope', 'serverService', '$stateParams', '
     });
 
     $scope.delete = function (server) {
-        $modal.open({
-            templateUrl: 'serverConfirmContent.html',
-            controller: 'ServerConfirmCtrl',
-            size: '',
-            resolve: {
-                message: function () {
-                    return "请确认是否删除服务器:" + $scope.server.name;
-                }
-            }
-        }).result.then(function (data) {
-            if ("delete" == data) {
+        $scope.showConfirm('请确认是否删除服务器:' + $scope.server.name).result.then(function (data) {
+            if (data) {
                 serverService.delete(server.uuid).then(function (message) {
                     $scope.showMessage(message);
                     $scope.refresh();
@@ -63,7 +54,33 @@ app.controller('ServerDetailCtrl', ['$scope', 'serverService', '$stateParams', '
         }, function () {
         });
 
-    }
+    };
+
+    $scope.testServer = function () {
+        serverService.test($scope.server).then(function (message) {
+            if (message.success) {
+                $scope.showMessage(message)
+            }
+        });
+    };
+
+    $scope.open_term = function () {
+        $modal.open({
+            templateUrl: 'static/tpl/server/server.term.html',
+            controller: 'ServerTermCtrl',
+            size: '',
+            resolve: {
+                server: function () {
+                    return $scope.server;
+                },
+                deps: ['uiLoad',
+                    function (uiLoad) {
+                        return uiLoad.load(['static/vendor/jquery/term/term.js',
+                            'static/js/app/server/term-directive.js']);
+                    }]
+            }
+        });
+    };
 }]);
 
 app.controller('ServerEditCtrl', ['$scope', 'serverService', '$state', '$stateParams', function ($scope, serverService, $state, $stateParams) {
@@ -107,14 +124,11 @@ app.controller('ServerEditCtrl', ['$scope', 'serverService', '$state', '$statePa
     };
 }]);
 
-app.controller('ServerConfirmCtrl', ['$scope', '$modalInstance', '$timeout', 'message', function ($scope, $modalInstance, $timeout, message) {
-    $scope.message = {content: message};
+app.controller('ServerTermCtrl', ['$scope', '$modalInstance', 'config', 'server', function ($scope, $modalInstance, config, server) {
+    $scope.web_terminal_uri = 'ws://' + config.hostname + ':' + config.port + '/terminal?uuid=' + server.uuid;
+    $scope.server = server;
 
     $scope.cancel = function () {
         $modalInstance.dismiss('cancel');
-    };
-
-    $scope.ok = function () {
-        $modalInstance.close('delete');
     };
 }]);

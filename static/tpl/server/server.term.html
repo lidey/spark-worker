@@ -1,0 +1,15 @@
+<style>
+    .terminal {
+        font-family: "Monaco", "DejaVu Sans Mono", "Liberation Mono", monospace;
+        font-size: 11px;
+    }
+</style>
+
+<div class="modal-header">
+    <h5 class="modal-title">{{ server.title }}
+        <span class="pull-right">
+            <button type="button" ng-click="cancel()" class="close"><span aria-hidden="true">&times;</span></button>
+        </span>
+    </h5>
+</div>
+<term uri='{{ web_terminal_uri }}'></term>
