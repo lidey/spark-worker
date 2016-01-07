@@ -47,16 +47,19 @@ angular.module('app')
 
                 var client = new WSSHClient();
 
-                var term = new Terminal(80, 24, function (key) {
-                    client.send(key);
+                var term = new Terminal({
+                    cols: 80,
+                    rows: 24,
+                    screenKeys: true
+                });
+                term.on('data', function (data) {
+                    client.send(data);
                 });
                 term.open($element[0]);
-                term.resize(80, 24);
                 term.write('Connecting...');
 
                 client.connect($.extend(options, {
                     onConnect: function () {
-                        // Erase our connecting message
                         term.write('\r');
                     },
                     onData: function (data) {
@@ -67,6 +70,7 @@ angular.module('app')
                     },
                     onClose: function () {
                         term.write('Connection Reset By Peer');
+                        term.destroy();
                     }
                 }));
             }

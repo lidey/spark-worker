@@ -62,8 +62,11 @@ class ServerHandler(BaseHandler):
         if url_str == 'remove':
             self.remove()
 
-    @tornado.web.authenticated
     def save(self):
+        """
+        保存服务器链接信息
+        :return: 处理结果
+        """
         server = self.server
         if server.uuid == None:
             server.uuid = str(uuid.uuid1())
@@ -73,26 +76,38 @@ class ServerHandler(BaseHandler):
             server.save()
         self.write({'success': True, 'content': '服务器保存成功.', 'server': server.to_dict()})
 
-    @tornado.web.authenticated
     def info(self):
+        """
+        获取服务器链接信息
+        :return: 链接信息
+        """
         server = Server.get(Server.uuid == self.get_argument('uuid'))
         self.write(server.to_dict())
 
-    @tornado.web.authenticated
     def list(self):
+        """
+        获取服务器链接列表
+        :return: 链接列表
+        """
         servers = []
         for server in Server.select():
             servers.append(server.to_dict())
         self.write({'servers': servers})
 
-    @tornado.web.authenticated
     def remove(self):
+        """
+        删除服务器链接信息
+        :return: 处理结果
+        """
         server = Server.get(Server.uuid == self.get_argument('uuid'))
         server.delete_instance()
         self.write({'success': True, 'content': '服务器删除成功.'})
 
-    @tornado.web.authenticated
     def test(self):
+        """
+        测试服务器链接信息
+        :return: 处理结果
+        """
         try:
             script = ServerScript(server=self.server)
             cpu_num, _ = script.command("cat /proc/cpuinfo |grep 'physical id'|sort |uniq|wc -l")
@@ -179,6 +194,7 @@ class WebTerminalHandler(tornado.websocket.WebSocketHandler):
                 self.term.data = ''
                 self.term.input_mode = False
             if not self.channel.closed:
+                print data['data']
                 self.channel.send(data['data'])
 
     def on_close(self):
@@ -211,3 +227,12 @@ class WebTerminalHandler(tornado.websocket.WebSocketHandler):
                         pass
         except IndexError:
             pass
+
+
+class WebTerminalKillHandler(BaseHandler):
+    def get(self):
+        ws_id = self.get_argument('id')
+        for ws in WebTerminalHandler.clients:
+            print ws.id
+            if ws.id == int(ws_id):
+                ws.close()
