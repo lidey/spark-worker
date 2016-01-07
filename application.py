@@ -3,7 +3,9 @@
 # Filename: application.py
 import tornado.web
 import os
-from urls import urls
+
+import router
+import app.router
 
 settings = {
     "template_path": os.path.join(os.path.dirname(__file__), "templates"),
@@ -15,6 +17,6 @@ settings = {
 }
 
 application = tornado.web.Application(
-    handlers=urls,
-    **settings
+        handlers=router.urls + app.router.urls,
+        **settings
 )
