@@ -21,6 +21,18 @@ app.factory('databaseService', ['$http', function ($http) {
         });
     };
 
+    factory.database_list = function () {
+        return $http.get('database/database/list').then(function (resp) {
+            return resp.data.databases;
+        });
+    };
+
+    factory.folder_list = function (d_uuid) {
+        return $http.get('database/' + d_uuid + '/folder_list').then(function (resp) {
+            return resp.data.folders;
+        });
+    };
+
     factory.save_database = function (database) {
         return $http.post('database/save', database).then(function (resp) {
             return resp.data;
@@ -55,7 +67,7 @@ app.factory('databaseService', ['$http', function ($http) {
         var folder_uuid = '';
         if (folder.type == 'folder')
             folder_uuid = folder.data.uuid;
-        return $http.get('database/' + folder.data.db_uuid + '/tables', {params: {folder_uuid: folder_uuid}}).then(function (resp) {
+        return $http.get('database/' + folder.data.db_uuid + '/table_list', {params: {folder_uuid: folder_uuid}}).then(function (resp) {
             return resp.data.tables;
         });
     };

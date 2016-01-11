@@ -153,6 +153,23 @@ class Column(BaseModel):
             'created_time': time.mktime(self.created_time.timetuple()) * 1000,
         }
 
+    def to_tree(self):
+        column = {
+            'uid': self.uuid,
+            'label': self.field,
+            'icon': ['fa', '  fa-list'],
+            'type': 'column',
+            'draggable': True,
+            'data': {
+                'uuid': self.uuid,
+                'field': self.field,
+                'type': self.type,
+                'key': self.key,
+                'created_time': time.mktime(self.created_time.timetuple()) * 1000,
+            }
+        }
+        return column
+
     class Meta:
         db_table = 'WORKER_DATABASE_COLUMN'
 
@@ -205,6 +222,7 @@ class Model(BaseModel):
     database = ForeignKeyField(Database, db_column='DATABASE_UUID')
     category = ForeignKeyField(Category, db_column='CATEGORY_UUID')
     title = CharField(db_column='TITLE', max_length=32)
+    type = CharField(db_column='TYPE_FLAG', max_length=16)
     description = TextField(db_column='DESCRIPTION')
     created_time = DateTimeField(db_column='CREATED_DATE', null=False)
 
@@ -212,9 +230,68 @@ class Model(BaseModel):
         return {
             'uuid': self.uuid,
             'title': self.title,
+            'd_uuid': self.database.uuid,
+            'd_title': self.database.title,
+            'c_uuid': self.category.uuid,
+            'type': self.type,
             'description': self.description,
             'created_time': time.mktime(self.created_time.timetuple()) * 1000,
         }
 
     class Meta:
         db_table = 'WORKER_DATABASE_MODEL_INFO'
+
+
+class ModelTable(BaseModel):
+    """
+    数据模型与数据表关联
+    """
+    uuid = CharField(db_column='UUID', max_length=64, primary_key=True)
+    model = ForeignKeyField(Model, db_column='MODEL_UUID')
+    table = ForeignKeyField(Table, db_column='TABLE_UUID')
+    alias = CharField(db_column='NAME_ALIAS', max_length=16, default=None)
+    where = CharField(db_column='WHERE_SQL', max_length=256, default=None)
+    created_time = DateTimeField(db_column='CREATED_DATE', null=False)
+
+    def to_tree(self):
+        table = {
+            'uid': self.uuid,
+            'label': self.table.name,
+            'icon': ['fa', ' fa-table'],
+            'type': 'database',
+            'draggable': True,
+            'children': list(),
+            'data': {
+                'uuid': self.uuid,
+                'm_uuid': self.model.uuid,
+                't_uuid': self.table.uuid,
+                'alias': self.alias,
+                'where': self.where,
+                'created_time': time.mktime(self.created_time.timetuple()) * 1000,
+            }
+        }
+        for column in Column.select().where(Column.table == self.table):
+            table['children'].append(column.to_tree())
+        return table
+
+    class Meta:
+        db_table = 'WORKER_DATABASE_MODEL_TABLE'
+
+
+class ModelIndex(BaseModel):
+    """
+    数据模型与数据表关联
+    """
+    uuid = CharField(db_column='UUID', max_length=64, primary_key=True)
+    model = ForeignKeyField(Model, db_column='MODEL_UUID')
+    column = ForeignKeyField(Column, db_column='TABLE_UUID')
+
+    def to_dict(self):
+        return {
+            'uuid': self.uuid,
+            'm_uuid': self.model.uuid,
+            'c_field': self.column.field,
+        }
+
+    class Meta:
+        db_table = 'WORKER_DATABASE_MODEL_INDEX'

@@ -1,0 +1,65 @@
+<div class="modal-header">
+    <h5 class="modal-title">数据模型:{{ model.title }}
+        <span class="pull-right">
+            <button type="button" ng-click="cancel()" class="close"><span aria-hidden="true">&times;</span></button>
+        </span>
+    </h5>
+
+
+</div>
+<div class="modal-body">
+    <div class="row">
+        <div class="col-lg-4">
+            <div class="panel panel-default" style="height: 510px;">
+                <div class="panel-heading">
+                    模型数据元
+                    <span class="pull-right">
+                        <a href="" ng-click="import_table(model)"><i class="fa fa-fw m-r-xs fa-plus"></i></a>
+                    </span>
+                </div>
+                <div class="panel-body" ng-init="reload()" style="height: 465px; overflow-y: auto;">
+                    <span ng-if="doing_async">数据加载中...</span>
+                    <abn-tree ng-show="doing_async==false"
+                              tree-data="table_data"
+                              tree-control="table_tree"
+                              on-select="table_tree_handler(branch)"
+                              tree-draggable="true"
+                              icon-leaf=""
+                              icon-expand="fa fa-plus"
+                              icon-collapse="fa fa-minus"
+                    >
+                    </abn-tree>
+                </div>
+            </div>
+        </div>
+        <div class="col-lg-8 m-l-n-sm">
+            <div class="panel panel-info" style="height: 250px;">
+                <div class="panel-heading">
+                    维度
+                    <span class="pull-right">
+                        <a href="" ng-click="add_table()"><i class="fa fa-fw m-r-xs fa-plus"></i></a>
+                    </span>
+                </div>
+                <div class="panel-body">
+                </div>
+            </div>
+
+            <div class="panel panel-success m-t-n-sm" style="height: 250px;">
+                <div class="panel-heading">
+                    指标
+                </div>
+                <div class="list-group bg-white" ui-on-Drop="onIndexDrop($event,$data,indexes)"
+                     style="height: 207px; overflow-y: auto;">
+                    <a href="" class="list-group-item" ng-repeat="index in indexes">
+                        <i class="fa fa-fw fa-signal"></i> {{ index.c_field }}
+                        <span class="pull-right">
+                            <button type="button" ng-click="removeIndex(index,$index)" class="close">
+                                <span aria-hidden="true">&times;</span>
+                            </button>
+                        </span>
+                    </a>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>

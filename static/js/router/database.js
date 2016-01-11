@@ -41,6 +41,7 @@ angular.module('app')
                                         return uiLoad.load([
                                             'static/js/app/database/model.js',
                                             'static/js/app/database/model-service.js',
+                                            'static/js/app/database/database-service.js',
                                             'static/vendor/libs/moment.min.js']);
                                     })
                                 }]
