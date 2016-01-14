@@ -13,7 +13,8 @@ system = {
     'hostname': '127.0.0.1',
     'port': 8880,
     'company': '软通动力信息技术（集团）有限公司',
-    'version': '0.0.1'
+    'version': '0.0.1',
+    'upload_file': '/Users/lidey/Documents/tmp/upload_file'
 }
 
 # 数据库配置
