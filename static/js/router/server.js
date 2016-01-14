@@ -22,8 +22,8 @@ angular.module('app')
                                 }]
                         }
                     })
-                    .state('app.server.manager', {
-                        url: '/manager',
+                    .state('app.server.index', {
+                        url: '/index',
                         templateUrl: 'static/tpl/server/server.detail.html'
                     })
                     .state('app.server.add', {
@@ -32,7 +32,7 @@ angular.module('app')
                         resolve: {
                             deps: ['$ocLazyLoad',
                                 function ($ocLazyLoad) {
-                                    return $ocLazyLoad.load(['ui.select', 'textAngular']);
+                                    return $ocLazyLoad.load(['ui.select']);
                                 }]
                         }
                     })

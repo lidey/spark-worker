@@ -21,6 +21,7 @@ from tornado.websocket import WebSocketClosedError
 
 from app.core.base_handler import BaseHandler
 from app.model.server_model import Server
+from app.model.spark_model import Spark
 from app.script.server_script import ServerScript, Tty
 
 
@@ -38,12 +39,23 @@ class ServerHandler(BaseHandler):
         server.title = self.args.get('title')
         server.description = self.args.get('description')
         server.host = self.args.get('host')
+        server.type = self.args.get('type')
         server.version = self.args.get('version').get('key')
         server.name = self.args.get('name')
         server.password = self.args.get('password')
-        server.cpu = self.args.get('cpu')
-        server.core = self.args.get('core')
-        server.men = self.args.get('men')
+        server.processor = self.args.get('processor')
+        server.memory = self.args.get('memory')
+        server.path = self.args.get('path')
+        if server.type == 'Spark':
+            spark = Spark()
+            spark.uuid = self.args.get('spark').get('uuid')
+            spark.path = self.args.get('spark').get('path')
+            spark.web_ui = self.args.get('spark').get('web_ui')
+            spark.url = self.args.get('spark').get('url')
+            spark.rest_url = self.args.get('spark').get('rest_url')
+            spark.max_memory = self.args.get('spark').get('max_memory')
+            spark.max_processor = self.args.get('spark').get('max_processor')
+            server.spark = spark
         self.server = server
 
         if url_str == 'save':
@@ -72,9 +84,18 @@ class ServerHandler(BaseHandler):
             server.uuid = str(uuid.uuid1())
             server.created_time = datetime.now()
             server.save(force_insert=True)
+            if server.type == 'Spark':
+                spark = server.spark
+                spark.server = server
+                spark.uuid = str(uuid.uuid1())
+                spark.save(force_insert=True)
+
         else:
             server.save()
-        self.write({'success': True, 'content': '服务器保存成功.', 'server': server.to_dict()})
+            if server.type == 'Spark':
+                spark = server.spark
+                spark.save()
+        self.write({'success': True, 'content': '服务器保存成功.', 'uuid': server.uuid})
 
     def info(self):
         """
@@ -82,7 +103,11 @@ class ServerHandler(BaseHandler):
         :return: 链接信息
         """
         server = Server.get(Server.uuid == self.get_argument('uuid'))
-        self.write(server.to_dict())
+        server_dict = server.to_dict()
+        if server.type == 'Spark':
+            spark = Spark.select().join(Server).where(Server.uuid == server.uuid).get()
+            server_dict['spark'] = spark.to_dict()
+        self.write(server_dict)
 
     def list(self):
         """
@@ -110,11 +135,10 @@ class ServerHandler(BaseHandler):
         """
         try:
             script = ServerScript(server=self.server)
-            cpu_num, _ = script.command("cat /proc/cpuinfo |grep 'physical id'|sort |uniq|wc -l")
-            core_num, _ = script.command("cat /proc/cpuinfo |grep 'cores'|uniq|awk '{print $4}'")
-            men, _ = script.command("free -m | grep Mem | awk '{print $2}'")
+            processor, _ = script.command("cat /proc/cpuinfo |grep 'processor'|sort |uniq|wc -l")
+            memory, _ = script.command("free -m | grep Mem | awk '{print $2}'")
             script.close()
-            self.write({'success': True, 'content': '服务器链接测试通过.', 'cpu': cpu_num, 'core': core_num, 'men': men})
+            self.write({'success': True, 'content': '服务器链接测试通过.', 'processor': processor, 'memory': memory})
         except NoValidConnectionsError:
             self.write({'success': False, 'content': '服务器链接错误.'})
         except AuthenticationException:

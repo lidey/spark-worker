@@ -15,13 +15,12 @@ class Server(BaseModel):
     description = TextField(db_column='DESCRIPTION')
     host = CharField(db_column='HOST', max_length=32)
     version = CharField(db_column='VERSION_FLAG', max_length=32)
+    type = CharField(db_column='TYPE_FLAG', max_length=32)
     name = CharField(db_column='NAME', max_length=64)
     password = CharField(db_column='PASSWORD', max_length=64)
     path = CharField(db_column='PATH', max_length=64)
-    cpu = IntegerField(db_column='CPU_NUM', default=0)
-    core = IntegerField(db_column='CORE_NUM', default=0)
     processor = IntegerField(db_column='PROCESSOR_NUM', default=0)
-    men = IntegerField(db_column='MEN_NUM', default=0)
+    memory = IntegerField(db_column='MEMORY', default=0)
     created_time = DateTimeField(db_column='CREATED_TIME', null=False)
 
     def to_dict(self):
@@ -31,13 +30,12 @@ class Server(BaseModel):
             'description': self.description,
             'host': self.host,
             'version': self.version,
+            'type': self.type,
             'name': self.name,
             'password': self.password,
             'path': self.path,
-            'cpu': self.cpu,
-            'core': self.core,
             'processor': self.processor,
-            'men': self.men,
+            'memory': self.memory,
             'created_time': time.mktime(self.created_time.timetuple()) * 1000,
         }
 

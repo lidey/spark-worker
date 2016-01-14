@@ -1,32 +1,31 @@
 app.controller('ServerCtrl', ['$scope', 'serverService', '$stateParams', function ($scope, serverService, $stateParams) {
 
-    $scope.refresh = function () {
+    $scope.refresh = function (uuid) {
         serverService.all().then(function (servers) {
             $scope.servers = servers;
-            if ($scope.server == undefined)
-                $scope.server = servers[0];
-            else
-                angular.forEach($scope.servers, function (server) {
-                    if (server.uuid == $scope.server.uuid)
-                        $scope.server = server;
-                });
-            $scope.server.selected = true;
-            $scope.server.color = 'success';
-            $scope.$broadcast('server', $scope.server);
+            if (uuid != undefined) {
+                $scope.selectServer({uuid: uuid});
+            }
         });
+        if (uuid == undefined) {
+            $scope.$broadcast('server', undefined);
+        }
     };
 
     $scope.selectServer = function (server) {
-        angular.forEach($scope.servers, function (server) {
-            server.selected = false;
-            $scope.server.color = 'info';
-        });
-        $scope.server = server;
-        $scope.server.selected = true;
-        $scope.server.color = 'success';
-        $scope.$broadcast('server', $scope.server);
-    };
+        angular.forEach($scope.servers, function (tmp) {
+            if (tmp.uuid == server.uuid) {
+                tmp.selected = true;
+                tmp.color = 'success';
+                $scope.server = tmp;
+                $scope.$broadcast('server', tmp);
+            } else {
+                tmp.selected = false;
+                tmp.color = 'info';
+            }
 
+        });
+    };
     $scope.refresh();
 
 }]);
@@ -34,8 +33,13 @@ app.controller('ServerCtrl', ['$scope', 'serverService', '$stateParams', functio
 app.controller('ServerDetailCtrl', ['$scope', 'serverService', '$stateParams', '$modal', function ($scope, serverService, $stateParams, $modal) {
 
     $scope.$on('server', function (event, data) {
-        $scope.server = data;
-        $scope.server.version = serverService.getVersion(data.version);
+
+        serverService.get(data.uuid).then(function (data) {
+            $scope.server = data;
+            $scope.server.version = serverService.getVersion(data.version);
+        });
+        if (data != undefined)
+            $scope.server.version = serverService.getVersion(data.version);
     });
 
     $scope.$on('message', function (event, data) {
@@ -43,7 +47,7 @@ app.controller('ServerDetailCtrl', ['$scope', 'serverService', '$stateParams', '
     });
 
     $scope.delete = function (server) {
-        $scope.showConfirm('请确认是否删除服务器:' + $scope.server.name).result.then(function (data) {
+        $scope.showConfirm('请确认是否删除服务器:' + $scope.server.title).result.then(function (data) {
             if (data) {
                 serverService.delete(server.uuid).then(function (message) {
                     $scope.showMessage(message);
@@ -103,10 +107,10 @@ app.controller('ServerEditCtrl', ['$scope', 'serverService', '$state', '$statePa
     $scope.saveServer = function () {
         serverService.save($scope.server).then(function (message) {
             $scope.showMessage(message).result.then(function () {
-                $scope.refresh();
+                $scope.refresh(message.uuid);
             }, function () {
             });
-            $state.go('app.server.manager');
+            $state.go('app.server.index');
         });
     };
 
@@ -114,10 +118,8 @@ app.controller('ServerEditCtrl', ['$scope', 'serverService', '$state', '$statePa
         serverService.test($scope.server).then(function (message) {
             if (message.success) {
                 $scope.server.success = !message.success;
-                $scope.server.cpu = message.cpu;
-                $scope.server.core = message.core;
                 $scope.server.processor = message.processor;
-                $scope.server.men = message.men;
+                $scope.server.memory = message.memory;
             }
             $scope.showMessage(message)
         });
