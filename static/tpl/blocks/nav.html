@@ -17,7 +17,7 @@
         <span>基础配置</span>
     </li>
     <li ng-class="{active:$state.includes('app.server')}">
-        <a ui-sref="app.server.manager">
+        <a ui-sref="app.server.index">
             <i class="glyphicon glyphicon-cloud icon text-info-lter"></i>
             <span class="font-bold">服务器</span>
         </a>
@@ -63,6 +63,34 @@
                     <span>执行管理</span>
                 </a>
             </li>
+        </ul>
+    </li>
+
+    <li class="line dk hidden-folded"></li>
+    <li class="hidden-folded padder m-t m-b-sm text-muted text-xs">
+        <span>大数据管理</span>
+    </li>
+    <li ng-class="{active:($state.includes('app.spark') || $state.includes('app.kafka') )}">
+        <a href class="auto">
+            <span class="pull-right text-muted">
+                <i class="fa fa-fw fa-angle-right text"></i>
+                <i class="fa fa-fw fa-angle-down text-active"></i>
+            </span>
+            <i class="fa fa-puzzle-piece icon text-success"></i>
+            <span class="font-bold">Spark管理</span>
+        </a>
+        <ul class="nav nav-sub dk">
+            <li ng-class="{active:$state.includes('app.spark')}">
+                <a ui-sref="app.spark.jobs">
+                    <span>作业管理</span>
+                </a>
+            </li>
+            <li ng-class="{active:$state.includes('app.kafka')}">
+                <a ui-sref="app.model.index">
+                    <span>数据队列</span>
+                </a>
+            </li>
+
         </ul>
     </li>
 

@@ -1,0 +1,27 @@
+<div ng-controller="SparkJobListCtrl">
+    <!-- header -->
+    <div class="wrapper bg-light lter b-b">
+        <div class="pull-right btn-group  m-t-n-xs" ng-if="spark != undefined">
+            <button class="btn btn-sm btn-info w-xxs w-auto-xs" ng-click="add_job()">
+                <i class="fa fa-plus"></i>添加
+            </button>
+        </div>
+        &nbsp;
+    </div>
+    <!-- / header -->
+    <div class="wrapper-md ng-scope" ng-if="spark != undefined">
+        <alert ng-repeat="alert in alerts" type="{{ alert.type }}"
+               close="closeAlert($index)">{{ alert.msg }}</alert>
+        <div class="panel panel-default">
+            <div class="panel-heading">
+                工作列表
+            </div>
+            <div class="panel-body table-responsive">
+                <table ng-if="dt_option!=undefined" id="jobs" ui-jq="dataTable" ui-options="dt_option"
+                       ui-controller="jobGrid"
+                       class="table table-striped m-b-none">
+                </table>
+            </div>
+        </div>
+    </div>
+</div>

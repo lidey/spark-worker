@@ -1,0 +1,137 @@
+<form class=" form-horizontal" ng-submit="save_job()" ng-init="init_slider()">
+    <div class="modal-header">
+        <h5 class="modal-title">Spark 设计器 : {{ job.title }}</h5>
+    </div>
+    <div class="modal-body">
+        <input type="hidden" class="form-control" ng-model="job.uuid">
+        <input type="hidden" class="form-control" ng-model="job.s_uuid">
+        <alert ng-repeat="alert in alerts" type="{{ alert.type }}" close="closeAlert($index)">{{ alert.msg }}</alert>
+        <div class="form-group">
+            <label class="col-lg-3 control-label">Spark 服务器:</label>
+
+            <div class="col-lg-7">
+                <input type="text" class="form-control" ng-model="job.master" placeholder="spark://">
+            </div>
+        </div>
+        <div class="form-group">
+            <label class="col-lg-3 control-label">主函数:</label>
+
+            <div class="col-lg-7">
+                <ui-select ng-model="job.class" theme="bootstrap">
+                    <ui-select-match placeholder="选择Spark 主函数名">
+                        {{$select.selected.name}}
+                    </ui-select-match>
+                    <ui-select-choices group-by="'jar'" repeat="item in classes | filter: $select.search">
+                        <span ng-bind-html="item.name | highlight: $select.search"></span>
+                    </ui-select-choices>
+                </ui-select>
+            </div>
+        </div>
+        <div class="form-group">
+            <label class="col-lg-3 control-label">参数</label>
+
+            <div class="col-lg-7">
+                <textarea class="form-control" rows="3" ng-model="job.arguments"></textarea>
+            </div>
+        </div>
+        <div class="form-group">
+            <label class="col-lg-3 control-label">线程数:</label>
+
+            <div class="col-lg-2">
+                <p class="form-control-static">{{ job.processor }}MB</p>
+            </div>
+            <div class="col-lg-5">
+                <div class="form-control-static">
+                    <input id="processor-slider" ui-jq="slider"
+                           data-slider-min="1" data-slider-max="{{ spark.max_processor }}" data-slider-step="1"
+                           data-slider-value="{{ job.processor }}"
+                           class="slider slider-horizontal form-control" type="text" ng-model="job.processor">
+                </div>
+            </div>
+        </div>
+        <div class="form-group">
+            <label class="col-lg-3 control-label">内存数:</label>
+
+            <div class="col-lg-2">
+                <p class="form-control-static">{{ job.memory }}MB</p>
+            </div>
+            <div class="col-lg-5">
+                <div class="form-control-static">
+                    <input id="memory-slider" ui-jq="slider"
+                           data-slider-min="512" data-slider-max="{{ spark.max_memory }}" data-slider-step="1"
+                           data-slider-value="{{ job.memory }}"
+                           class="slider slider-horizontal form-control" type="text" ng-model="job.memory">
+                </div>
+            </div>
+        </div>
+        <div class="form-group">
+            <label class="col-lg-3 control-label">JAR 文件</label>
+            <div class="col-lg-7">
+                <table class="table table-striped b-a">
+                    <thead>
+                    <tr>
+                        <th width="80%">文件</th>
+                        <th>操作</th>
+                    </tr>
+                    </thead>
+                    <tbody>
+                    <tr ng-repeat="jar in job.jars">
+                        <td>
+                            {{ jar }}
+                        </td>
+                        <td>
+                            <a ng-click="remove_jar($index, jar)" class="text-warning ng-click-active">
+                                <i class="fa fa-times m-r-xs"></i>删除
+                            </a>
+                        </td>
+                    </tr>
+                    </tbody>
+                </table>
+                <table class="table bg-white-only b-a" ng-if="uploader.queue.length>0">
+                    <thead>
+                    <tr>
+                        <th width="50%">文件名</th>
+                        <th ng-show="uploader.isHTML5">大小</th>
+                        <th ng-show="uploader.isHTML5">进程</th>
+                        <th>状态</th>
+                        <th>操作</th>
+                    </tr>
+                    </thead>
+                    <tbody>
+                    <tr ng-repeat="item in uploader.queue">
+                        <td><strong>{{ item.file.name }}</strong></td>
+                        <td ng-show="uploader.isHTML5" nowrap>{{ item.file.size/1024/1024|number:2 }} MB</td>
+                        <td ng-show="uploader.isHTML5">
+                            <div class="progress progress-sm m-b-none m-t-xs">
+                                <div class="progress-bar bg-info" role="progressbar"
+                                     ng-style="{ 'width': item.progress + '%' }"></div>
+                            </div>
+                        </td>
+                        <td class="text-center">
+                        <span ng-show="item.isSuccess" class="text-success"><i
+                                class="glyphicon glyphicon-ok"></i></span>
+                        <span ng-show="item.isCancel" class="text-warning"><i
+                                class="glyphicon glyphicon-ban-circle"></i></span>
+                        <span ng-show="item.isError" class="text-danger"><i
+                                class="glyphicon glyphicon-remove"></i></span>
+                        </td>
+                        <td nowrap>
+                            <button type="button" class="btn btn-default btn-xs" ng-click="item.remove()">
+                                移除
+                            </button>
+                        </td>
+                    </tr>
+                    </tbody>
+                </table>
+                <div class="form-control-static">
+                    <input type="file" nv-file-select="" uploader="uploader" multiple accept=".jar"/>
+                </div>
+            </div>
+        </div>
+
+    </div>
+    <div class="modal-footer">
+        <button class="btn btn-info w-xs">保存</button>
+        <button type="button" class="btn btn-default w-xs" ng-click="cancel()">取消</button>
+    </div>
+</form>
