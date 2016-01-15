@@ -225,3 +225,11 @@ class Tty(object):
         else:
             self.ssh = ssh
             return ssh
+
+
+class WebTty(Tty):
+    def __init__(self, *args, **kwargs):
+        super(WebTty, self).__init__(*args, **kwargs)
+        self.ws = None
+        self.data = ''
+        self.input_mode = False

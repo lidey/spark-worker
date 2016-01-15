@@ -20,9 +20,10 @@ from paramiko.ssh_exception import NoValidConnectionsError
 from tornado.websocket import WebSocketClosedError
 
 from app.core.base_handler import BaseHandler
+from app.core.base_thread import WebSocketThread
 from app.model.server_model import Server
 from app.model.spark_model import Spark
-from app.script.server_script import ServerScript, Tty
+from app.script.server_script import ServerScript, Tty, WebTty
 
 
 class ServerHandler(BaseHandler):
@@ -147,25 +148,6 @@ class ServerHandler(BaseHandler):
             self.write({'success': False, 'content': '服务器链接错误.'})
 
 
-class MyThread(threading.Thread):
-    def __init__(self, *args, **kwargs):
-        super(MyThread, self).__init__(*args, **kwargs)
-
-    def run(self):
-        try:
-            super(MyThread, self).run()
-        except WebSocketClosedError:
-            pass
-
-
-class WebTty(Tty):
-    def __init__(self, *args, **kwargs):
-        super(WebTty, self).__init__(*args, **kwargs)
-        self.ws = None
-        self.data = ''
-        self.input_mode = False
-
-
 class WebTerminalHandler(tornado.websocket.WebSocketHandler):
     def data_received(self, chunk):
         pass
@@ -189,7 +171,7 @@ class WebTerminalHandler(tornado.websocket.WebSocketHandler):
         self.term = WebTty(server)
         self.ssh = self.term.get_connection()
         self.channel = self.ssh.invoke_shell(term='xterm')
-        WebTerminalHandler.tasks.append(MyThread(target=self.forward_outbound))
+        WebTerminalHandler.tasks.append(WebSocketThread(target=self.forward_outbound))
         WebTerminalHandler.clients.append(self)
 
         for t in WebTerminalHandler.tasks:
