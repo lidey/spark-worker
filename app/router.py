@@ -6,7 +6,7 @@
 # File Created Date: 2015-11-27 12:47
 from app.handlers.database_handler import DatabaseHandler
 from app.handlers.job_socket_handler import JobSocketHandler
-from app.handlers.spark_handler import SparkHandler
+from app.handlers.spark_handler import SparkHandler, SparkTerminalHandler
 from app.handlers.upload_file_handler import UploadFileHandler
 from app.handlers.job_handler import JobHandler
 from app.handlers.job_progress_handler import JobProgressHandler
@@ -26,10 +26,11 @@ urls = [
     (r"/script/(.*)", ScriptHandler, dict()),
     (r"/scheduler/(.*)", SchedulerHandler, dict()),
     (r"/process/(.*)", JobProgressHandler, dict()),
-    (r"/file", UploadFileHandler, dict()),
+    (r"^/upload_file/(.*)$", UploadFileHandler, dict()),
     (r"/job-socket", JobSocketHandler, dict()),
     (r"/database/(.*)/(.*)", DatabaseHandler, dict()),
     (r"/database/(.*)", DatabaseHandler, dict()),
     (r"/spark/(.*)/(.*)", SparkHandler, dict()),
     (r"/spark/(.*)", SparkHandler, dict()),
+    (r'/terminal/spark', SparkTerminalHandler, dict()),
 ]
