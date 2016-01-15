@@ -57,7 +57,7 @@ app.controller('SparkJobListCtrl', ['$scope', 'sparkService', '$compile', '$moda
                         {
                             targets: [1],
                             render: function (data, type, row) {
-                                return '<a ng-click="edit_job(\'' + row.uuid + '\')" class="text-info"><i class="fa fa-table m-r-xs"></i>' + data + '</a>';
+                                return '<a ng-click="edit_job(\'' + row.uuid + '\')" class="text-info"><i class="fa icon-ghost m-r-xs"></i>' + data + '</a>';
                             }
                         },
                         {
@@ -239,11 +239,7 @@ app.controller('SparkJobCtrl', ['$scope', 'sparkService', '$modalInstance', '$mo
         sparkService.remove_jar($scope.job.uuid, filename).then(function (message) {
             if (message.success) {
                 $scope.job.jars.splice(index, 1);
-                for (var i = 0; i < $scope.classes.length; i++) {
-                    if ($scope.classes[i].jar == filename)
-                        $scope.classes.splice(i, 1);
-                }
-
+                $scope.load_classes();
             } else
                 $scope.alerts.push({type: 'danger', msg: message.content})
         });
