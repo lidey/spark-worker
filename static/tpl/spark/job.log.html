@@ -1,0 +1,9 @@
+<div class="modal-header">
+    <h5 class="modal-title">Spark 作业日志</h5>
+</div>
+<div class="modal-body" ng-init="initConnect()" style="height: 400px;overflow-y: auto;">
+    <div ng-repeat="log in logs track by $index">{{ log }}</div>
+</div>
+<div class="modal-footer">
+    <button type="button" class="btn btn-default w-xs" ng-click="cancel()">关闭</button>
+</div>

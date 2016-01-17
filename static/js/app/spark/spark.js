@@ -50,7 +50,7 @@ app.controller('SparkJobListCtrl', ['$scope', 'sparkService', '$compile', '$moda
                     columns: [
                         {title: '主键', data: 'uuid', visible: false},
                         {title: '名称', data: 'title', width: '35%'},
-                        {title: '节点', data: 'master', width: '25%'},
+                        {title: '节点', data: 'master', width: '20%'},
                         {title: '创建时间', data: 'created_time', width: '20%'}
                     ],
                     columnDefs: [
@@ -67,9 +67,10 @@ app.controller('SparkJobListCtrl', ['$scope', 'sparkService', '$compile', '$moda
                             }
                         },
                         {
-                            title: '操作', width: '20%', targets: [4], data: 'uuid', orderable: false,
+                            title: '操作', width: '25%', targets: [4], data: 'uuid', orderable: false,
                             render: function (data, type, row) {
-                                return '<a ng-click="designer_job(\'' + data + '\')" class="text-info m-r-md"><i class="fa fa-sliders m-r-xs"></i>设计器</a>' +
+                                return '<a ng-click="run_spark(\'' + data + '\')" class="text-info m-r-md"><i class="fa  fa-play m-r-xs"></i>执行</a>' +
+                                    '<a ng-click="designer_job(\'' + data + '\')" class="text-info m-r-md"><i class="fa fa-sliders m-r-xs"></i>设计器</a>' +
                                     '<a ng-click="delete_job(\'' + data + '\',\'' + row.title + '\')" class="text-warning"><i class="fa fa-times m-r-xs"></i>删除</a>';
                             }
                         }
@@ -150,6 +151,21 @@ app.controller('SparkJobListCtrl', ['$scope', 'sparkService', '$compile', '$moda
             }
 
         }, function () {
+        });
+    };
+
+
+    $scope.run_spark = function (uuid) {
+        $modal.open({
+            templateUrl: 'static/tpl/spark/job.log.html',
+            controller: 'SparkJobLogsCtrl',
+            size: 'lg',
+            resolve: {
+                uuid: function () {
+                    return uuid;
+                }
+            }
+        }).result.then(function () {
         });
     };
 }]);
@@ -254,14 +270,35 @@ app.controller('SparkJobCtrl', ['$scope', 'sparkService', '$modalInstance', '$mo
         });
     };
 
-    $scope.testSpark = function () {
-        sparkService.test($scope.spark).then(function (message) {
-            if (message.success) {
-                $scope.spark.success = !message.success;
-                $scope.spark.processor = message.processor;
-                $scope.spark.memory = message.memory;
-            }
-            $scope.showMessage(message)
-        });
+}]);
+
+app.controller('SparkJobLogsCtrl', ['$scope', 'sparkService', '$modalInstance', 'config', 'uuid', function ($scope, sparkService, $modalInstance, config, uuid) {
+
+    $scope.cancel = function () {
+        $modalInstance.dismiss();
     };
+
+    $scope.logs = [];
+    $scope.initConnect = function () {
+        var options = {
+            endpoint: 'ws://' + config.hostname + ':' + config.port + '/terminal/spark?uuid=' + uuid
+        };
+
+        var client = new WSSHClient();
+
+        client.connect($.extend(options, {
+            onConnect: function () {
+            },
+            onData: function (data) {
+                $scope.$apply(function () {
+                    $scope.logs.push(data);
+                });
+            },
+            onError: function (error) {
+            },
+            onClose: function () {
+            }
+        }));
+    };
+
 }]);

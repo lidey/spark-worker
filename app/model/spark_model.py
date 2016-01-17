@@ -66,3 +66,28 @@ class SparkJob(BaseModel):
 
     class Meta:
         db_table = 'WORKER_SERVER_SPARK_JOB'
+
+
+class SparkJobLog(BaseModel):
+    uuid = CharField(db_column='UUID', max_length=64, primary_key=True)
+    job = ForeignKeyField(SparkJob, db_column='JOB_UUID')
+    app_id = CharField(db_column='APPLICATION_ID', max_length=64)
+    status = CharField(db_column='STATUS_FLAG', max_length=16)
+    shell = TextField(db_column='EXEC_SHELL')
+    std_out = TextField(db_column='STD_OUT')
+    std_info = TextField(db_column='STD_INFO')
+    created_time = DateTimeField(db_column='CREATED_TIME', null=False)
+
+    def to_dict(self):
+        return {
+            'uuid': self.uuid,
+            'title': self.job.title,
+            'app_id': self.app_id,
+            'status': self.status,
+            'std_out': self.std_out,
+            'std_info': self.std_info,
+            'created_time': time.mktime(self.created_time.timetuple()) * 1000,
+        }
+
+    class Meta:
+        db_table = 'WORKER_SERVER_SPARK_JOB_LOG'

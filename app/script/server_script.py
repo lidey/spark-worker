@@ -4,6 +4,7 @@
 # File Name: spark_script.py
 # File Author: 姚丰利(lidey) 
 # File Created Date: 2015-11-30 17:04
+import os
 import socket
 
 import paramiko
@@ -21,12 +22,94 @@ class ServerScript:
         ssh.connect(hostname=self.hostname, username=self.username, password=self.password)
         self.ssh = ssh
 
+        self.transport = paramiko.Transport((self.hostname, 22))
+        self.transport.connect(username=self.username, password=self.password)
+        self.sftp = paramiko.SFTPClient.from_transport(self.transport)
+
     def command(self, shell, timeout=10):
-        stdin, stdout, stderr = self.ssh.exec_command(shell, timeout=timeout)
+        """
+
+        :param shell:
+        :param timeout:
+        :return:
+        """
+        stdin, stdout, stderr = self.exec_command(shell, timeout=timeout)
         return stdout.read(), stderr.read()
 
+    def get_connection(self):
+        """
+
+        :return:
+        """
+        return self.ssh
+
+    def exec_command(self, shell, timeout=10):
+        """
+
+        :param shell:
+        :param timeout:
+        :return:
+        """
+        stdin, stdout, stderr = self.ssh.exec_command(shell, timeout=timeout)
+        return stdin, stdout, stderr
+
+    def make_dir(self, remote_directory):
+        """
+        Change to this directory, recursively making new folders if needed.
+        Returns True if any folders were created.
+        :param remote_directory:
+        :return:
+        """
+        if remote_directory == '/':
+            # absolute path so change directory to root
+            self.sftp.chdir('/')
+            return
+        if remote_directory == '':
+            # top-level relative directory must exist
+            return
+        try:
+            self.sftp.chdir(remote_directory)  # sub-directory exists
+        except IOError:
+            dir_name, basename = os.path.split(remote_directory.rstrip('/'))
+            self.make_dir(dir_name)  # make parent directories
+            self.sftp.mkdir(basename)  # sub-directory missing, so created it
+            self.sftp.chdir(basename)
+            return True
+
+    def remove_file(self, remote_file):
+        """
+
+        :param remote_file:
+        :return:
+        """
+        self.sftp.remove(remote_file)
+
+    def remove_dir(self, remote_directory):
+        """
+
+        :param remote_directory:
+        :return:
+        """
+        self.sftp.rmdir(remote_directory)
+
+    def upload(self, local_file, remote_file):
+        """
+
+        :param local_file:
+        :param remote_file:
+        :return:
+        """
+        (remote_path, file) = os.path.split(remote_file)
+        self.make_dir(remote_path)
+        self.sftp.put(local_file, remote_file)
+
     def close(self):
+        """
+
+        :return:
+        """
         self.ssh.close()
+        self.transport.close()
 
 
 class Tty(object):

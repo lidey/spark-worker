@@ -18,6 +18,6 @@ peewee_log.addHandler(logging.StreamHandler())
 
 application.listen(config.system['port'])
 
-print 'Development server is running at http://127.0.0.1:%s/' % config.system['port']
+print 'Development server is running at http://%s:%s/' % (config.system['hostname'], config.system['port'])
 print 'Quit the server with CONTROL-C'
 tornado.ioloop.IOLoop.instance().start()

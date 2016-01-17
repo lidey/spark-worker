@@ -1,0 +1,8 @@
+{{ spark.path }}/bin/spark-submit \
+  --name {{ job.title }} \
+  --class {{ job.main_class }} \
+  --master {{ spark.url }} \
+  --executor-memory {{ job.memory }}M \
+  --total-executor-cores {{ job.processor }} \
+  --jars {% for jar in job.jars %}file://{{ jar }} {% endfor %} \
+  {{ job.arguments }}
