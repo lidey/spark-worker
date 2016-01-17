@@ -21,7 +21,7 @@ from app.core.base_handler import BaseHandler
 from app.core.base_thread import WebSocketThread
 from app.model.spark_model import Spark, SparkJob, SparkJobLog
 from app.script.server_script import WebTty, ServerScript
-from app.script.spark_thread import SparkJobThread
+from app.script.spark_thread import SparkJobThread, CreateSparkJobThread
 from config import system, sparkConfig
 
 
@@ -40,6 +40,7 @@ class SparkHandler(BaseHandler):
             job.title = self.args.get('title')
             job.description = self.args.get('description')
             job.main_class = self.args.get('main_class')
+            job.main_jar = self.args.get('main_jar')
             job.master = self.args.get('master')
             job.arguments = self.args.get('arguments')
             job.processor = self.args.get('processor')
@@ -192,7 +193,8 @@ class SparkHandler(BaseHandler):
         删除Spark作业信息
         :return: 处理结果
         """
-        SparkJobThread(self.get_argument('uuid'))
+        # SparkJobThread(self.get_argument('uuid'))
+        CreateSparkJobThread(self.get_argument('uuid'))
         self.write({'success': True, 'content': '作业删除成功.'})
 
 

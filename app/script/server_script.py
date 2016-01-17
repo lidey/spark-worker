@@ -92,6 +92,14 @@ class ServerScript:
         """
         self.sftp.rmdir(remote_directory)
 
+    def list_dir(self, remote_directory):
+        """
+
+        :param remote_directory:
+        :return:
+        """
+        return self.sftp.listdir(remote_directory)
+
     def upload(self, local_file, remote_file):
         """
 
@@ -102,6 +110,14 @@ class ServerScript:
         (remote_path, file) = os.path.split(remote_file)
         self.make_dir(remote_path)
         self.sftp.put(local_file, remote_file)
+
+    def open_file(self, remote_file):
+        """
+
+        :param remote_file:
+        :return:
+        """
+        return self.sftp.file(remote_file)
 
     def close(self):
         """

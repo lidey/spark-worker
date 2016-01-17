@@ -45,6 +45,7 @@ class SparkJob(BaseModel):
     title = CharField(db_column='TITLE', max_length=32)
     description = TextField(db_column='DESCRIPTION')
     main_class = CharField(db_column='MAIN_CLASS', max_length=256)
+    main_jar = CharField(db_column='MAIN_JAR', max_length=256)
     master = CharField(db_column='MASTER', max_length=236)
     arguments = CharField(db_column='ARGUMENTS', max_length=236)
     processor = IntegerField(db_column='PROCESSOR_NUM', default=10)
@@ -59,6 +60,7 @@ class SparkJob(BaseModel):
             'processor': self.processor,
             'memory': self.memory,
             'main_class': self.main_class,
+            'main_jar': self.main_jar,
             'master': self.master,
             'arguments': self.arguments,
             'created_time': time.mktime(self.created_time.timetuple()) * 1000,
@@ -75,7 +77,7 @@ class SparkJobLog(BaseModel):
     status = CharField(db_column='STATUS_FLAG', max_length=16)
     shell = TextField(db_column='EXEC_SHELL')
     std_out = TextField(db_column='STD_OUT')
-    std_info = TextField(db_column='STD_INFO')
+    std_err = TextField(db_column='STD_ERR')
     created_time = DateTimeField(db_column='CREATED_TIME', null=False)
 
     def to_dict(self):
@@ -85,7 +87,7 @@ class SparkJobLog(BaseModel):
             'app_id': self.app_id,
             'status': self.status,
             'std_out': self.std_out,
-            'std_info': self.std_info,
+            'std_err': self.std_err,
             'created_time': time.mktime(self.created_time.timetuple()) * 1000,
         }
 
