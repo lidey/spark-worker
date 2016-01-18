@@ -80,6 +80,7 @@ class CreateSparkJobThread(threading.Thread):
     """
 
     """
+
     def __init__(self, uuid):
         threading.Thread.__init__(self)
         spark_job = SparkJob.get(SparkJob.uuid == uuid)
@@ -112,16 +113,21 @@ class CreateSparkJobThread(threading.Thread):
             "appResource": 'file:{0}'.format(os.path.join(remote_path, self.spark_job.main_jar)),
             "clientSparkVersion": "1.6.0",
             "environmentVariables": {
+                "SPARK_SCALA_VERSION": "2.10",
+                "SPARK_CONF_DIR": "{0}/conf".format(self.spark.path),
+                "SPARK_HOME": self.spark.path,
                 "SPARK_ENV_LOADED": "1"
             },
             "mainClass": self.spark_job.main_class,
             "sparkProperties": {
+                "spark.executor.memory": "{0}M".format(self.spark_job.memory),
+                "spark.total.executor.cores": "{0}".format(self.spark_job.processor),
                 "spark.jars": self.spark_job.jars,
                 "spark.driver.supervise": "false",
                 "spark.app.name": self.spark_job.title,
                 "spark.eventLog.enabled": "true",
                 "spark.submit.deployMode": "cluster",
-                "spark.master": self.spark.rest_url
+                "spark.master": self.spark_job.master
             }
         })
         job_log.std_err = ''
@@ -137,6 +143,7 @@ class CreateSparkJobThread(threading.Thread):
             print response.body
             job = json.loads(response.body)
             job_log.app_id = job['submissionId']
+            job_log.status = 'INIT'
             job_log.save(force_insert=True)
             if job['success']:
                 time.sleep(3)
@@ -180,7 +187,7 @@ def spark_job_status(log):
         log.std_out = server_script.open_file(os.path.join(job_path, 'stdout')).read()
         log.save()
 
-        if 'RUNNING' != log.status:
+        if 'RUNNING' != log.status and 'INIT' != log.status:
             remote_path = os.path.join(spark.server.path, sparkConfig['upload_path'] + '/' + log.uuid)
             for f in server_script.list_dir(remote_path):
                 server_script.remove_file(os.path.join(remote_path, f))
@@ -194,6 +201,7 @@ def update_spark_job_status():
     """
     for log in SparkJobLog.select().where(SparkJobLog.status == 'RUNNING'):
         spark_job_status(log)
+    return
 
 
 scheduler.add_job(update_spark_job_status, 'interval', seconds=30)

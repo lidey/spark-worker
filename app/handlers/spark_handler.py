@@ -71,6 +71,10 @@ class SparkHandler(BaseHandler):
             self.job_remove()
         if url_first == 'job' and url_second == 'start':
             self.job_start()
+        if url_first == 'job' and url_second == 'log_list':
+            self.job_log_list()
+        if url_first == 'job' and url_second == 'log':
+            self.job_log()
 
     def info(self):
         """
@@ -196,6 +200,27 @@ class SparkHandler(BaseHandler):
         # SparkJobThread(self.get_argument('uuid'))
         CreateSparkJobThread(self.get_argument('uuid'))
         self.write({'success': True, 'content': '作业删除成功.'})
+
+    def job_log_list(self):
+        """
+        获取Spark 作业日志列表
+        :return: 作业日志列表
+        """
+        logs = []
+        for log in SparkJobLog.select(SparkJobLog, SparkJob).join(SparkJob).order_by(SparkJobLog.created_time.desc()):
+            logs.append(log.to_dict())
+        self.write({'logs': logs})
+
+    def job_log(self):
+        """
+        获取Spark 作业日志信息
+        :return: 日志信息
+        """
+        log = SparkJobLog.get(SparkJobLog.uuid == self.get_argument('uuid'))
+        log_dict = log.to_dict()
+        log_dict['std_out'] = log.std_out
+        log_dict['std_err'] = log.std_err
+        self.write(log_dict)
 
 
 class SparkTerminalHandler(tornado.websocket.WebSocketHandler):

@@ -1,23 +1,18 @@
-<div ng-controller="SparkJobListCtrl" ng-init="app.hideAside = false;">
+<div ng-controller="SparkLogListCtrl" ng-init="app.hideAside = true;">
     <!-- header -->
     <div class="wrapper bg-light lter b-b">
-        <div class="pull-right btn-group  m-t-n-xs" ng-if="spark != undefined">
-            <button class="btn btn-sm btn-info w-xxs w-auto-xs" ng-click="add_job()">
-                <i class="fa fa-plus"></i>添加
-            </button>
-        </div>
-        &nbsp;
+        <div class="h4">Spark 作业日志</div>
     </div>
     <!-- / header -->
-    <div class="wrapper-md ng-scope" ng-if="spark != undefined">
+    <div class="wrapper-md ng-scope">
         <alert ng-repeat="alert in alerts" type="{{ alert.type }}"
                close="closeAlert($index)">{{ alert.msg }}</alert>
         <div class="panel panel-default">
             <div class="panel-heading">
-                作业列表
+                作业日志列表
             </div>
             <div class="panel-body table-responsive">
-                <table ng-if="dt_option!=undefined" id="jobs" ui-jq="dataTable" ui-options="dt_option"
+                <table ng-if="dt_option!=undefined" id="logs" ui-jq="dataTable" ui-options="dt_option"
                        ui-controller="jobGrid"
                        class="table table-striped m-b-none">
                 </table>

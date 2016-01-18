@@ -1,7 +1,7 @@
 <!-- hbox layout -->
 <div class="hbox hbox-auto-xs bg-light " ng-controller="SparkCtrl">
     <!-- column -->
-    <div class="col w-lg lt b-r bg-auto">
+    <div class="col w-lg lt b-r bg-auto" ng-class="{'hide': app.hideAside }" ui-view="aside">
         <div class="vbox">
             <div class="wrapper">
                 <div class="h4">Spark 作业管理</div>
@@ -16,7 +16,7 @@
                 <div class="cell scrollable hover">
                     <div class="cell-inner">
                         <div class="padder">
-                            <div class="list-group">
+                            <div class="list-group" ng-init="refresh()">
                                 <a ng-repeat="spark in sparks | filter:query | orderBy:'created_time':true"
                                    class="list-group-item b-l-{{ spark.color || 'info'}} b-l-3x hover-anchor"
                                    ng-class="{'hover': spark.selected }" ng-click="selectSpark(spark)">

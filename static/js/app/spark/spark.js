@@ -26,7 +26,6 @@ app.controller('SparkCtrl', ['$scope', 'sparkService', '$stateParams', function 
 
         });
     };
-    $scope.refresh();
 }]);
 
 app.controller('SparkJobListCtrl', ['$scope', 'sparkService', '$compile', '$modal', function ($scope, sparkService, $compile, $modal) {
@@ -180,7 +179,7 @@ app.controller('SparkJobCtrl', ['$scope', 'sparkService', '$modalInstance', '$mo
     });
 
     if (uuid == null) {
-        $scope.job = {s_uuid: spark.uuid, memory: 512, processor: 1, master: spark.url};
+        $scope.job = {s_uuid: spark.uuid, memory: 512, processor: 1, master: spark.rest_url};
     } else {
         sparkService.get_job(uuid).then(function (data) {
             $scope.job = data;
@@ -272,33 +271,91 @@ app.controller('SparkJobCtrl', ['$scope', 'sparkService', '$modalInstance', '$mo
 
 }]);
 
-app.controller('SparkJobLogsCtrl', ['$scope', 'sparkService', '$modalInstance', 'config', 'uuid', function ($scope, sparkService, $modalInstance, config, uuid) {
+app.controller('SparkJobLogsCtrl', ['$scope', 'sparkService', '$modalInstance', 'config', 'content', function ($scope, sparkService, $modalInstance, config, content) {
 
     $scope.cancel = function () {
         $modalInstance.dismiss();
     };
 
-    $scope.logs = [];
-    $scope.initConnect = function () {
-        var options = {
-            endpoint: 'ws://' + config.hostname + ':' + config.port + '/terminal/spark?uuid=' + uuid
-        };
+    $scope.logs = content.split('\n');
 
-        var client = new WSSHClient();
+}]);
 
-        client.connect($.extend(options, {
-            onConnect: function () {
+
+app.controller('SparkLogListCtrl', ['$scope', 'sparkService', '$compile', '$modal', function ($scope, sparkService, $compile, $modal) {
+
+    $scope.jobGrid = {};
+    $scope.dt_option = {
+        'language': {
+            'url': 'static/vendor/jquery/datatables/i18n/zh_CN.json'
+
+        },
+        ajax: {
+            url: 'spark/job/log_list',
+            dataSrc: 'logs'
+        },
+        columns: [
+            {title: '主键', data: 'uuid', visible: false},
+            {title: '名称', data: 'title', width: '40%'},
+            {title: '作业ID', data: 'app_id', width: '20%'},
+            {title: '状态', data: 'status', width: '10%'},
+            {title: '创建时间', data: 'created_time', width: '15%'}
+        ],
+        columnDefs: [
+            {
+                targets: [1],
+                render: function (data, type, row) {
+                    return '<i class="fa fa-bug m-r-xs"></i>' + data;
+                }
             },
-            onData: function (data) {
-                $scope.$apply(function () {
-                    $scope.logs.push(data);
-                });
+            {
+                targets: [4],
+                render: function (data, type, row) {
+                    return new Date(parseInt(data)).toLocaleString().replace(/:\d{1,2}$/, ' ');
+                }
             },
-            onError: function (error) {
-            },
-            onClose: function () {
+            {
+                title: '操作', width: '15%', targets: [5], data: 'uuid', orderable: false,
+                render: function (data, type, row) {
+                    return '<a ng-click="show_out(\'' + data + '\')" class="text-info m-r-md"><i class="fa  fa-eye m-r-xs"></i>输出</a>' +
+                        '<a ng-click="show_log(\'' + data + '\',\'' + row.title + '\')" class="text-info"><i class="fa fa-eye m-r-xs"></i>日志</a>';
+                }
             }
-        }));
+        ],
+        order: [[4, "desc"]],
+        "fnCreatedRow": function (nRow, aData, iDataIndex) {
+            $compile(nRow)($scope);
+        }
     };
+
+    $scope.show_out = function (uuid) {
+        sparkService.get_log(uuid).then(function (log) {
+            openLog(log.std_out);
+        })
+    };
+
+
+    $scope.show_log = function (uuid) {
+        sparkService.get_log(uuid).then(function (log) {
+            openLog(log.std_err);
+        })
+    };
+
+    function openLog(content) {
+        $modal.open({
+            templateUrl: 'static/tpl/spark/job.log.html',
+            controller: 'SparkJobLogsCtrl',
+            size: 'lg',
+            resolve: {
+                content: function () {
+                    return content;
+                }
+            }
+        })
+    };
+
+    $scope.reload = function () {
+        $scope.jobGrid.logs.api().ajax.reload();
+    }
 
 }]);

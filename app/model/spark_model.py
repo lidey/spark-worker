@@ -86,8 +86,8 @@ class SparkJobLog(BaseModel):
             'title': self.job.title,
             'app_id': self.app_id,
             'status': self.status,
-            'std_out': self.std_out,
-            'std_err': self.std_err,
+            # 'std_out': self.std_out,
+            # 'std_err': self.std_err,
             'created_time': time.mktime(self.created_time.timetuple()) * 1000,
         }
 

@@ -67,5 +67,11 @@ app.factory('sparkService', ['$http', function ($http) {
         });
     };
 
+    factory.get_log = function (uuid) {
+        return $http.get("spark/job/log", {params: {uuid: uuid}}).then(function (resp) {
+            return resp.data;
+        });
+    };
+
     return factory;
 }]);

@@ -26,6 +26,17 @@ angular.module('app')
                         url: '/jobs',
                         templateUrl: 'static/tpl/spark/spark.job.list.html'
                     })
+                    .state('app.spark.logs', {
+                        url: '/logs',
+                        views: {
+                            '': {
+                                templateUrl: 'static/tpl/spark/spark.job.log.list.html'
+                            },
+                            'aside': {
+                                templateUrl: 'static/tpl/spark/spark.list.html'
+                            }
+                        }
+                    })
                     .state('app.spark.add', {
                         url: '/add',
                         templateUrl: 'static/tpl/spark/spark.info.html',
