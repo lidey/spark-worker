@@ -61,8 +61,8 @@ app.factory('sparkService', ['$http', function ($http) {
         });
     };
 
-    factory.test = function (spark) {
-        return $http.post("spark/test", spark).then(function (resp) {
+    factory.run_spark = function (uuid) {
+        return $http.get("spark/job/start", {params: {uuid: uuid}}).then(function (resp) {
             return resp.data;
         });
     };

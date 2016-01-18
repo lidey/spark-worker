@@ -6,5 +6,5 @@
     </h5>
 </div>
 <div class="modal-body" style="height: 400px;overflow-y: auto;">
-    <div ng-repeat="log in logs track by $index">{{ log }}</div>
+    <p ng-repeat="log in logs track by $index" ng-bind-html="log"></p>
 </div>

@@ -9,6 +9,7 @@ import time
 from jinja2 import Environment, PackageLoader
 from tornado import httpclient
 
+from app.core.base_model import db
 from app.core.base_scheduler import scheduler
 from app.model.spark_model import SparkJob, SparkJobLog
 from app.script.server_script import ServerScript
@@ -156,6 +157,7 @@ class CreateSparkJobThread(threading.Thread):
             # Other errors are possible, such as IOError.
             print("Error: " + str(e))
         finally:
+            db.close()
             http_client.close()
             server_script.close()
         pass
@@ -186,6 +188,7 @@ def spark_job_status(log):
         log.std_err = server_script.open_file(os.path.join(job_path, 'stderr')).read()
         log.std_out = server_script.open_file(os.path.join(job_path, 'stdout')).read()
         log.save()
+        db.close()
 
         if 'RUNNING' != log.status and 'INIT' != log.status:
             remote_path = os.path.join(spark.server.path, sparkConfig['upload_path'] + '/' + log.uuid)
@@ -194,14 +197,32 @@ def spark_job_status(log):
             server_script.remove_dir(remote_path)
 
 
+class UpdateSparkJobThread(threading.Thread):
+    """
+
+    """
+
+    def __init__(self):
+        threading.Thread.__init__(self)
+        self.start()
+
+    def run(self):
+        """
+
+        :return:
+        """
+        for log in SparkJobLog.select().where(SparkJobLog.status == 'RUNNING'):
+            spark_job_status(log)
+        db.close()
+        return
+
+
 def update_spark_job_status():
     """
 
     :return:
     """
-    for log in SparkJobLog.select().where(SparkJobLog.status == 'RUNNING'):
-        spark_job_status(log)
-    return
+    UpdateSparkJobThread()
 
 
-scheduler.add_job(update_spark_job_status, 'interval', seconds=30)
+# scheduler.add_job(update_spark_job_status, 'interval', seconds=30)

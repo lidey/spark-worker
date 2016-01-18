@@ -1,15 +1,9 @@
 app.controller('SparkCtrl', ['$scope', 'sparkService', '$stateParams', function ($scope, sparkService, $stateParams) {
 
-    $scope.refresh = function (uuid) {
+    $scope.refresh = function () {
         sparkService.all().then(function (sparks) {
             $scope.sparks = sparks;
-            if (uuid != undefined) {
-                $scope.selectSpark({uuid: uuid});
-            }
         });
-        if (uuid == undefined) {
-            $scope.$broadcast('spark', undefined);
-        }
     };
 
     $scope.selectSpark = function (spark) {
@@ -29,7 +23,7 @@ app.controller('SparkCtrl', ['$scope', 'sparkService', '$stateParams', function 
 }]);
 
 app.controller('SparkJobListCtrl', ['$scope', 'sparkService', '$compile', '$modal', function ($scope, sparkService, $compile, $modal) {
-
+    $scope.spark = undefined;
     $scope.jobGrid = {};
     $scope.$on('spark', function (event, data) {
 
@@ -50,7 +44,7 @@ app.controller('SparkJobListCtrl', ['$scope', 'sparkService', '$compile', '$moda
                         {title: '主键', data: 'uuid', visible: false},
                         {title: '名称', data: 'title', width: '35%'},
                         {title: '节点', data: 'master', width: '20%'},
-                        {title: '创建时间', data: 'created_time', width: '20%'}
+                        {title: '创建时间', data: 'created_time', width: '15%'}
                     ],
                     columnDefs: [
                         {
@@ -66,10 +60,11 @@ app.controller('SparkJobListCtrl', ['$scope', 'sparkService', '$compile', '$moda
                             }
                         },
                         {
-                            title: '操作', width: '25%', targets: [4], data: 'uuid', orderable: false,
+                            title: '操作', width: '30%', targets: [4], data: 'uuid', orderable: false,
                             render: function (data, type, row) {
                                 return '<a ng-click="run_spark(\'' + data + '\')" class="text-info m-r-md"><i class="fa  fa-play m-r-xs"></i>执行</a>' +
-                                    '<a ng-click="designer_job(\'' + data + '\')" class="text-info m-r-md"><i class="fa fa-sliders m-r-xs"></i>设计器</a>' +
+                                    '<a ng-click="designer_job(\'' + data + '\')" class="text-info m-r-md"><i class="fa  fa-calendar m-r-xs"></i>调度</a>' +
+                                    '<a ng-click="designer_job(\'' + data + '\')" class="text-info m-r-md"><i class="fa fa-sliders m-r-xs"></i>设计</a>' +
                                     '<a ng-click="delete_job(\'' + data + '\',\'' + row.title + '\')" class="text-warning"><i class="fa fa-times m-r-xs"></i>删除</a>';
                             }
                         }
@@ -153,19 +148,10 @@ app.controller('SparkJobListCtrl', ['$scope', 'sparkService', '$compile', '$moda
         });
     };
 
-
     $scope.run_spark = function (uuid) {
-        $modal.open({
-            templateUrl: 'static/tpl/spark/job.log.html',
-            controller: 'SparkJobLogsCtrl',
-            size: 'lg',
-            resolve: {
-                uuid: function () {
-                    return uuid;
-                }
-            }
-        }).result.then(function () {
-        });
+        sparkService.run_spark(uuid).then(function (message) {
+            $scope.showMessage(message);
+        })
     };
 }]);
 
@@ -277,7 +263,7 @@ app.controller('SparkJobLogsCtrl', ['$scope', 'sparkService', '$modalInstance', 
         $modalInstance.dismiss();
     };
 
-    $scope.logs = content.split('\n');
+    $scope.logs = content.replace(new RegExp(/(\tat)/g), '&nbsp;&nbsp;&nbsp;&nbsp;').split('\n');
 
 }]);
 
@@ -353,9 +339,5 @@ app.controller('SparkLogListCtrl', ['$scope', 'sparkService', '$compile', '$moda
             }
         })
     };
-
-    $scope.reload = function () {
-        $scope.jobGrid.logs.api().ajax.reload();
-    }
 
 }]);

@@ -199,7 +199,7 @@ class SparkHandler(BaseHandler):
         """
         # SparkJobThread(self.get_argument('uuid'))
         CreateSparkJobThread(self.get_argument('uuid'))
-        self.write({'success': True, 'content': '作业删除成功.'})
+        self.write({'success': True, 'content': '作业启动成功.'})
 
     def job_log_list(self):
         """
