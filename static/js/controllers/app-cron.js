@@ -51,16 +51,6 @@ app.controller('AppCronCtrl', ['$scope', '$modalInstance', 'cron', function ($sc
     };
     $scope.appoint = {seconds: [], minutes: [], hours: [], days: [], months: [], weeks: []};
 
-    if (cron != undefined) {
-        $scope.select_second(cron.second);
-        $scope.analysis_minute(cron.minute);
-        $scope.analysis_hour(cron.hour);
-        $scope.analysis_day(cron.day);
-        $scope.analysis_month(cron.month);
-        $scope.analysis_week(cron.week);
-        $scope.analysis_year(cron.year);
-    }
-
     function padNumber(num, fill) {
         var len = ('' + num).length;
         return (Array(
@@ -369,8 +359,19 @@ app.controller('AppCronCtrl', ['$scope', '$modalInstance', 'cron', function ($sc
         }
     };
 
+    if (cron != undefined && cron != null && typeof(cron) == 'object') {
+        $scope.analysis_second(cron.second);
+        $scope.analysis_minute(cron.minute);
+        $scope.analysis_hour(cron.hour);
+        $scope.analysis_day(cron.day);
+        $scope.analysis_month(cron.month);
+        $scope.analysis_week(cron.week);
+        $scope.analysis_year(cron.year);
+    }
+
     $scope.save_cron = function () {
-        console.log($scope.cron)
+        console.log($scope.cron);
+        $modalInstance.close($scope.cron);
     }
 
 }]);

@@ -1,6 +1,6 @@
 <form class=" form-horizontal" ng-submit="save_cron()">
     <div class="modal-header">
-        <h5 class="modal-title">调度器
+        <h5 class="modal-title">调度器配置
     <span class="pull-right">
             <button type="button" ng-click="cancel()" class="close"><span aria-hidden="true">&times;</span></button>
         </span>
@@ -756,10 +756,8 @@
             </tab>
         </tabset>
         <!-- / tab -->
-        <div class="form-group">
-            <label class="col-lg-3">调度表达式:</label>
-        </div>
-        <div class="form-group">
+
+        <div class="form-group hide">
             <div class="col-lg-2">
                 <label>秒</label>
                 <input type="text" class="form-control" ng-model="cron.second" ng-change="analysis_second(cron.second)">
