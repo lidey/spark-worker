@@ -1,0 +1,798 @@
+<form class=" form-horizontal" ng-submit="save_cron()">
+    <div class="modal-header">
+        <h5 class="modal-title">调度器
+    <span class="pull-right">
+            <button type="button" ng-click="cancel()" class="close"><span aria-hidden="true">&times;</span></button>
+        </span>
+        </h5>
+    </div>
+    <div class="modal-body">
+        <!-- tab -->
+        <tabset justified="true" class="tab-container ">
+            <tab heading="秒">
+                <div class="form-group">
+                    <div class="col-lg-7">
+                        <div class="radio">
+                            <label class="i-checks i-checks-sm">
+                                <input type="radio" name="second_type" ng-model="type.second" value="wildcard"
+                                       ng-click="select_second()">
+                                <i></i>
+                                每秒 允许的通配符[, - * /]
+                            </label>
+                        </div>
+                    </div>
+                </div>
+                <div class="form-group">
+                    <div class="col-lg-3">
+                        <div class="radio">
+                            <label class="i-checks i-checks-sm">
+                                <input type="radio" name="second_type" ng-model="type.second" value="cycle"
+                                       ng-click="select_second()">
+                                <i></i>
+                                周期从
+                            </label>
+                        </div>
+                    </div>
+                    <div class="col-lg-2 m-l-n-xxl">
+                        <input ui-jq="TouchSpin" type="text" value="1" class="form-control" data-min='1' data-max="58"
+                               data-verticalbuttons="true" data-verticalupclass="fa fa-caret-up"
+                               ng-disabled="type.second!='cycle'" ng-change="select_second()"
+                               ng-model="cycle.second_start"
+                               data-verticaldownclass="fa fa-caret-down">
+                    </div>
+                    <div class="col-lg-1 m-l-n-md m-r-n-sm">
+                        <p class="form-control-static">-</p>
+                    </div>
+                    <div class="col-lg-2 m-l-n-md">
+                        <input ui-jq="TouchSpin" type="text" value="2" class="form-control" data-min='2' data-max="59"
+                               data-verticalbuttons="true" data-verticalupclass="fa fa-caret-up"
+                               ng-disabled="type.second!='cycle'" ng-model="cycle.second_end"
+                               ng-change="select_second()"
+                               data-verticaldownclass="fa fa-caret-down">
+                    </div>
+                    <div class="col-lg-1 m-l-n-md">
+                        <p class="form-control-static">秒</p>
+                    </div>
+                </div>
+                <div class="form-group">
+                    <div class="col-lg-2">
+                        <div class="radio">
+                            <label class="i-checks i-checks-sm">
+                                <input type="radio" name="second_type" ng-model="type.second" value="interval"
+                                       ng-click="select_second()">
+                                <i></i>
+                                从
+                            </label>
+                        </div>
+                    </div>
+                    <div class="col-lg-2 m-l-n-xxl">
+                        <input ui-jq="TouchSpin" type="text" value="0" class="form-control" data-min='0' data-max="59"
+                               data-verticalbuttons="true" data-verticalupclass="fa fa-caret-up"
+                               ng-disabled="type.second!='interval'" ng-model="interval.second_start"
+                               ng-change="select_second()"
+                               data-verticaldownclass="fa fa-caret-down">
+                    </div>
+                    <div class="col-lg-2 m-l-n-md m-r-n-sm">
+                        <p class="form-control-static">秒开始,每</p>
+                    </div>
+                    <div class="col-lg-2 m-l-n-md">
+                        <input ui-jq="TouchSpin" type="text" value="1" class="form-control" data-min='1' data-max="59"
+                               data-verticalbuttons="true" data-verticalupclass="fa fa-caret-up"
+                               ng-disabled="type.second!='interval'" ng-model="interval.second_end"
+                               ng-change="select_second()"
+                               data-verticaldownclass="fa fa-caret-down">
+                    </div>
+                    <div class="col-lg-3 m-l-n-md">
+                        <p class="form-control-static">秒执行一次</p>
+                    </div>
+                </div>
+                <div class="form-group">
+                    <div class="col-lg-2">
+                        <div class="radio">
+                            <label class="i-checks i-checks-sm">
+                                <input type="radio" name="second_type" ng-model="type.second" value="appoint"
+                                       ng-click="select_second()">
+                                <i></i>
+                                指定
+                            </label>
+                        </div>
+                    </div>
+                </div>
+                <div class="form-group">
+                    <div class="col-lg-12">
+                        <label class="checkbox-inline i-checks i-checks-sm" ng-repeat="second in second_tab"
+                               ng-class="{'m-l-sm':$first}">
+                            <input type="checkbox"
+                                   ng-click="select_second()"
+                                   checklist-model="appoint.seconds"
+                                   checklist-value="second.value"
+                                   ng-disabled="type.second!='appoint'"><i></i> {{ second.name }}
+                        </label>
+                    </div>
+                </div>
+            </tab>
+            <tab heading="分钟">
+                <div class="form-group">
+                    <div class="col-lg-7">
+                        <div class="radio">
+                            <label class="i-checks i-checks-sm">
+                                <input type="radio" name="minute_type" ng-model="type.minute" value="wildcard"
+                                       ng-click="select_minute()">
+                                <i></i>
+                                分钟 允许的通配符[, - * /]
+                            </label>
+                        </div>
+                    </div>
+                </div>
+                <div class="form-group">
+                    <div class="col-lg-3">
+                        <div class="radio">
+                            <label class="i-checks i-checks-sm">
+                                <input type="radio" name="minute_type" ng-model="type.minute" value="cycle"
+                                       ng-click="select_minute()">
+                                <i></i>
+                                周期从
+                            </label>
+                        </div>
+                    </div>
+                    <div class="col-lg-2 m-l-n-xxl">
+                        <input ui-jq="TouchSpin" type="text" value="1" class="form-control" data-min='1' data-max="58"
+                               data-verticalbuttons="true" data-verticalupclass="fa fa-caret-up"
+                               ng-disabled="type.minute!='cycle'" ng-model="cycle.minute_start"
+                               ng-change="select_minute()"
+                               data-verticaldownclass="fa fa-caret-down">
+                    </div>
+                    <div class="col-lg-1 m-l-n-md m-r-n-sm">
+                        <p class="form-control-static">-</p>
+                    </div>
+                    <div class="col-lg-2 m-l-n-md">
+                        <input ui-jq="TouchSpin" type="text" value="2" class="form-control" data-min='2' data-max="59"
+                               data-verticalbuttons="true" data-verticalupclass="fa fa-caret-up"
+                               ng-disabled="type.minute!='cycle'" ng-model="cycle.minute_end"
+                               ng-change="select_minute()"
+                               data-verticaldownclass="fa fa-caret-down">
+                    </div>
+                    <div class="col-lg-2 m-l-n-md">
+                        <p class="form-control-static">分钟</p>
+                    </div>
+                </div>
+                <div class="form-group">
+                    <div class="col-lg-2">
+                        <div class="radio">
+                            <label class="i-checks i-checks-sm">
+                                <input type="radio" name="minute_type" ng-model="type.minute" value="interval"
+                                       ng-click="select_minute()">
+                                <i></i>
+                                从
+                            </label>
+                        </div>
+                    </div>
+                    <div class="col-lg-2 m-l-n-xxl">
+                        <input ui-jq="TouchSpin" type="text" value="0" class="form-control" data-min='0' data-max="59"
+                               data-verticalbuttons="true" data-verticalupclass="fa fa-caret-up"
+                               ng-disabled="type.minute!='interval'" ng-model="interval.minute_start"
+                               ng-change="select_minute()"
+                               data-verticaldownclass="fa fa-caret-down">
+                    </div>
+                    <div class="col-lg-3 m-l-n-md m-r-n-sm">
+                        <p class="form-control-static">分钟开始,每</p>
+                    </div>
+                    <div class="col-lg-2 m-l-n-xxl">
+                        <input ui-jq="TouchSpin" type="text" value="1" class="form-control" data-min='1' data-max="59"
+                               data-verticalbuttons="true" data-verticalupclass="fa fa-caret-up"
+                               ng-disabled="type.minute!='interval'" ng-model="interval.minute_end"
+                               ng-change="select_minute()"
+                               data-verticaldownclass="fa fa-caret-down">
+                    </div>
+                    <div class="col-lg-4 m-l-n-md">
+                        <p class="form-control-static">分钟执行一次</p>
+                    </div>
+                </div>
+                <div class="form-group">
+                    <div class="col-lg-2">
+                        <div class="radio">
+                            <label class="i-checks i-checks-sm">
+                                <input type="radio" name="minute_type" ng-model="type.minute" value="appoint"
+                                       ng-click="select_minute()">
+                                <i></i>
+                                指定
+                            </label>
+                        </div>
+                    </div>
+                </div>
+                <div class="form-group">
+                    <div class="col-lg-12">
+                        <label class="checkbox-inline i-checks i-checks-sm" ng-repeat="minute in minute_tab"
+                               ng-class="{'m-l-sm':$first}">
+                            <input type="checkbox" ng-click="select_minute()"
+                                   checklist-model="appoint.minutes"
+                                   checklist-value="minute.value"
+                                   ng-disabled="type.minute!='appoint'"><i></i> {{ minute.name }}
+                        </label>
+                    </div>
+                </div>
+            </tab>
+            <tab heading="小时">
+                <div class="form-group">
+                    <div class="col-lg-7">
+                        <div class="radio">
+                            <label class="i-checks i-checks-sm">
+                                <input type="radio" name="hour_type" ng-model="type.hour" value="wildcard"
+                                       ng-click="select_hour()">
+                                <i></i>
+                                小时 允许的通配符[, - * /]
+                            </label>
+                        </div>
+                    </div>
+                </div>
+                <div class="form-group">
+                    <div class="col-lg-3">
+                        <div class="radio">
+                            <label class="i-checks i-checks-sm">
+                                <input type="radio" name="hour_type" ng-model="type.hour" value="cycle"
+                                       ng-click="select_hour()">
+                                <i></i>
+                                周期从
+                            </label>
+                        </div>
+                    </div>
+                    <div class="col-lg-2 m-l-n-xxl">
+                        <input ui-jq="TouchSpin" type="text" value="1" class="form-control" data-min='0' data-max="22"
+                               data-verticalbuttons="true" data-verticalupclass="fa fa-caret-up"
+                               ng-disabled="type.hour!='cycle'" ng-model="cycle.hour_start"
+                               ng-change="select_hour()"
+                               data-verticaldownclass="fa fa-caret-down">
+                    </div>
+                    <div class="col-lg-1 m-l-n-md m-r-n-sm">
+                        <p class="form-control-static">-</p>
+                    </div>
+                    <div class="col-lg-2 m-l-n-md">
+                        <input ui-jq="TouchSpin" type="text" value="2" class="form-control" data-min='1' data-max="23"
+                               data-verticalbuttons="true" data-verticalupclass="fa fa-caret-up"
+                               ng-disabled="type.hour!='cycle'" ng-model="cycle.hour_end"
+                               ng-change="select_hour()"
+                               data-verticaldownclass="fa fa-caret-down">
+                    </div>
+                    <div class="col-lg-2 m-l-n-md">
+                        <p class="form-control-static">小时</p>
+                    </div>
+                </div>
+                <div class="form-group">
+                    <div class="col-lg-2">
+                        <div class="radio">
+                            <label class="i-checks i-checks-sm">
+                                <input type="radio" name="hour_type" ng-model="type.hour" value="interval"
+                                       ng-click="select_hour()">
+                                <i></i>
+                                从
+                            </label>
+                        </div>
+                    </div>
+                    <div class="col-lg-2 m-l-n-xxl">
+                        <input ui-jq="TouchSpin" type="text" value="0" class="form-control" data-min='0' data-max="23"
+                               data-verticalbuttons="true" data-verticalupclass="fa fa-caret-up"
+                               ng-disabled="type.hour!='interval'" ng-model="interval.hour_start"
+                               ng-change="select_hour()"
+                               data-verticaldownclass="fa fa-caret-down">
+                    </div>
+                    <div class="col-lg-3 m-l-n-md m-r-n-sm">
+                        <p class="form-control-static">小时开始,每</p>
+                    </div>
+                    <div class="col-lg-2 m-l-n-xxl">
+                        <input ui-jq="TouchSpin" type="text" value="1" class="form-control" data-min='1' data-max="23"
+                               data-verticalbuttons="true" data-verticalupclass="fa fa-caret-up"
+                               ng-disabled="type.hour!='interval'" ng-model="interval.hour_end"
+                               ng-change="select_hour()"
+                               data-verticaldownclass="fa fa-caret-down">
+                    </div>
+                    <div class="col-lg-4 m-l-n-md">
+                        <p class="form-control-static">小时执行一次</p>
+                    </div>
+                </div>
+                <div class="form-group">
+                    <div class="col-lg-2">
+                        <div class="radio">
+                            <label class="i-checks i-checks-sm">
+                                <input type="radio" name="hour_type" ng-model="type.hour" value="appoint"
+                                       ng-click="select_hour()">
+                                <i></i>
+                                指定
+                            </label>
+                        </div>
+                    </div>
+                </div>
+                <div class="form-group">
+                    <div class="col-lg-12">
+                        <label class="checkbox-inline i-checks i-checks-sm" ng-repeat="hour in hour_tab"
+                               ng-class="{'m-l-sm':$first}">
+                            <input type="checkbox" ng-click="select_hour()"
+                                   checklist-model="appoint.hours"
+                                   checklist-value="hour.value"
+                                   ng-disabled="type.hour!='appoint'"><i></i> {{ hour.name }}
+                        </label>
+                    </div>
+                </div>
+            </tab>
+            <tab heading="日">
+                <div class="form-group">
+                    <div class="col-lg-7">
+                        <div class="radio">
+                            <label class="i-checks i-checks-sm">
+                                <input type="radio" name="day_type" ng-model="type.day" value="wildcard"
+                                       ng-click="select_day()">
+                                <i></i>
+                                日 允许的通配符[, - * /]
+                            </label>
+                        </div>
+                    </div>
+                </div>
+                <div class="form-group">
+                    <div class="col-lg-7">
+                        <div class="radio">
+                            <label class="i-checks i-checks-sm">
+                                <input type="radio" name="day_type" ng-model="type.day" value="empty"
+                                       ng-click="select_day()">
+                                <i></i>
+                                不指定
+                            </label>
+                        </div>
+                    </div>
+                </div>
+                <div class="form-group">
+                    <div class="col-lg-3">
+                        <div class="radio">
+                            <label class="i-checks i-checks-sm">
+                                <input type="radio" name="day_type" ng-model="type.day" value="cycle"
+                                       ng-click="select_day()">
+                                <i></i>
+                                周期从
+                            </label>
+                        </div>
+                    </div>
+                    <div class="col-lg-2 m-l-n-xxl">
+                        <input ui-jq="TouchSpin" type="text" value="1" class="form-control" data-min='0' data-max="22"
+                               data-verticalbuttons="true" data-verticalupclass="fa fa-caret-up"
+                               ng-disabled="type.day!='cycle'" ng-model="cycle.day_start"
+                               ng-change="select_day()"
+                               data-verticaldownclass="fa fa-caret-down">
+                    </div>
+                    <div class="col-lg-1 m-l-n-md m-r-n-sm">
+                        <p class="form-control-static">-</p>
+                    </div>
+                    <div class="col-lg-2 m-l-n-md">
+                        <input ui-jq="TouchSpin" type="text" value="2" class="form-control" data-min='1' data-max="23"
+                               data-verticalbuttons="true" data-verticalupclass="fa fa-caret-up"
+                               ng-disabled="type.day!='cycle'" ng-model="cycle.day_end"
+                               ng-change="select_day()"
+                               data-verticaldownclass="fa fa-caret-down">
+                    </div>
+                    <div class="col-lg-2 m-l-n-md">
+                        <p class="form-control-static">日</p>
+                    </div>
+                </div>
+                <div class="form-group">
+                    <div class="col-lg-2">
+                        <div class="radio">
+                            <label class="i-checks i-checks-sm">
+                                <input type="radio" name="day_type" ng-model="type.day" value="interval"
+                                       ng-click="select_day()">
+                                <i></i>
+                                从
+                            </label>
+                        </div>
+                    </div>
+                    <div class="col-lg-2 m-l-n-xxl">
+                        <input ui-jq="TouchSpin" type="text" value="0" class="form-control" data-min='0' data-max="23"
+                               data-verticalbuttons="true" data-verticalupclass="fa fa-caret-up"
+                               ng-disabled="type.day!='interval'" ng-model="interval.day_start"
+                               ng-change="select_day()"
+                               data-verticaldownclass="fa fa-caret-down">
+                    </div>
+                    <div class="col-lg-3 m-l-n-md m-r-n-sm">
+                        <p class="form-control-static">日开始,每</p>
+                    </div>
+                    <div class="col-lg-2 m-l-n-xxl">
+                        <input ui-jq="TouchSpin" type="text" value="1" class="form-control" data-min='1' data-max="23"
+                               data-verticalbuttons="true" data-verticalupclass="fa fa-caret-up"
+                               ng-disabled="type.day!='interval'" ng-model="interval.day_end"
+                               ng-change="select_day()"
+                               data-verticaldownclass="fa fa-caret-down">
+                    </div>
+                    <div class="col-lg-4 m-l-n-md">
+                        <p class="form-control-static">天执行一次</p>
+                    </div>
+                </div>
+                <div class="form-group">
+                    <div class="col-lg-2">
+                        <div class="radio">
+                            <label class="i-checks i-checks-sm">
+                                <input type="radio" name="day_type" ng-model="type.day" value="work"
+                                       ng-click="select_day()">
+                                <i></i>
+                                每月
+                            </label>
+                        </div>
+                    </div>
+                    <div class="col-lg-2 m-l-n-md">
+                        <input ui-jq="TouchSpin" type="text" value="0" class="form-control" data-min='0' data-max="23"
+                               data-verticalbuttons="true" data-verticalupclass="fa fa-caret-up"
+                               ng-disabled="type.day!='work'" ng-model="work.day_work"
+                               ng-change="select_day()"
+                               data-verticaldownclass="fa fa-caret-down">
+                    </div>
+                    <div class="col-lg-5 m-l-n-md m-r-n-sm">
+                        <p class="form-control-static">号最近的那个工作日</p>
+                    </div>
+                </div>
+                <div class="form-group">
+                    <div class="col-lg-7">
+                        <div class="radio">
+                            <label class="i-checks i-checks-sm">
+                                <input type="radio" name="day_type" ng-model="type.day" value="last"
+                                       ng-click="select_day()">
+                                <i></i>
+                                本月最后一天
+                            </label>
+                        </div>
+                    </div>
+                </div>
+                <div class="form-group">
+                    <div class="col-lg-2">
+                        <div class="radio">
+                            <label class="i-checks i-checks-sm">
+                                <input type="radio" name="day_type" ng-model="type.day" value="appoint"
+                                       ng-click="select_day()">
+                                <i></i>
+                                指定
+                            </label>
+                        </div>
+                    </div>
+                </div>
+                <div class="form-group">
+                    <div class="col-lg-12">
+                        <label class="checkbox-inline i-checks i-checks-sm" ng-repeat="day in day_tab"
+                               ng-class="{'m-l-sm':$first}">
+                            <input type="checkbox" ng-click="select_day()"
+                                   checklist-model="appoint.days"
+                                   checklist-value="day.value"
+                                   ng-disabled="type.day!='appoint'"><i></i> {{ day.name }}
+                        </label>
+                    </div>
+                </div>
+            </tab>
+            <tab heading="月">
+                <div class="form-group">
+                    <div class="col-lg-7">
+                        <div class="radio">
+                            <label class="i-checks i-checks-sm">
+                                <input type="radio" name="month_type" ng-model="type.month" value="wildcard"
+                                       ng-click="select_month()">
+                                <i></i>
+                                月 允许的通配符[, - * /]
+                            </label>
+                        </div>
+                    </div>
+                </div>
+                <div class="form-group">
+                    <div class="col-lg-7">
+                        <div class="radio">
+                            <label class="i-checks i-checks-sm">
+                                <input type="radio" name="month_type" ng-model="type.month" value="empty"
+                                       ng-click="select_month()">
+                                <i></i>
+                                不指定
+                            </label>
+                        </div>
+                    </div>
+                </div>
+                <div class="form-group">
+                    <div class="col-lg-3">
+                        <div class="radio">
+                            <label class="i-checks i-checks-sm">
+                                <input type="radio" name="month_type" ng-model="type.month" value="cycle"
+                                       ng-click="select_month()">
+                                <i></i>
+                                周期从
+                            </label>
+                        </div>
+                    </div>
+                    <div class="col-lg-2 m-l-n-xxl">
+                        <input ui-jq="TouchSpin" type="text" value="1" class="form-control" data-min='1' data-max="12"
+                               data-verticalbuttons="true" data-verticalupclass="fa fa-caret-up"
+                               ng-disabled="type.month!='cycle'" ng-model="cycle.month_start"
+                               ng-change="select_month()"
+                               data-verticaldownclass="fa fa-caret-down">
+                    </div>
+                    <div class="col-lg-1 m-l-n-md m-r-n-sm">
+                        <p class="form-control-static">-</p>
+                    </div>
+                    <div class="col-lg-2 m-l-n-md">
+                        <input ui-jq="TouchSpin" type="text" value="2" class="form-control" data-min='2' data-max="12"
+                               data-verticalbuttons="true" data-verticalupclass="fa fa-caret-up"
+                               ng-disabled="type.month!='cycle'" ng-model="cycle.month_end"
+                               ng-change="select_month()"
+                               data-verticaldownclass="fa fa-caret-down">
+                    </div>
+                    <div class="col-lg-2 m-l-n-md">
+                        <p class="form-control-static">月</p>
+                    </div>
+                </div>
+                <div class="form-group">
+                    <div class="col-lg-2">
+                        <div class="radio">
+                            <label class="i-checks i-checks-sm">
+                                <input type="radio" name="month_type" ng-model="type.month" value="interval"
+                                       ng-click="select_month()">
+                                <i></i>
+                                从
+                            </label>
+                        </div>
+                    </div>
+                    <div class="col-lg-2 m-l-n-xxl">
+                        <input ui-jq="TouchSpin" type="text" value="1" class="form-control" data-min='1' data-max="12"
+                               data-verticalbuttons="true" data-verticalupclass="fa fa-caret-up"
+                               ng-disabled="type.month!='interval'" ng-model="interval.month_start"
+                               ng-change="select_month()"
+                               data-verticaldownclass="fa fa-caret-down">
+                    </div>
+                    <div class="col-lg-3 m-l-n-md m-r-n-sm">
+                        <p class="form-control-static">月开始,每</p>
+                    </div>
+                    <div class="col-lg-2 m-l-n-xxl">
+                        <input ui-jq="TouchSpin" type="text" value="1" class="form-control" data-min='1' data-max="12"
+                               data-verticalbuttons="true" data-verticalupclass="fa fa-caret-up"
+                               ng-disabled="type.month!='interval'" ng-model="interval.month_end"
+                               ng-change="select_month()"
+                               data-verticaldownclass="fa fa-caret-down">
+                    </div>
+                    <div class="col-lg-4 m-l-n-md">
+                        <p class="form-control-static">月执行一次</p>
+                    </div>
+                </div>
+                <div class="form-group">
+                    <div class="col-lg-2">
+                        <div class="radio">
+                            <label class="i-checks i-checks-sm">
+                                <input type="radio" name="month_type" ng-model="type.month" value="appoint"
+                                       ng-click="select_month()">
+                                <i></i>
+                                指定
+                            </label>
+                        </div>
+                    </div>
+                </div>
+                <div class="form-group">
+                    <div class="col-lg-12">
+                        <label class="checkbox-inline i-checks i-checks-sm" ng-repeat="month in month_tab"
+                               ng-class="{'m-l-sm':$first}">
+                            <input type="checkbox" ng-click="select_month()" checklist-model="appoint.months"
+                                   checklist-value="month.value"
+                                   ng-disabled="type.month!='appoint'"><i></i> {{ month.name }}
+                        </label>
+                    </div>
+                </div>
+            </tab>
+            <tab heading="周">
+                <div class="form-group">
+                    <div class="col-lg-7">
+                        <div class="radio">
+                            <label class="i-checks i-checks-sm">
+                                <input type="radio" name="week_type" ng-model="type.week" value="wildcard"
+                                       ng-click="select_week()">
+                                <i></i>
+                                周 允许的通配符[, - * /]
+                            </label>
+                        </div>
+                    </div>
+                </div>
+                <div class="form-group">
+                    <div class="col-lg-7">
+                        <div class="radio">
+                            <label class="i-checks i-checks-sm">
+                                <input type="radio" name="week_type" ng-model="type.week" value="empty"
+                                       ng-click="select_week()">
+                                <i></i>
+                                不指定
+                            </label>
+                        </div>
+                    </div>
+                </div>
+                <div class="form-group">
+                    <div class="col-lg-3">
+                        <div class="radio">
+                            <label class="i-checks i-checks-sm">
+                                <input type="radio" name="week_type" ng-model="type.week" value="cycle"
+                                       ng-click="select_week()">
+                                <i></i>
+                                周期从星期
+                            </label>
+                        </div>
+                    </div>
+                    <div class="col-lg-2 m-l-n-xl">
+                        <input ui-jq="TouchSpin" type="text" value="1" class="form-control" data-min='1' data-max="7"
+                               data-verticalbuttons="true" data-verticalupclass="fa fa-caret-up"
+                               ng-disabled="type.week!='cycle'" ng-model="cycle.week_start"
+                               ng-change="select_week()"
+                               data-verticaldownclass="fa fa-caret-down">
+                    </div>
+                    <div class="col-lg-1 m-l-n-md m-r-n-sm">
+                        <p class="form-control-static">-</p>
+                    </div>
+                    <div class="col-lg-2 m-l-n-md">
+                        <input ui-jq="TouchSpin" type="text" value="2" class="form-control" data-min='2' data-max="7"
+                               data-verticalbuttons="true" data-verticalupclass="fa fa-caret-up"
+                               ng-disabled="type.week!='cycle'" ng-model="cycle.week_end"
+                               ng-change="select_week()"
+                               data-verticaldownclass="fa fa-caret-down">
+                    </div>
+                </div>
+                <div class="form-group">
+                    <div class="col-lg-3">
+                        <div class="radio">
+                            <label class="i-checks i-checks-sm">
+                                <input type="radio" name="week_type" ng-model="type.week" value="interval"
+                                       ng-click="select_week()">
+                                <i></i>
+                                每月第
+                            </label>
+                        </div>
+                    </div>
+                    <div class="col-lg-2 m-l-n-xxl">
+                        <input ui-jq="TouchSpin" type="text" value="1" class="form-control" data-min='1' data-max="12"
+                               data-verticalbuttons="true" data-verticalupclass="fa fa-caret-up"
+                               ng-disabled="type.week!='interval'" ng-model="interval.week_start"
+                               ng-change="select_week()"
+                               data-verticaldownclass="fa fa-caret-down">
+                    </div>
+                    <div class="col-lg-3 m-l-n-md m-r-n-sm">
+                        <p class="form-control-static">周 的星期</p>
+                    </div>
+                    <div class="col-lg-2 m-l-n-xxl">
+                        <input ui-jq="TouchSpin" type="text" value="1" class="form-control" data-min='1' data-max="7"
+                               data-verticalbuttons="true" data-verticalupclass="fa fa-caret-up"
+                               ng-disabled="type.week!='interval'" ng-model="interval.week_end"
+                               ng-change="select_week()"
+                               data-verticaldownclass="fa fa-caret-down">
+                    </div>
+                </div>
+                <div class="form-group">
+                    <div class="col-lg-4">
+                        <div class="radio">
+                            <label class="i-checks i-checks-sm">
+                                <input type="radio" name="week_type" ng-model="type.week" value="last"
+                                       ng-click="select_week()">
+                                <i></i>
+                                本月最后一个星期
+                            </label>
+                        </div>
+                    </div>
+                    <div class="col-lg-2 m-l-n-xl">
+                        <input ui-jq="TouchSpin" type="text" value="1" class="form-control" data-min='1' data-max="7"
+                               data-verticalbuttons="true" data-verticalupclass="fa fa-caret-up"
+                               ng-disabled="type.week!='last'" ng-model="last.week_last"
+                               ng-change="select_week()"
+                               data-verticaldownclass="fa fa-caret-down">
+                    </div>
+                </div>
+                <div class="form-group">
+                    <div class="col-lg-2">
+                        <div class="radio">
+                            <label class="i-checks i-checks-sm">
+                                <input type="radio" name="week_type" ng-model="type.week" value="appoint"
+                                       ng-click="select_week()">
+                                <i></i>
+                                指定
+                            </label>
+                        </div>
+                    </div>
+                </div>
+                <div class="form-group">
+                    <div class="col-lg-12">
+                        <label class="checkbox-inline i-checks i-checks-sm" ng-repeat="week in week_tab"
+                               ng-class="{'m-l-sm':$first}">
+                            <input type="checkbox" ng-click="select_week()" checklist-model="appoint.weeks"
+                                   checklist-value="week.value"
+                                   ng-disabled="type.week!='appoint'"><i></i> {{ week.name }}
+                        </label>
+                    </div>
+                </div>
+            </tab>
+            <tab heading="年">
+                <div class="form-group">
+                    <div class="col-lg-7">
+                        <div class="radio">
+                            <label class="i-checks i-checks-sm">
+                                <input type="radio" name="year_type" ng-model="type.year" value="empty"
+                                       ng-click="select_year()">
+                                <i></i>
+                                不指定 允许的通配符[, - * /] 非必填
+                            </label>
+                        </div>
+                    </div>
+                </div>
+                <div class="form-group">
+                    <div class="col-lg-7">
+                        <div class="radio">
+                            <label class="i-checks i-checks-sm">
+                                <input type="radio" name="year_type" ng-model="type.year" value="wildcard"
+                                       ng-click="select_year()">
+                                <i></i>
+                                每年
+                            </label>
+                        </div>
+                    </div>
+                </div>
+                <div class="form-group">
+                    <div class="col-lg-3">
+                        <div class="radio">
+                            <label class="i-checks i-checks-sm">
+                                <input type="radio" name="year_type" ng-model="type.year" value="cycle"
+                                       ng-click="select_year()">
+                                <i></i>
+                                周期从
+                            </label>
+                        </div>
+                    </div>
+                    <div class="col-lg-3 m-l-n-xl">
+                        <input ui-jq="TouchSpin" type="text" value="2016" class="form-control" data-min='2016'
+                               data-max="2050"
+                               data-verticalbuttons="true" data-verticalupclass="fa fa-caret-up"
+                               ng-disabled="type.year!='cycle'" ng-model="cycle.year_start"
+                               ng-change="select_year()"
+                               data-verticaldownclass="fa fa-caret-down">
+                    </div>
+                    <div class="col-lg-1 m-l-n-md m-r-n-sm">
+                        <p class="form-control-static">-</p>
+                    </div>
+                    <div class="col-lg-3 m-l-n-md">
+                        <input ui-jq="TouchSpin" type="text" value="2017" class="form-control" data-min='2017'
+                               data-max="2050"
+                               data-verticalbuttons="true" data-verticalupclass="fa fa-caret-up"
+                               ng-disabled="type.year!='cycle'" ng-model="cycle.year_end"
+                               ng-change="select_week()"
+                               data-verticaldownclass="fa fa-caret-down">
+                    </div>
+                </div>
+            </tab>
+        </tabset>
+        <!-- / tab -->
+        <div class="form-group">
+            <label class="col-lg-3">调度表达式:</label>
+        </div>
+        <div class="form-group">
+            <div class="col-lg-2">
+                <label>秒</label>
+                <input type="text" class="form-control" ng-model="cron.second" ng-change="analysis_second(cron.second)">
+            </div>
+            <div class="col-lg-2  m-l-n-md">
+                <label>分钟</label>
+                <input type="text" class="form-control" ng-model="cron.minute" ng-change="analysis_minute(cron.minute)">
+            </div>
+            <div class="col-lg-2  m-l-n-md">
+                <label>小时</label>
+                <input type="text" class="form-control" ng-model="cron.hour" ng-change="analysis_hour(cron.hour)">
+            </div>
+            <div class="col-lg-2  m-l-n-md">
+                <label>日</label>
+                <input type="text" class="form-control" ng-model="cron.day" ng-change="analysis_day(cron.day)">
+            </div>
+            <div class="col-lg-2  m-l-n-md">
+                <label>月</label>
+                <input type="text" class="form-control" ng-model="cron.month" ng-change="analysis_month(cron.month)">
+            </div>
+            <div class="col-lg-2  m-l-n-md">
+                <label>周</label>
+                <input type="text" class="form-control" ng-model="cron.week" ng-change="analysis_week(cron.week)">
+            </div>
+            <div class="col-lg-2  m-l-n-md">
+                <label>年</label>
+                <input type="text" class="form-control" ng-model="cron.year" ng-change="analysis_year(cron.year)">
+            </div>
+        </div>
+    </div>
+    <div class="modal-footer">
+        <button class="btn btn-info w-xs">保存</button>
+        <button type="button" class="btn btn-default w-xs" ng-click="cancel()">取消</button>
+    </div>
+
+</form>
