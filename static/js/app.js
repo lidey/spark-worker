@@ -15,5 +15,6 @@ angular.module('app', [
     'ui.jq',
     'ui.validate',
     'oc.lazyLoad',
-    'pascalprecht.translate'
+    'pascalprecht.translate',
+    'checklist-model'
 ]);
