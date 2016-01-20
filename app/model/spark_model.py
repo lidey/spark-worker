@@ -56,6 +56,7 @@ class SparkJob(BaseModel):
         return {
             'uuid': self.uuid,
             'title': self.title,
+            'spark': self.spark.to_dict(),
             'description': self.description,
             'processor': self.processor,
             'memory': self.memory,

@@ -61,6 +61,8 @@ class SparkHandler(BaseHandler):
             self.info()
         if url_first == 'job' and url_second == 'list':
             self.job_list()
+        if url_first == 'job' and url_second == 'all':
+            self.job_all()
         if url_first == 'job' and url_second == 'info':
             self.job_info()
         if url_first == 'job' and url_second == 'remove_jar':
@@ -100,7 +102,17 @@ class SparkHandler(BaseHandler):
         :return: 链接列表
         """
         jobs = []
-        for job in SparkJob.select().join(Spark).where(Spark.uuid == self.get_argument('s_uuid')):
+        for job in SparkJob.select(SparkJob, Spark).join(Spark).where(Spark.uuid == self.get_argument('s_uuid')):
+            jobs.append(job.to_dict())
+        self.write({'jobs': jobs})
+
+    def job_all(self):
+        """
+        获取Spark作业列表
+        :return: 链接列表
+        """
+        jobs = []
+        for job in SparkJob.select(SparkJob, Spark).join(Spark):
             jobs.append(job.to_dict())
         self.write({'jobs': jobs})
 

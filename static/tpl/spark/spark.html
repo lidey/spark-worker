@@ -2,34 +2,6 @@
 <div class="hbox hbox-auto-xs bg-light " ng-controller="SparkCtrl">
     <!-- column -->
     <div class="col w-lg lt b-r bg-auto" ng-class="{'hide': app.hideAside }" ui-view="aside">
-        <div class="vbox">
-            <div class="wrapper">
-                <div class="h4">Spark 作业管理</div>
-            </div>
-            <div class="wrapper b-t m-t-xxs">
-                <div class="input-group">
-                    <span class="input-group-addon input-sm"><i class="fa fa-search"></i></span>
-                    <input type="text" class="form-control input-sm" placeholder="search" ng-model="query">
-                </div>
-            </div>
-            <div class="row-row">
-                <div class="cell scrollable hover">
-                    <div class="cell-inner">
-                        <div class="padder">
-                            <div class="list-group" ng-init="refresh()">
-                                <a ng-repeat="spark in sparks | filter:query | orderBy:'created_time':true"
-                                   class="list-group-item b-l-{{ spark.color || 'info'}} b-l-3x hover-anchor"
-                                   ng-class="{'hover': spark.selected }" ng-click="selectSpark(spark)">
-                                    <span class="block text-ellipsis h6">{{ spark.title ? spark.title : '无' }}</span>
-                                    <small class="text-muted block m-t-xs">
-                                        {{ spark.created_time | date:'yyyy-MM-dd' }}</small>
-                                </a>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-            </div>
-        </div>
     </div>
     <!-- /column -->
 

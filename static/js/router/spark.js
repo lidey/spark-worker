@@ -24,7 +24,14 @@ angular.module('app')
                     })
                     .state('app.spark.jobs', {
                         url: '/jobs',
-                        templateUrl: 'static/tpl/spark/spark.job.list.html'
+                        views: {
+                            '': {
+                                templateUrl: 'static/tpl/spark/spark.job.list.html'
+                            },
+                            'aside': {
+                                templateUrl: 'static/tpl/spark/spark.list.html'
+                            }
+                        }
                     })
                     .state('app.spark.logs', {
                         url: '/logs',
@@ -35,26 +42,6 @@ angular.module('app')
                             'aside': {
                                 templateUrl: 'static/tpl/spark/spark.list.html'
                             }
-                        }
-                    })
-                    .state('app.spark.add', {
-                        url: '/add',
-                        templateUrl: 'static/tpl/spark/spark.info.html',
-                        resolve: {
-                            deps: ['$ocLazyLoad',
-                                function ($ocLazyLoad) {
-                                    return $ocLazyLoad.load(['ui.select']);
-                                }]
-                        }
-                    })
-                    .state('app.spark.update', {
-                        url: '/update/{uuid}',
-                        templateUrl: 'static/tpl/spark/spark.info.html',
-                        resolve: {
-                            deps: ['$ocLazyLoad',
-                                function ($ocLazyLoad) {
-                                    return $ocLazyLoad.load(['ui.select', 'textAngular']);
-                                }]
                         }
                     });
             }

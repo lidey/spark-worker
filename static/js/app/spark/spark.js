@@ -42,9 +42,9 @@ app.controller('SparkJobListCtrl', ['$scope', 'sparkService', '$compile', '$moda
                     },
                     columns: [
                         {title: '主键', data: 'uuid', visible: false},
-                        {title: '名称', data: 'title', width: '35%'},
+                        {title: '名称', data: 'title', width: '30%'},
                         {title: '节点', data: 'master', width: '20%'},
-                        {title: '创建时间', data: 'created_time', width: '15%'}
+                        {title: '创建时间', data: 'created_time', width: '20%'}
                     ],
                     columnDefs: [
                         {
@@ -63,7 +63,6 @@ app.controller('SparkJobListCtrl', ['$scope', 'sparkService', '$compile', '$moda
                             title: '操作', width: '30%', targets: [4], data: 'uuid', orderable: false,
                             render: function (data, type, row) {
                                 return '<a ng-click="run_spark(\'' + data + '\')" class="text-info m-r-md"><i class="fa  fa-play m-r-xs"></i>执行</a>' +
-                                    '<a ng-click="designer_job(\'' + data + '\')" class="text-info m-r-md"><i class="fa  fa-calendar m-r-xs"></i>调度</a>' +
                                     '<a ng-click="designer_job(\'' + data + '\')" class="text-info m-r-md"><i class="fa fa-sliders m-r-xs"></i>设计</a>' +
                                     '<a ng-click="delete_job(\'' + data + '\',\'' + row.title + '\')" class="text-warning"><i class="fa fa-times m-r-xs"></i>删除</a>';
                             }
@@ -110,6 +109,7 @@ app.controller('SparkJobListCtrl', ['$scope', 'sparkService', '$compile', '$moda
             }
         });
     };
+
     $scope.designer_job = function (uuid) {
         $modal.open({
             templateUrl: 'static/tpl/spark/job.designer.html',

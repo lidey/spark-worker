@@ -12,6 +12,12 @@ app.factory('sparkService', ['$http', function ($http) {
         return sparks;
     };
 
+    factory.job_all = function () {
+        return $http.get("spark/job/all").then(function (resp) {
+            return resp.data.jobs;
+        });
+    };
+
     factory.get = function (uuid) {
         return $http.get("spark/info", {params: {uuid: uuid}}).then(function (resp) {
             return resp.data;
@@ -19,7 +25,7 @@ app.factory('sparkService', ['$http', function ($http) {
     };
 
     factory.save_job = function (job) {
-        if (job.class != null){
+        if (job.class != null) {
             job.main_class = job.class.name;
             job.main_jar = job.class.jar;
         }
