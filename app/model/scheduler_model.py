@@ -36,7 +36,7 @@ class SchedulerCron(BaseModel):
 
 class Scheduler(BaseModel):
     uuid = CharField(db_column='UUID', max_length='64', primary_key='true')
-    cron = ForeignKeyField(SchedulerCron, db_column='CRON_UUID')
+    cron = ForeignKeyField(SchedulerCron, db_column='CRON_UUID', default=None)
     type = CharField(db_column='TYPE_FLAG', max_length='16')  # 执行状态 0未执行 1启动 #2暂停
     job_uuid = CharField(db_column='JOB_UUID', max_length='64')  # 调度的job的id
     title = CharField(db_column='TITLE', max_length='32')  # 调度器名称
@@ -55,7 +55,7 @@ class Scheduler(BaseModel):
             'created_time': time.mktime(self.created_time.timetuple()) * 1000,
         }
         try:
-            if self.cron.uuid is not None:
+            if self.cron.uuid is not None and len(self.cron.uuid) > 0:
                 scheduler['cron'] = self.cron.to_dict()
         except SchedulerCron.DoesNotExist:
             pass
