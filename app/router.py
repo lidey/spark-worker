@@ -6,7 +6,7 @@
 # File Created Date: 2015-11-27 12:47
 from app.handlers.database_handler import DatabaseHandler
 from app.handlers.job_socket_handler import JobSocketHandler
-from app.handlers.spark_handler import SparkHandler, SparkTerminalHandler
+from app.handlers.spark_handler import SparkHandler
 from app.handlers.upload_file_handler import UploadFileHandler
 from app.handlers.job_handler import JobHandler
 from app.handlers.job_progress_handler import JobProgressHandler
