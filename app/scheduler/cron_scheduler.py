@@ -75,23 +75,23 @@ def event_listener(event):
     :param event:
     :return:
     """
-    try:
-        log = SchedulerLog()
-        log.uuid = str(uuid.uuid1())
-        print event.job_id
-        log.scheduler = Scheduler.get(Scheduler.uuid == event.job_id)
-        log.code = event.code
-        if event.exception:
-            log.status = 'ERROR'
-            log.std_err = event.exception.message
-        else:
-            log.status = 'SUCCESS'
-        log.created_time = event.scheduled_run_time
-        log.save(force_insert=True)
-    except Scheduler.DoesNotExist:
-        pass
-    finally:
-        db.close()
+    if not event.job_id.startswith('system-'):
+        try:
+            log = SchedulerLog()
+            log.uuid = str(uuid.uuid1())
+            log.scheduler = Scheduler.get(Scheduler.uuid == event.job_id)
+            log.code = event.code
+            if event.exception:
+                log.status = 'ERROR'
+                log.std_err = event.exception.message
+            else:
+                log.status = 'SUCCESS'
+            log.created_time = event.scheduled_run_time
+            log.save(force_insert=True)
+        except Scheduler.DoesNotExist:
+            pass
+        finally:
+            db.close()
 
 
 scheduler.add_listener(event_listener, EVENT_JOB_EXECUTED | EVENT_JOB_ERROR | EVENT_JOB_MISSED)

@@ -233,4 +233,4 @@ def update_spark_job_status():
     UpdateSparkJobThread()
 
 
-scheduler.add_job(update_spark_job_status, 'interval', seconds=30)
+scheduler.add_job(update_spark_job_status, 'interval', seconds=30, id='system-update.spark.job.status')
