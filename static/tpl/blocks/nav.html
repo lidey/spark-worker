@@ -22,16 +22,32 @@
             <span class="font-bold">服务器</span>
         </a>
     </li>
-
-    <li class="line dk hidden-folded"></li>
-    <li class="hidden-folded padder m-t m-b-sm text-muted text-xs">
-        <span>调度任务</span>
-    </li>
-    <li ng-class="{active:$state.includes('app.scheduler')}">
-        <a ui-sref="app.scheduler.list">
+    <li ng-class="{active:($state.includes('app.scheduler') || $state.includes('app.kafka') )}">
+        <a href class="auto">
+            <span class="pull-right text-muted">
+                <i class="fa fa-fw fa-angle-right text"></i>
+                <i class="fa fa-fw fa-angle-down text-active"></i>
+            </span>
             <i class="glyphicon glyphicon-calendar icon text-info-dker"></i>
             <span class="font-bold">调度器</span>
         </a>
+        <ul class="nav nav-sub dk">
+            <li ng-class="{active:$state.includes('app.scheduler.list')}">
+                <a ui-sref="app.scheduler.list">
+                    <span>任务管理</span>
+                </a>
+            </li>
+            <li ng-class="{active:$state.includes('app.scheduler.log')}">
+                <a ui-sref="app.scheduler.log">
+                    <span>任务日志</span>
+                </a>
+            </li>
+        </ul>
+    </li>
+
+    <li class="line dk hidden-folded"></li>
+    <li class="hidden-folded padder m-t m-b-sm text-muted text-xs">
+        <span>大数据管理</span>
     </li>
     <li ng-class="{active:($state.includes('app.job') || $state.includes('app.process') )}">
         <a href class="auto">
@@ -54,11 +70,6 @@
                 </a>
             </li>
         </ul>
-    </li>
-
-    <li class="line dk hidden-folded"></li>
-    <li class="hidden-folded padder m-t m-b-sm text-muted text-xs">
-        <span>大数据管理</span>
     </li>
     <li ng-class="{active:($state.includes('app.spark') || $state.includes('app.kafka') )}">
         <a href class="auto">

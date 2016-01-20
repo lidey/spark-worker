@@ -1,0 +1,34 @@
+<div ng-controller="SchedulerListCtrl">
+    <!-- header -->
+    <div class="wrapper bg-light lter b-b">
+        <div class="pull-right btn-group  m-t-n-xs">
+            <div class="pull-right btn-group dropdown" dropdown>
+                <button class="btn  btn-sm btn-info" dropdown-toggle>
+                    <i class="fa fa-plus"></i>新增调度任务 <span class="caret"></span>
+                </button>
+                <ul class="dropdown-menu">
+                    <li><a href ng-click="add_scheduler('SHELL')">Shell 脚本任务</a></li>
+                    <li class="divider"></li>
+                    <li><a href ng-click="add_scheduler('SPARK')">Spark 作业任务</a></li>
+                </ul>
+            </div>
+        </div>
+        <div class="h4">任务管理</div>
+    </div>
+    <!-- / header -->
+    <div class="wrapper-md ng-scope">
+        <alert ng-repeat="alert in alerts" type="{{ alert.type }}"
+               close="closeAlert($index)">{{ alert.msg }}</alert>
+        <div class="panel panel-default">
+            <div class="panel-heading">
+                调度任务列表
+            </div>
+            <div class="panel-body table-responsive">
+                <table ng-if="dt_option!=undefined" id="achedulers" ui-jq="dataTable" ui-options="dt_option"
+                       ui-controller="grid"
+                       class="table table-striped m-b-none">
+                </table>
+            </div>
+        </div>
+    </div>
+</div>

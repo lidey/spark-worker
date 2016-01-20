@@ -9,7 +9,6 @@ import datetime
 import tornado
 from app.core.base_handler import BaseHandler
 from app.model.job_model import Job
-from app.scheduler.shell_scheduler import ShellScheduler
 
 
 class JobHandler(BaseHandler):
@@ -49,7 +48,7 @@ class JobHandler(BaseHandler):
     def remove(self):
         try:
             uuid = self.get_argument('id')
-            ShellScheduler().remove_job(uuid)
+            # Scheduler().remove_job(uuid)
             self.write({'success': True, 'message': '删除成功'})
         except Exception, e:
             self.write({'success': False, 'message': '删除失败'})

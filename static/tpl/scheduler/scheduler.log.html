@@ -1,0 +1,10 @@
+<div class="modal-header">
+    <h5 class="modal-title">任务日志
+    <span class="pull-right">
+            <button type="button" ng-click="cancel()" class="close"><span aria-hidden="true">&times;</span></button>
+        </span>
+    </h5>
+</div>
+<div class="modal-body" style="height: 400px;overflow-y: auto;">
+    <p class="text-danger" ng-repeat="log in logs track by $index" ng-bind-html="log"></p>
+</div>

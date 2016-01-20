@@ -1,235 +1,288 @@
-app.controller('SchedulerCtrl', ['$scope', 'schedulerService', '$location', "jobs", '$http', function ($scope, schedulerService, $location, jobs, $http) {
-    var jId;
-    $scope.refresh = function () {
-        schedulerService.all().then(function (req) {
-            jobs.all().then(function (reqj) {
-                var jobsSC;
-                if (reqj.data.success) {
-                    jobsSC = reqj.data.list;
-                } else {
-                    $scope.showMessage({content: reqj.data.message})
-                }
-                //$scope.jobs = jobsSC;
-                $scope.$broadcast('jobitems', /*$scope.*/jobsSC);
-            })
-            jobs.script_all(jId);
-            $scope.schedulers = req;
-            /*angular.forEach($scope.schedulers, function (test){
-             console.error("req:>>>"+test)
-             })*/
-            //获取页面默认选中的第一个显示其job列表
-            /*var jobsList = [];
-             jobs.get().then(function (reqJobs){
-             console.info("jId>>>>>>>>>>>>>>>>."+jId)
-             console.log("jobInfo>>>"+reqJobs.data)
-             jobsList.push(reqJobs.data)
-             $scope.$broadcast('firstJob',jobsList)
-             console.error("firstJob:"+jobsList[0])
-             });*/
-            if ($scope.scheduler == undefined)
-                $scope.scheduler = $scope.schedulers[0];
-
-            else
-                angular.forEach($scope.schedulers, function (reqs) {
-                    if (reqs.uuid == $scope.scheduler.uuid)
-                        reqs.selected = true;
-                });
-            //默认显示的scheduler的job列表——————开始
-            var jobIdArray = $scope.scheduler.jobId.split(',')
-            var jobsList = new Array();
-            if (jobIdArray.length >= 1) {
-                for (var i = 0; i < jobIdArray.length; i++) {
-                    jobs.get(jobIdArray[i]).then(function (reqJobs) {
-                        jobsList.push(reqJobs.data)
-                    })
-                }
-                $scope.$broadcast('firstJob', jobsList)
-            } else {
-                jobs.get(jobIdArray).then(function (reqJobs) {
-                    jobsList.push(reqJobs.data)
-                    $scope.$broadcast('firstJob', jobsList)
-                })
-            }
-            //默认显示的scheduler的job列表——————结束
-            $scope.scheduler.selected = true;
-            $scope.$broadcast('scheduler', $scope.scheduler);
-            //$scope.job.selected = true;
-            $scope.$broadcast('job', $scope.job);
-        });
-
-    };
-
-
-    $scope.selectScheduler = function (scheduler) {
-        angular.forEach($scope.schedulers, function (scheduler) {
-            scheduler.selected = false;
-        });
-        $scope.scheduler = scheduler;
-        var jobIdArray = $scope.scheduler.jobId.split(',')
-        var jobsList = new Array();
-        if (jobIdArray.length >= 1) {
-            for (var i = 0; i < jobIdArray.length; i++) {
-                jobs.get(jobIdArray[i]).then(function (reqJobs) {
-                    jobsList.push(reqJobs.data)
-                })
-            }
-            $scope.$broadcast('firstJob', jobsList)
-        } else {
-            jobs.get(jobIdArray).then(function (reqJobs) {
-                jobsList.push(reqJobs.data)
-                $scope.$broadcast('firstJob', jobsList)
-            })
-        }
-        $scope.scheduler.selected = true;
-        $scope.$broadcast('scheduler', $scope.scheduler);
-    };
-
-    $scope.delete = function (uuid) {
-        schedulerService.delete(uuid).then(function (req) {
-            $scope.showMessage({content: req.message})
-            return $location.path("/app/scheduler");
-        });
-    }
-    $scope.refresh();
+app.controller('SchedulerCtrl', ['$scope', 'schedulerService', function ($scope, schedulerService) {
 
 }]);
 
-app.controller('SchedulerDetailCtrl', ['$scope', 'schedulerService', '$stateParams', "$state", function ($scope, schedulerService, $stateParams, $state) {
-    $scope.$on('scheduler', function (event, data) {
-        $scope.scheduler = data;
-    });
 
-    $scope.$on('message', function (event, data) {
-        $scope.message = data;
-    });
+app.controller('SchedulerListCtrl', ['$scope', 'schedulerService', '$compile', '$modal', function ($scope, schedulerService, $compile, $modal) {
 
-    $scope.$on('firstJob', function (event, data) {
-        $scope.jobs = data;
-    })
-    $scope.delete = function (uuid) {
-        //console.log("delete的uuid为："+scheduler.name);
-        console.log("delete的uuid为：" + uuid);
-        schedulerService.delete(uuid).then(function (req) {
-            $scope.showMessage({content: req.message})
-            //return $location.path("/scheduler/manager");
-            $state.go('scheduler.manager');
-        });
-    }
+    $scope.grid = {};
+    $scope.dt_option = {
+        'language': {
+            'url': 'static/vendor/jquery/datatables/i18n/zh_CN.json'
+        },
+        ajax: {
+            url: 'scheduler/list',
+            dataSrc: 'schedulers'
+        },
+        columns: [
+            {title: '主键', data: 'uuid', visible: false},
+            {title: '名称', data: 'title', width: '25%'},
+            {title: 'cron', data: 'cron', width: '20%'},
+            {title: '类型', data: 'type', width: '10%'},
+            {title: '状态', data: 'status', width: '10%'},
+            {title: '创建时间', data: 'created_time', width: '15%'}
+        ],
+        columnDefs: [
+            {
+                targets: [1],
+                render: function (data, type, row) {
+                    return '<i class="fa fa-bug m-r-xs"></i>' + data;
+                }
+            },
+            {
+                targets: [2],
+                render: function (data, type, row) {
+                    if (data != undefined)
+                        return data.second + ' ' + data.minute + ' ' + data.hour + ' ' + data.day + ' ' + data.month + ' ' + data.week + ' ' + data.year;
+                    else
+                        return '为定义';
+                }
+            },
+            {
+                targets: [4],
+                render: function (data, type, row) {
+                    if (data == 'DISABLE')
+                        return '停用';
+                    if (data == 'ENABLE')
+                        return '启用';
+                }
+            },
+            {
+                targets: [5],
+                render: function (data, type, row) {
+                    return new Date(parseInt(data)).toLocaleString().replace(/:\d{1,2}$/, ' ');
+                }
+            },
+            {
+                title: '操作', width: '20%', targets: [6], data: 'uuid', orderable: false,
+                render: function (data, type, row) {
+                    var option = '';
+                    if (row.status == 'DISABLE')
+                        option += '<a ng-click="startup(\'' + data + '\',\'' + row.title + '\')" class="text-info m-r-md"><i class="glyphicon glyphicon-play m-r-xs"></i>启动</a>';
+                    if (row.status == 'ENABLE')
+                        option += '<a ng-click="shutdown(\'' + data + '\',\'' + row.title + '\')" class="text-info m-r-md"><i class="glyphicon glyphicon-stop m-r-xs"></i>停止</a>';
+                    option += '<a ng-click="cron_scheduler(\'' + data + '\')" class="text-info m-r-md"><i class="fa  fa-calendar m-r-xs"></i>调度</a>';
+                    option += '<a ng-click="delete_scheduler(\'' + data + '\',\'' + row.title + '\')" class="text-warning"><i class="fa fa-times m-r-xs"></i>删除</a>';
+                    return option;
+                }
+            }
+        ],
+        order: [[5, "desc"]],
+        "fnCreatedRow": function (nRow, aData, iDataIndex) {
+            $compile(nRow)($scope);
+        }
+    };
 
-    $scope.runJobs = function () {//开启调度器
-        console.log("runJobsController.$scope.scheduler.name>>>" + $scope.scheduler.uuid);
-        schedulerService.runJobs($scope.scheduler.uuid).then(function (req) {
-            $scope.showMessage({content: req.message})
-            //return $location.path("/scheduler/manager");///app/process/manager
-            $state.go('scheduler.manager');
-            //return $location.path("/scheduler/manager");
+    $scope.startup = function (uuid, title) {
+        schedulerService.startup(uuid).then(function (message) {
+            $scope.showMessage(message);
+            if (message.success)
+                $scope.grid.achedulers.api().ajax.reload();
         })
-    }
-    $scope.shutDownJobs = function(){//关闭调度器
-        console.log("shutDownJobs>>>"+$scope.scheduler.name);
-        schedulerService.shutDownJobs($scope.scheduler.uuid).then(function(req){
-            $scope.showMessage({content: req.message});
-            //return $location.path("/scheduler/manager");
-            $state.go('scheduler.manager');
-        });
-    }
-    //$scope.refresh();
-}]);
-
-app.controller('SchedulerEditCtrl', ['$scope', '$log', '$location', 'schedulerService', '$modal', '$state', '$stateParams', 'dataService', function ($scope, $log, $location, schedulerService, $modal, $state, $stateParams, dataService) {
-    //console.log($scope.scheduler);
-    //console.info("editUuid?:" + $stateParams.uuid)
-    if ($stateParams.uuid != null) {
-        schedulerService.get($stateParams.uuid).then(function (data) {
-            //console.error("????");
-            $scope.scheduler = data;
-            $scope.scheduler.success = true;
-            //$scope.scheduler.version = schedulerService.getVersion(data.version);
-        });
-        $scope.$on('scheduler', function (event, data) {
-            $scope.scheduler = data;
-            $scope.scheduler.success = true;
-            //$scope.scheduler.version = schedulerService.getVersion(data.version);
-        });
-    } else {
-        $scope.scheduler = {};
-        $scope.scheduler.success = true;
-    }
+    };
 
 
-    //$scope.versions = schedulerService.getVersionArrayAll();
-    $scope.saveScheduler = function () {
-        //console.info("jobid:>>>>>>>>>>>>>>>>>>>>>" + dataService.jobIds);
-        var ids = '';
-        for (i = 0; i < dataService.jobIds.length; i++) {
-            if (i == dataService.jobIds.length - 1) {
-                ids += dataService.jobIds[i]
-            } else {
-                ids += dataService.jobIds[i] + ','
+    $scope.shutdown = function (uuid, title) {
+        schedulerService.shutdown(uuid).then(function (message) {
+            $scope.showMessage(message);
+            if (message.success)
+                $scope.grid.achedulers.api().ajax.reload();
+        })
+    };
+
+    $scope.add_scheduler = function (type) {
+        $scope.edit_scheduler(null, type);
+    };
+
+    $scope.edit_scheduler = function (uuid, type) {
+        $modal.open({
+            templateUrl: 'static/tpl/scheduler/scheduler.info.html',
+            controller: 'SchedulerEditCtrl',
+            size: 'lg',
+            resolve: {
+                type: function () {
+                    return type;
+                },
+                uuid: function () {
+                    return uuid;
+                },
+                deps: ['$ocLazyLoad',
+                    function ($ocLazyLoad) {
+                        return $ocLazyLoad.load(['ui.select']);
+                    }]
             }
-        }
-        $scope.scheduler.jobId = ids;
-        console.log("scheduler.jobs.id:" + ids)
-        schedulerService.save($scope.scheduler).then(function (res) {
-
-            $scope.showMessage({content: res.message})
-            $state.go('scheduler.manager');
-            //return $location.path("/scheduler/manager");
+        }).result.then(function (message) {
+            $scope.showMessage(message);
+            if (message.success) {
+                $scope.grid.achedulers.api().ajax.reload();
+            }
         });
     };
 
-
-}]);
-app.controller('ModalDemoCtrl', ['$scope', '$modal', '$log', function ($scope, $modal, $log) {
-    data = '';
-    $scope.refresh();
-    $scope.$on('jobitems', function (event, data) {
-        data = data;
-        //console.log("121-->"+data)
-        $scope.open = function (size) {
-            var modalInstance = $modal.open({
-                templateUrl: 'myModalContent.html',
-                controller: 'ModalInstanceCtrl',
-                size: size,
+    $scope.cron_scheduler = function (uuid) {
+        schedulerService.get(uuid).then(function (scheduler) {
+            $modal.open({
+                templateUrl: 'static/tpl/app.cron.html',
+                controller: 'AppCronCtrl',
+                size: '',
                 resolve: {
-                    datas: function () {
-                        return data;
-                    }
+                    cron: function () {
+                        return scheduler.cron;
+                    },
+                    deps: ['uiLoad',
+                        function (uiLoad) {
+                            return uiLoad.load('static/js/controllers/app-cron.js');
+                        }]
                 }
+            }).result.then(function (cron) {
+                cron.s_uuid = uuid;
+                schedulerService.set_cron(cron).then(function (message) {
+                    $scope.showMessage(message);
+                    if (message.success)
+                        $scope.grid.achedulers.api().ajax.reload();
+                })
             });
+        })
 
-            modalInstance.result.then(function (selectedItem) {
-                $scope.selected = selectedItem;
-            }, function () {
-            });
-        };
-    })
+    };
 
+    $scope.delete_scheduler = function (uuid, name) {
+        $scope.showConfirm('请确认是否删除任务:' + name).result.then(function (data) {
+            if (data) {
+                schedulerService.delete(uuid).then(function (message) {
+                    $scope.showMessage(message);
+                    if (message.success)
+                        $scope.grid.achedulers.api().ajax.reload();
+                });
+            }
+
+        }, function () {
+        });
+    };
 }]);
 
-app.controller('ModalInstanceCtrl', ['$scope', '$modalInstance', 'datas', 'dataService', function ($scope, $modalInstance, datas, dataService) {
-
-    var checked = [];
-    $scope.items = datas;
-    console.info("items>>>>:" + $scope.items);
-    $scope.ok = function () {
-        dataService.jobIds = checked;
-        console.info("checked:" + checked)
-        $modalInstance.dismiss('cancel');
-    };
+app.controller('SchedulerEditCtrl', ['$scope', 'schedulerService', '$modalInstance', 'uuid', 'type', 'sparkService', function ($scope, schedulerService, $modalInstance, uuid, type, sparkService) {
+    $scope.alerts = [];
 
     $scope.cancel = function () {
         $modalInstance.dismiss('cancel');
     };
 
-    $scope.bind = function (id) {
-
-        if (checked.indexOf(id) != -1) {
-            console.log('删除')
-            checked.splice(checked.indexOf(id), 1);
-        } else {
-            console.log('添加')
-            checked.push(id);
+    if (uuid != null) {
+        schedulerService.get(uuid).then(function (data) {
+            $scope.scheduler = data;
+        });
+    } else {
+        $scope.scheduler = {};
+        $scope.scheduler.type = type;
+        if (type == 'SPARK') {
+            sparkService.job_all().then(function (jobs) {
+                $scope.spark_jobs = jobs
+            })
         }
     }
-}])
+
+    $scope.save_scheduler = function () {
+        schedulerService.save($scope.scheduler).then(function (message) {
+            if (message.success)
+                $modalInstance.close(message);
+            else
+                $scope.alerts.push({type: 'danger', msg: message.content})
+        });
+    };
+
+}]);
+
+
+app.controller('SchedulerLogListCtrl', ['$scope', 'schedulerService', '$compile', '$modal', function ($scope, schedulerService, $compile, $modal) {
+
+    $scope.grid = {};
+    $scope.dt_option = {
+        'language': {
+            'url': 'static/vendor/jquery/datatables/i18n/zh_CN.json'
+        },
+        ajax: {
+            url: 'scheduler/log_list',
+            dataSrc: 'logs'
+        },
+        columns: [
+            {title: '主键', data: 'uuid', visible: false},
+            {title: '名称', data: 'scheduler', width: '25%'},
+            {title: '编码', data: 'code', width: '20%'},
+            {title: '状态', data: 'status', width: '10%'},
+            {title: '创建时间', data: 'created_time', width: '15%'}
+        ],
+        columnDefs: [
+            {
+                targets: [1],
+                render: function (data, type, row) {
+                    return '<i class="fa fa-bug m-r-xs"></i>' + data.title;
+                }
+            },
+            {
+                targets: [2],
+                render: function (data, type, row) {
+                    if (data == 1024)
+                        return '正常';
+                    if (data == 2048)
+                        return '系统异常';
+                }
+            },
+            {
+                targets: [3],
+                render: function (data, type, row) {
+                    if (data == 'SUCCESS')
+                        return '成功';
+                    if (data == 'ERROR')
+                        return '失败';
+                }
+            },
+            {
+                targets: [4],
+                render: function (data, type, row) {
+                    return new Date(parseInt(data)).toLocaleString().replace(/:\d{1,2}$/, ' ');
+                }
+            },
+            {
+                title: '操作', width: '20%', targets: [5], data: 'uuid', orderable: false,
+                render: function (data, type, row) {
+                    var option = '';
+                    if (row.status == 'ERROR')
+                        option += '<a ng-click="show_err(\'' + data + '\')" class="text-info m-r-md"><i class="fa  fa-eye m-r-xs"></i>日志</a>';
+                    return option;
+                }
+            }
+        ],
+        order: [[4, "desc"]],
+        "fnCreatedRow": function (nRow, aData, iDataIndex) {
+            $compile(nRow)($scope);
+        }
+    };
+
+    $scope.show_err = function (uuid) {
+        $modal.open({
+            templateUrl: 'static/tpl/scheduler/scheduler.log.html',
+            controller: 'SchedulerLogsCtrl',
+            size: 'lg',
+            resolve: {
+                uuid: function () {
+                    return uuid;
+                }
+            }
+        })
+    };
+
+}]);
+
+app.controller('SchedulerLogsCtrl', ['$scope', 'schedulerService', '$modalInstance', 'uuid', function ($scope, schedulerService, $modalInstance, uuid) {
+
+    $scope.logs = [];
+    $scope.cancel = function () {
+        $modalInstance.dismiss();
+    };
+    schedulerService.get_log(uuid).then(function (log) {
+        $scope.logs = log.std_err.split('\n');
+    })
+
+
+}]);

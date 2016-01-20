@@ -1,0 +1,22 @@
+<div ng-controller="SchedulerLogListCtrl">
+    <!-- header -->
+    <div class="wrapper bg-light lter b-b">
+        <div class="h4">任务日志</div>
+    </div>
+    <!-- / header -->
+    <div class="wrapper-md ng-scope">
+        <alert ng-repeat="alert in alerts" type="{{ alert.type }}"
+               close="closeAlert($index)">{{ alert.msg }}</alert>
+        <div class="panel panel-default">
+            <div class="panel-heading">
+                日志列表
+            </div>
+            <div class="panel-body table-responsive">
+                <table ng-if="dt_option!=undefined" id="logs" ui-jq="dataTable" ui-options="dt_option"
+                       ui-controller="grid"
+                       class="table table-striped m-b-none">
+                </table>
+            </div>
+        </div>
+    </div>
+</div>
