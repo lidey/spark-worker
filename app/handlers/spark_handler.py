@@ -197,10 +197,11 @@ class SparkHandler(BaseHandler):
 
     def job_remove(self):
         """
-        删除Spark作业信息
+        删除Spark作业信息及作业产生的日志
         :return: 处理结果
         """
         job = SparkJob.get(SparkJob.uuid == self.get_argument('uuid'))
+        SparkJobLog.delete().where(SparkJobLog.job == job).execute()
         job.delete_instance()
         self.write({'success': True, 'content': '作业删除成功.'})
 
