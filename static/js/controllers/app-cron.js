@@ -14,8 +14,8 @@ app.controller('AppCronCtrl', ['$scope', '$modalInstance', 'cron', function ($sc
         hour: 'wildcard',
         day: 'wildcard',
         month: 'wildcard',
-        week: 'empty',
-        year: 'empty'
+        week: 'wildcard',
+        year: 'wildcard'
     };
     $scope.cron = {
         second: '*',
@@ -23,8 +23,8 @@ app.controller('AppCronCtrl', ['$scope', '$modalInstance', 'cron', function ($sc
         hour: '*',
         day: '*',
         month: '*',
-        week: '?',
-        year: ''
+        week: '*',
+        year: '*'
     };
     $scope.cycle = {
         second_start: 1, second_end: 2,
@@ -190,9 +190,6 @@ app.controller('AppCronCtrl', ['$scope', '$modalInstance', 'cron', function ($sc
             case 'wildcard':
                 $scope.cron.day = '*';
                 break;
-            case 'empty':
-                $scope.cron.day = '?';
-                break;
             case 'cycle':
                 $scope.cron.day = $scope.cycle.day_start + '-' + $scope.cycle.day_end;
                 break;
@@ -203,7 +200,7 @@ app.controller('AppCronCtrl', ['$scope', '$modalInstance', 'cron', function ($sc
                 $scope.cron.day = $scope.work.day_work + 'W';
                 break;
             case 'last':
-                $scope.cron.day = 'L';
+                $scope.cron.day = 'last';
                 break;
             case 'appoint':
                 if ($scope.appoint.days.length > 0)
@@ -217,8 +214,6 @@ app.controller('AppCronCtrl', ['$scope', '$modalInstance', 'cron', function ($sc
     $scope.analysis_day = function (day) {
         if (day.indexOf('*') != -1) {
             $scope.type.day = 'wildcard';
-        } else if (day.indexOf('?') != -1) {
-            $scope.type.day = 'empty';
         } else if (day.indexOf('-') != -1) {
             $scope.type.day = 'cycle';
             $scope.cycle.day_start = day.split('-')[0];
@@ -227,7 +222,7 @@ app.controller('AppCronCtrl', ['$scope', '$modalInstance', 'cron', function ($sc
             $scope.type.day = 'interval';
             $scope.interval.day_start = day.split('/')[0];
             $scope.interval.day_end = day.split('/')[1];
-        } else if (day.indexOf('L') != -1) {
+        } else if (day.indexOf('last') != -1) {
             $scope.type.day = 'last';
         } else {
             $scope.type.day = 'appoint';
@@ -243,9 +238,6 @@ app.controller('AppCronCtrl', ['$scope', '$modalInstance', 'cron', function ($sc
         switch ($scope.type.month) {
             case 'wildcard':
                 $scope.cron.month = '*';
-                break;
-            case 'empty':
-                $scope.cron.month = '?';
                 break;
             case 'cycle':
                 $scope.cron.month = $scope.cycle.month_start + '-' + $scope.cycle.month_end;
@@ -265,8 +257,6 @@ app.controller('AppCronCtrl', ['$scope', '$modalInstance', 'cron', function ($sc
     $scope.analysis_month = function (month) {
         if (month.indexOf('*') != -1) {
             $scope.type.month = 'wildcard';
-        } else if (month.indexOf('?') != -1) {
-            $scope.type.month = 'empty';
         } else if (month.indexOf('-') != -1) {
             $scope.type.month = 'cycle';
             $scope.cycle.month_start = month.split('-')[0];
@@ -290,9 +280,6 @@ app.controller('AppCronCtrl', ['$scope', '$modalInstance', 'cron', function ($sc
             case 'wildcard':
                 $scope.cron.week = '*';
                 break;
-            case 'empty':
-                $scope.cron.week = '?';
-                break;
             case 'cycle':
                 $scope.cron.week = $scope.cycle.week_start + '-' + $scope.cycle.week_end;
                 break;
@@ -314,8 +301,6 @@ app.controller('AppCronCtrl', ['$scope', '$modalInstance', 'cron', function ($sc
     $scope.analysis_week = function (week) {
         if (week.indexOf('*') != -1) {
             $scope.type.week = 'wildcard';
-        } else if (week.indexOf('?') != -1) {
-            $scope.type.week = 'empty';
         } else if (week.indexOf('-') != -1) {
             $scope.type.week = 'cycle';
             $scope.cycle.week_start = week.split('-')[0];
@@ -335,9 +320,9 @@ app.controller('AppCronCtrl', ['$scope', '$modalInstance', 'cron', function ($sc
 
     $scope.select_year = function () {
         switch ($scope.type.year) {
-            case 'empty':
-                $scope.cron.year = '';
-                break;
+            //case 'empty':
+            //    $scope.cron.year = '';
+            //    break;
             case 'wildcard':
                 $scope.cron.year = '*';
                 break;
@@ -355,11 +340,12 @@ app.controller('AppCronCtrl', ['$scope', '$modalInstance', 'cron', function ($sc
             $scope.cycle.year_start = year.split('-')[0];
             $scope.cycle.year_end = year.split('-')[1];
         } else {
-            $scope.type.year = 'empty';
+            //$scope.type.year = 'empty';
         }
     };
 
     if (cron != undefined && cron != null && typeof(cron) == 'object') {
+        $scope.cron = cron;
         $scope.analysis_second(cron.second);
         $scope.analysis_minute(cron.minute);
         $scope.analysis_hour(cron.hour);
@@ -370,7 +356,6 @@ app.controller('AppCronCtrl', ['$scope', '$modalInstance', 'cron', function ($sc
     }
 
     $scope.save_cron = function () {
-        console.log($scope.cron);
         $modalInstance.close($scope.cron);
     }
 

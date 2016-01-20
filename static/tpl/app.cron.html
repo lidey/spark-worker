@@ -327,18 +327,6 @@
                     </div>
                 </div>
                 <div class="form-group">
-                    <div class="col-lg-7">
-                        <div class="radio">
-                            <label class="i-checks i-checks-sm">
-                                <input type="radio" name="day_type" ng-model="type.day" value="empty"
-                                       ng-click="select_day()">
-                                <i></i>
-                                不指定
-                            </label>
-                        </div>
-                    </div>
-                </div>
-                <div class="form-group">
                     <div class="col-lg-3">
                         <div class="radio">
                             <label class="i-checks i-checks-sm">
@@ -474,18 +462,6 @@
                     </div>
                 </div>
                 <div class="form-group">
-                    <div class="col-lg-7">
-                        <div class="radio">
-                            <label class="i-checks i-checks-sm">
-                                <input type="radio" name="month_type" ng-model="type.month" value="empty"
-                                       ng-click="select_month()">
-                                <i></i>
-                                不指定
-                            </label>
-                        </div>
-                    </div>
-                </div>
-                <div class="form-group">
                     <div class="col-lg-3">
                         <div class="radio">
                             <label class="i-checks i-checks-sm">
@@ -581,18 +557,6 @@
                                        ng-click="select_week()">
                                 <i></i>
                                 周 允许的通配符[, - * /]
-                            </label>
-                        </div>
-                    </div>
-                </div>
-                <div class="form-group">
-                    <div class="col-lg-7">
-                        <div class="radio">
-                            <label class="i-checks i-checks-sm">
-                                <input type="radio" name="week_type" ng-model="type.week" value="empty"
-                                       ng-click="select_week()">
-                                <i></i>
-                                不指定
                             </label>
                         </div>
                     </div>
@@ -702,22 +666,10 @@
                     <div class="col-lg-7">
                         <div class="radio">
                             <label class="i-checks i-checks-sm">
-                                <input type="radio" name="year_type" ng-model="type.year" value="empty"
-                                       ng-click="select_year()">
-                                <i></i>
-                                不指定 允许的通配符[, - * /] 非必填
-                            </label>
-                        </div>
-                    </div>
-                </div>
-                <div class="form-group">
-                    <div class="col-lg-7">
-                        <div class="radio">
-                            <label class="i-checks i-checks-sm">
                                 <input type="radio" name="year_type" ng-model="type.year" value="wildcard"
                                        ng-click="select_year()">
                                 <i></i>
-                                每年
+                                允许的通配符[- *]
                             </label>
                         </div>
                     </div>
