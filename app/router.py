@@ -33,5 +33,4 @@ urls = [
     (r"/database/(.*)", DatabaseHandler, dict()),
     (r"/spark/(.*)/(.*)", SparkHandler, dict()),
     (r"/spark/(.*)", SparkHandler, dict()),
-    (r'/terminal/spark', SparkTerminalHandler, dict()),
 ]
