@@ -14,10 +14,21 @@
                 <input type="text" class="form-control" ng-model="scheduler.title">
             </div>
         </div>
-        <div ng-if="scheduler.type=='SPARK'" class="form-group">
-            <label class="col-lg-3 control-label">Spark 作业:</label>
+        <div class="form-group">
+            <label class="col-lg-3 control-label">类型:</label>
 
             <div class="col-lg-7">
+                <p class="form-control-static">{{ scheduler.type }}</p>
+            </div>
+        </div>
+        <div class="form-group">
+            <label class="col-lg-3 control-label">作业:</label>
+
+            <div ng-if="scheduler.uuid!=undefined" class="col-lg-7">
+                <p class="form-control-static">{{ scheduler.job.title }}</p>
+            </div>
+
+            <div ng-if="scheduler.uuid==undefined && scheduler.type=='SPARK'" class="col-lg-7">
                 <ui-select ng-model="scheduler.job" theme="bootstrap">
                     <ui-select-match placeholder="选择Spark 作业">
                         {{$select.selected.title}}

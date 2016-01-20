@@ -26,7 +26,7 @@ app.controller('SchedulerListCtrl', ['$scope', 'schedulerService', '$compile', '
             {
                 targets: [1],
                 render: function (data, type, row) {
-                    return '<i class="fa fa-bug m-r-xs"></i>' + data;
+                    return '<a ng-click="edit_scheduler(\'' + row.uuid + '\',\'' + row.type + '\')" class="text-info"><i class="fa fa-bug m-r-xs"></i>' + data + '</a>';
                 }
             },
             {
@@ -171,6 +171,7 @@ app.controller('SchedulerEditCtrl', ['$scope', 'schedulerService', '$modalInstan
     if (uuid != null) {
         schedulerService.get(uuid).then(function (data) {
             $scope.scheduler = data;
+            console.log(data)
         });
     } else {
         $scope.scheduler = {};

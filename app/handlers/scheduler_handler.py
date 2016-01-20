@@ -10,6 +10,7 @@ from peewee import JOIN
 from app.core.base_handler import BaseHandler
 from app.core.base_model import db
 from app.model.scheduler_model import Scheduler, SchedulerCron, SchedulerLog
+from app.model.spark_model import SparkJob
 from app.scheduler.cron_scheduler import SchedulerEngine
 
 
@@ -43,12 +44,10 @@ class SchedulerHandler(BaseHandler):
         if url_str == 'save':
             scheduler = Scheduler()
             scheduler.uuid = self.args.get("uuid")
-            scheduler.job_uuid = self.args.get("job_uuid")
-            scheduler.cron = self.args.get("cron")
             scheduler.type = self.args.get("type")
+            scheduler.job_uuid = self.args.get("job_uuid")
             scheduler.description = self.args.get("description")
             scheduler.title = self.args.get("title")
-            scheduler.status = self.args.get("status")
             self.save(scheduler)
         if url_str == 'set_cron':
             cron = SchedulerCron()
@@ -91,6 +90,8 @@ class SchedulerHandler(BaseHandler):
         """
         try:
             scheduler = Scheduler.get(self.args.get("uuid"))
+            SchedulerLog.delete().where(SchedulerLog.scheduler == scheduler).execute()
+            scheduler.cron.delete_instance()
             scheduler.delete_instance()
             self.write({'success': True, 'content': '调度任务删除成功'})
         except Exception, e:
@@ -147,7 +148,10 @@ class SchedulerHandler(BaseHandler):
         :return:
         """
         scheduler = Scheduler.get(Scheduler.uuid == self.get_argument("uuid"))
-        self.write(scheduler.to_dict())
+        scheduler_dict = scheduler.to_dict()
+        if scheduler.type == 'SPARK':
+            scheduler_dict['job'] = SparkJob.get(SparkJob.uuid == scheduler.job_uuid).to_dict()
+        self.write(scheduler_dict)
 
     def log_info(self):
         """
