@@ -14,10 +14,11 @@ from app.handlers.scheduler_handler import SchedulerHandler
 from app.handlers.script_handler import ScriptHandler
 from app.handlers.server_handler import ServerHandler, WebTerminalHandler, WebTerminalKillHandler
 from app.handlers.user_handler import UserHandler
-from app.handlers.index_handler import MainHandler
+from app.handlers.index_handler import MainHandler, ConfigHandler
 
 urls = [
     (r"/", MainHandler, dict()),
+    (r"/config.js", ConfigHandler, dict()),
     (r"/user/(.*)", UserHandler, dict()),
     (r"/job/(.*)", JobHandler, dict()),
     (r"/server/(.*)", ServerHandler, dict()),

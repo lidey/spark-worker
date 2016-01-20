@@ -49,10 +49,11 @@
 
 <!-- 配置信息 -->
 <script type="text/javascript">
-    _system_info = { {% for key, value in  system.items() %}{{key}}: '{{value}}',{% end %} tmp:'' };
+
 </script>
 
 <!-- jQuery -->
+<script src="config.js"></script>
 <script src="{{ static_url('vendor/jquery/jquery.min.js') }}"></script>
 
 <!-- Angular -->

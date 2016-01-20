@@ -7,6 +7,9 @@
 import tornado.web
 import tornado.escape
 import os
+
+from jinja2 import Environment, PackageLoader
+
 from app.core.base_handler import BaseHandler
 from config import system
 
@@ -23,3 +26,13 @@ class MainHandler(BaseHandler):
     @tornado.web.authenticated
     def post(self):
         pass
+
+
+class ConfigHandler(BaseHandler):
+    def data_received(self, chunk):
+        pass
+
+    def get(self):
+        env = Environment(loader=PackageLoader('app.handlers', 'templates'))
+        template = env.get_template('config.jinja2')
+        self.write(template.render(system=system))

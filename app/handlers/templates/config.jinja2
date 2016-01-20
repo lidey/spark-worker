@@ -1,0 +1,6 @@
+_system_info = {
+{% for key, value in  system.iteritems() %}
+    {{ key }}: '{{ value }}',
+{% endfor %}
+    tmp:''
+};
