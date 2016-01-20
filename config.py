@@ -10,7 +10,7 @@ import logging
 # 服务配置信息
 system = {
     'name': '大数据云--数据调度系统',
-    'hostname': '127.0.0.1',
+    'hostname': '10.211.55.2',
     'port': 8880,
     'company': '软通动力信息技术（集团）有限公司',
     'version': '0.0.1',
@@ -28,7 +28,7 @@ database = {
     # 'database': 'yxk',
     # 'user': 'root',
     # 'password': 'root',
-    'max_connections': 10,
+    'max_connections': 3,
     'stale_timeout': 300,
     'charset': 'utf8',
 }
@@ -43,4 +43,11 @@ redis = {
 # 日志配置
 logger = {
     'level': logging.DEBUG
+}
+
+
+# spark配置
+sparkConfig = {
+    'startswith': 'com.memory',
+    'upload_path': 'spark_jobs',
 }
