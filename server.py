@@ -1,11 +1,15 @@
 #!/usr/bin/python
 # coding=utf-8
 # Filename: server.py
+import sys
 import logging
 
 import tornado.ioloop
 import config
 from application import application
+
+reload(sys)
+sys.setdefaultencoding("utf-8")
 
 peewee_log = logging.getLogger('peewee')
 peewee_log.setLevel(config.logger['level'])
