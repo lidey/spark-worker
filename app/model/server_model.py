@@ -18,7 +18,7 @@ class Server(BaseModel):
     type = CharField(db_column='TYPE_FLAG', max_length=32)
     name = CharField(db_column='NAME', max_length=64)
     password = CharField(db_column='PASSWORD', max_length=64)
-    path = CharField(db_column='PATH', max_length=64)
+    path = CharField(db_column='PATH', max_length=256)
     processor = IntegerField(db_column='PROCESSOR_NUM', default=0)
     memory = IntegerField(db_column='MEMORY', default=0)
     created_time = DateTimeField(db_column='CREATED_TIME', null=False)

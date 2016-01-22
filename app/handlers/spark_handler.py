@@ -9,19 +9,12 @@ import os
 import uuid
 import zipfile
 
-import select
-
-import sys
-
 import tornado
 import tornado.websocket
-from jinja2 import Environment, PackageLoader
 
 from app.core.base_handler import BaseHandler
-from app.core.base_thread import WebSocketThread
 from app.model.spark_model import Spark, SparkJob, SparkJobLog
-from app.script.server_script import WebTty, ServerScript
-from app.script.spark_thread import SparkJobThread, CreateSparkJobThread
+from app.script.spark_thread import CreateSparkJobThread, kill_spark_job, create_spark_job
 from config import system, sparkConfig
 
 
@@ -45,6 +38,7 @@ class SparkHandler(BaseHandler):
             job.arguments = self.args.get('arguments')
             job.processor = self.args.get('processor')
             job.memory = self.args.get('memory')
+            job.variables = json.dumps(self.args.get('variables'))
             self.job = job
         if url_first == 'job' and url_second == 'save':
             self.job_save()
@@ -73,10 +67,16 @@ class SparkHandler(BaseHandler):
             self.job_remove()
         if url_first == 'job' and url_second == 'start':
             self.job_start()
-        if url_first == 'job' and url_second == 'log_list':
-            self.job_log_list()
+        if url_first == 'job' and url_second == 'log_history':
+            self.job_log_history()
+        if url_first == 'job' and url_second == 'log_running':
+            self.job_log_running()
+        if url_first == 'job' and url_second == 'kill':
+            self.job_kill()
         if url_first == 'job' and url_second == 'log':
             self.job_log()
+        if url_second == 'log_out':
+            self.job_log_out(url_first)
 
     def info(self):
         """
@@ -207,20 +207,31 @@ class SparkHandler(BaseHandler):
 
     def job_start(self):
         """
-        删除Spark作业信息
+        启动Spark作业
         :return: 处理结果
         """
-        # SparkJobThread(self.get_argument('uuid'))
-        CreateSparkJobThread(self.get_argument('uuid'))
+        create_spark_job(SparkJob.get(SparkJob.uuid == self.get_argument('uuid')))
         self.write({'success': True, 'content': '作业启动成功.'})
 
-    def job_log_list(self):
+    def job_log_running(self):
         """
         获取Spark 作业日志列表
         :return: 作业日志列表
         """
         logs = []
-        for log in SparkJobLog.select(SparkJobLog, SparkJob).join(SparkJob).order_by(SparkJobLog.created_time.desc()):
+        for log in SparkJobLog.select(SparkJobLog, SparkJob).join(SparkJob).order_by(
+                SparkJobLog.created_time.desc()).where(SparkJobLog.status == 'RUNNING'):
+            logs.append(log.to_dict())
+        self.write({'logs': logs})
+
+    def job_log_history(self):
+        """
+        获取Spark 作业日志列表
+        :return: 作业日志列表
+        """
+        logs = []
+        for log in SparkJobLog.select(SparkJobLog, SparkJob).join(SparkJob).order_by(
+                SparkJobLog.created_time.desc()).where(SparkJobLog.status != 'RUNNING'):
             logs.append(log.to_dict())
         self.write({'logs': logs})
 
@@ -234,3 +245,24 @@ class SparkHandler(BaseHandler):
         log_dict['std_out'] = log.std_out
         log_dict['std_err'] = log.std_err
         self.write(log_dict)
+
+    def job_log_out(self, uuid):
+        """
+        输出Spark 作业日志信息
+        :return: 日志信息
+        """
+        log = SparkJobLog.get(SparkJobLog.uuid == uuid)
+        self.set_header('Content-Type', 'application/octet-stream')
+        self.set_header('Content-Disposition',
+                        'attachment; filename={0}-{1}.log'.format(uuid, log.created_time.strftime('%Y%m%d%H%M%S')))
+        self.write(bytes(log.std_err))
+        self.finish()
+
+    def job_kill(self):
+        """
+        获取Spark 作业日志信息
+        :return: 日志信息
+        """
+        log = SparkJobLog.get(SparkJobLog.uuid == self.get_argument('uuid'))
+        kill_spark_job(log)
+        self.write({'success': True, 'content': '作业强制停止成功.'})

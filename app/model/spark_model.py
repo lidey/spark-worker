@@ -4,6 +4,7 @@
 # File Name: server_model.py
 # File Author: 姚丰利(lidey) 
 # File Created Date: 2015-12-03 17:37
+import json
 import time
 from peewee import *
 from app.core.base_model import BaseModel
@@ -19,6 +20,7 @@ class Spark(BaseModel):
     max_processor = IntegerField(db_column='MAX_PROCESSOR_NUM', default=10)
     max_memory = IntegerField(db_column='MAX_MEMORY', default=10240)
     path = CharField(db_column='PATH', max_length=256)
+    variables = TextField(db_column='VARIABLES')
     created_time = DateTimeField(db_column='CREATED_TIME', null=False)
 
     def to_dict(self):
@@ -27,6 +29,7 @@ class Spark(BaseModel):
             'title': self.server.title,
             'description': self.server.description,
             'path': self.path,
+            'variables': json.loads(self.variables),
             'url': self.url,
             'rest_url': self.rest_url,
             'web_ui': self.web_ui,
@@ -46,8 +49,9 @@ class SparkJob(BaseModel):
     description = TextField(db_column='DESCRIPTION')
     main_class = CharField(db_column='MAIN_CLASS', max_length=256)
     main_jar = CharField(db_column='MAIN_JAR', max_length=256)
-    master = CharField(db_column='MASTER', max_length=236)
-    arguments = CharField(db_column='ARGUMENTS', max_length=236)
+    master = CharField(db_column='MASTER', max_length=256)
+    arguments = CharField(db_column='ARGUMENTS', max_length=256)
+    variables = TextField(db_column='VARIABLES')
     processor = IntegerField(db_column='PROCESSOR_NUM', default=10)
     memory = IntegerField(db_column='MEMORY', default=10240)
     created_time = DateTimeField(db_column='CREATED_TIME', null=False)
@@ -64,6 +68,7 @@ class SparkJob(BaseModel):
             'main_jar': self.main_jar,
             'master': self.master,
             'arguments': self.arguments,
+            'variables': json.loads(self.variables),
             'created_time': time.mktime(self.created_time.timetuple()) * 1000,
         }
 

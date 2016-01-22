@@ -86,6 +86,11 @@
                     <span>作业管理</span>
                 </a>
             </li>
+            <li ng-class="{active:$state.includes('app.spark.running')}">
+                <a ui-sref="app.spark.running">
+                    <span>运行管理</span>
+                </a>
+            </li>
             <li ng-class="{active:$state.includes('app.spark.logs')}">
                 <a ui-sref="app.spark.logs">
                     <span>作业日志</span>

@@ -208,10 +208,10 @@ app.controller('SchedulerLogListCtrl', ['$scope', 'schedulerService', '$compile'
         },
         columns: [
             {title: '主键', data: 'uuid', visible: false},
-            {title: '名称', data: 'scheduler', width: '25%'},
-            {title: '编码', data: 'code', width: '20%'},
+            {title: '名称', data: 'scheduler', width: '45%'},
             {title: '状态', data: 'status', width: '10%'},
-            {title: '创建时间', data: 'created_time', width: '15%'}
+            {title: '描述', data: 'code', width: '10%'},
+            {title: '创建时间', data: 'created_time', width: '20%'}
         ],
         columnDefs: [
             {
@@ -223,15 +223,6 @@ app.controller('SchedulerLogListCtrl', ['$scope', 'schedulerService', '$compile'
             {
                 targets: [2],
                 render: function (data, type, row) {
-                    if (data == 1024)
-                        return '正常';
-                    if (data == 2048)
-                        return '系统异常';
-                }
-            },
-            {
-                targets: [3],
-                render: function (data, type, row) {
                     if (data == 'SUCCESS')
                         return '成功';
                     if (data == 'ERROR')
@@ -239,13 +230,22 @@ app.controller('SchedulerLogListCtrl', ['$scope', 'schedulerService', '$compile'
                 }
             },
             {
-                targets: [4],
+                targets: [3],
                 render: function (data, type, row) {
-                    return new Date(parseInt(data)).toLocaleString().replace(/:\d{1,2}$/, ' ');
+                    if (data == 1024)
+                        return '正常';
+                    if (data == 2048)
+                        return '系统异常';
                 }
             },
             {
-                title: '操作', width: '20%', targets: [5], data: 'uuid', orderable: false,
+                targets: [4],
+                render: function (data, type, row) {
+                    return new Date(parseInt(data)).toLocaleString();
+                }
+            },
+            {
+                title: '操作', width: '15%', targets: [5], data: 'uuid', orderable: false,
                 render: function (data, type, row) {
                     var option = '';
                     if (row.status == 'ERROR')

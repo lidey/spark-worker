@@ -56,6 +56,7 @@ class ServerHandler(BaseHandler):
             spark.rest_url = self.args.get('spark').get('rest_url')
             spark.max_memory = self.args.get('spark').get('max_memory')
             spark.max_processor = self.args.get('spark').get('max_processor')
+            spark.variables = json.dumps(self.args.get('spark').get('variables'))
             server.spark = spark
         self.server = server
 

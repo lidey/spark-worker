@@ -145,6 +145,50 @@
                             <input type="text" class="form-control" ng-model="server.spark.path">
                         </div>
                     </div>
+                    <div class="form-group">
+                        <label class="col-lg-2 control-label">环境变量</label>
+
+                        <div class="col-lg-3">
+                            <input type="text" class="form-control" ng-model="variable.key">
+                        </div>
+                        <div class="col-lg-4 m-l-n-md">
+                            <input type="text" class="form-control" ng-model="variable.value">
+                        </div>
+                        <div class="col-lg-1 m-l-n-md">
+                            <button class="btn btn-default" type="button" ng-click="add_variable(variable)">
+                                新增
+                            </button>
+                        </div>
+                        <div class="col-lg-offset-2 col-lg-8">
+                            <table class="table table-striped b-a m-t-md">
+                                <thead>
+                                <tr>
+                                    <th width="30%">编码</th>
+                                    <th width="40%">值</th>
+                                    <th>&nbsp;</th>
+                                </tr>
+                                </thead>
+                                <tbody>
+                                <tr ng-repeat="(key, value) in variables">
+                                    <td>
+                                        {{ key }}
+                                    </td>
+                                    <td>
+                                        {{ value }}
+                                    </td>
+                                    <td>
+                                        <a ng-click="edit_variable(key)" class="text-info m-r-sm">
+                                            <i class="fa fa-pencil m-r-xs"></i>编辑
+                                        </a>
+                                        <a ng-click="remove_variable(key)" class="text-warning">
+                                            <i class="fa fa-times m-r-xs"></i>删除
+                                        </a>
+                                    </td>
+                                </tr>
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
                 </div>
                 <div class="panel-footer">
                     <div class="form-group">

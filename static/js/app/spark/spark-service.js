@@ -79,5 +79,11 @@ app.factory('sparkService', ['$http', function ($http) {
         });
     };
 
+    factory.kill_job = function (uuid) {
+        return $http.get("spark/job/kill", {params: {uuid: uuid}}).then(function (resp) {
+            return resp.data;
+        });
+    };
+
     return factory;
 }]);

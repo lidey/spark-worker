@@ -11,7 +11,7 @@ from apscheduler.events import EVENT_JOB_EXECUTED, EVENT_JOB_ERROR, EVENT_JOB_MI
 from app.core.base_model import db
 from app.core.base_scheduler import scheduler
 from app.model.scheduler_model import Scheduler, SchedulerCron, SchedulerLog
-from app.script.spark_thread import startup_spark_job
+from app.script.spark_thread import CreateSparkJobThread
 
 
 class SchedulerEngine:
@@ -29,7 +29,7 @@ class SchedulerEngine:
         :return:
         """
         if self.scheduler.type == 'SPARK':
-            self._cron_add(startup_spark_job)
+            self._cron_add(CreateSparkJobThread)
 
     def reset(self):
         """

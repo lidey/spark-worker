@@ -19,7 +19,7 @@ class ServerScript:
 
         ssh = paramiko.SSHClient()
         ssh.set_missing_host_key_policy(paramiko.AutoAddPolicy())
-        ssh.connect(hostname=self.hostname, username=self.username, password=self.password)
+        ssh.connect(hostname=self.hostname, username=self.username, password=self.password, timeout=10)
         self.ssh = ssh
 
         self.transport = paramiko.Transport((self.hostname, 22))

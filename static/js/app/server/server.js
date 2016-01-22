@@ -88,9 +88,14 @@ app.controller('ServerDetailCtrl', ['$scope', 'serverService', '$stateParams', '
 }]);
 
 app.controller('ServerEditCtrl', ['$scope', 'serverService', '$state', '$stateParams', function ($scope, serverService, $state, $stateParams) {
+    $scope.variables = {};
+    $scope.variable = {};
+
     if ($stateParams.uuid != null) {
         serverService.get($stateParams.uuid).then(function (data) {
             $scope.server = data;
+            if ($scope.server.type == 'Spark')
+                $scope.variables = $scope.server.spark.variables;
             $scope.server.success = true;
             $scope.server.version = serverService.getVersion(data.version);
         });
@@ -104,7 +109,26 @@ app.controller('ServerEditCtrl', ['$scope', 'serverService', '$state', '$statePa
         $scope.server.success = true;
     }
     $scope.versions = serverService.getVersionArrayAll();
+
+    $scope.remove_variable = function (key) {
+        delete $scope.variables[key];
+    };
+
+    $scope.add_variable = function (variable) {
+        if (variable.key.length > 0 && variable.key.length > 0) {
+            $scope.variables[variable.key] = variable.value;
+            $scope.variable = {};
+        }
+    };
+
+    $scope.edit_variable = function (key) {
+        $scope.variable.key = key;
+        $scope.variable.value = $scope.variables[key];
+    };
+
     $scope.saveServer = function () {
+        if ($scope.server.type == 'Spark')
+            $scope.server.spark.variables = $scope.variables;
         serverService.save($scope.server).then(function (message) {
             $scope.showMessage(message).result.then(function () {
                 $scope.refresh(message.uuid);

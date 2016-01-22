@@ -87,7 +87,7 @@ app.controller('SparkJobListCtrl', ['$scope', 'sparkService', '$compile', '$moda
     };
     $scope.edit_job = function (uuid) {
         $modal.open({
-            templateUrl: 'static/tpl/spark/job.info.html',
+            templateUrl: 'static/tpl/spark/spark.job.info.html',
             controller: 'SparkJobCtrl',
             size: 'lg',
             resolve: {
@@ -112,7 +112,7 @@ app.controller('SparkJobListCtrl', ['$scope', 'sparkService', '$compile', '$moda
 
     $scope.designer_job = function (uuid) {
         $modal.open({
-            templateUrl: 'static/tpl/spark/job.designer.html',
+            templateUrl: 'static/tpl/spark/spark.job.designer.html',
             controller: 'SparkJobCtrl',
             size: 'lg',
             resolve: {
@@ -155,107 +155,154 @@ app.controller('SparkJobListCtrl', ['$scope', 'sparkService', '$compile', '$moda
     };
 }]);
 
-app.controller('SparkJobCtrl', ['$scope', 'sparkService', '$modalInstance', '$modal', 'FileUploader', 'spark', 'uuid', function ($scope, sparkService, $modalInstance, $modal, FileUploader, spark, uuid) {
-    $scope.alerts = [];
-    $scope.spark = spark;
+app.controller('SparkJobCtrl', ['$scope', 'sparkService', '$modalInstance', '$modal', 'FileUploader', 'spark', 'uuid',
+    function ($scope, sparkService, $modalInstance, $modal, FileUploader, spark, uuid) {
+        $scope.alerts = [];
+        $scope.spark = spark;
+        $scope.arguments = [];
+        $scope.variables = {};
+        $scope.variable = {};
 
-    var uploader = $scope.uploader = new FileUploader({
-        url: 'spark/job/upload_jar',
-        autoUpload: true
-    });
-
-    if (uuid == null) {
-        $scope.job = {s_uuid: spark.uuid, memory: 512, processor: 1, master: spark.rest_url};
-    } else {
-        sparkService.get_job(uuid).then(function (data) {
-            $scope.job = data;
-            $scope.job.s_uuid = spark.uuid;
-            $scope.uploader.headers = {'uuid': $scope.job.uuid};
-            if ($scope.job.jars.length > 0)
-                $scope.load_classes();
+        var uploader = $scope.uploader = new FileUploader({
+            url: 'spark/job/upload_jar',
+            autoUpload: true
         });
-    }
-    $scope.closeAlert = function (index) {
-        $scope.alerts.splice(index, 1);
-    };
 
-    $scope.cancel = function () {
-        $modalInstance.dismiss();
-    };
-
-    $scope.init_slider = function () {
-        angular.element("#memory-slider").on('slideStop', function (data) {
-            $scope.$apply(function () {
-                $scope.job.memory = data.value;
+        if (uuid == null) {
+            $scope.job = {s_uuid: spark.uuid, memory: 512, processor: 1, master: spark.rest_url};
+        } else {
+            sparkService.get_job(uuid).then(function (data) {
+                $scope.job = data;
+                $scope.job.s_uuid = spark.uuid;
+                $scope.arguments = $scope.job.arguments.split(',');
+                $scope.variables = $scope.job.variables;
+                $scope.uploader.headers = {'uuid': $scope.job.uuid};
+                if ($scope.job.jars.length > 0)
+                    $scope.load_classes();
             });
-        });
+        }
+        $scope.closeAlert = function (index) {
+            $scope.alerts.splice(index, 1);
+        };
 
-        angular.element("#processor-slider").on('slideStop', function (data) {
-            $scope.$apply(function () {
-                $scope.job.processor = data.value;
+        $scope.cancel = function () {
+            $modalInstance.dismiss();
+        };
+
+        $scope.init_slider = function () {
+            angular.element("#memory-slider").on('slideStop', function (data) {
+                $scope.$apply(function () {
+                    $scope.job.memory = data.value;
+                });
             });
-        });
-    };
 
-    $scope.remove_jar = function (jar) {
-    };
+            angular.element("#processor-slider").on('slideStop', function (data) {
+                $scope.$apply(function () {
+                    $scope.job.processor = data.value;
+                });
+            });
+        };
 
-    // FILTERS
+        // FILTERS
 
-    uploader.filters.push({
-        name: 'jarFilter',
-        fn: function (item /*{File|FileLikeObject}*/, options) {
-            var uploadFileExtend = ".jar,";
+        uploader.filters.push({
+            name: 'jarFilter',
+            fn: function (item /*{File|FileLikeObject}*/, options) {
+                var uploadFileExtend = ".jar,";
 
-            //判断后缀
-            var fileExtend = item.name.substring(item.name.lastIndexOf('.')).toLowerCase();
-            //可以对fileExtend（文件后缀<.xxx>） 进行判断 处理
-            return uploadFileExtend.indexOf(fileExtend) > -1
-        }
-    });
-
-    uploader.onSuccessItem = function (fileItem, response, status, headers) {
-        if (response.success) {
-            fileItem.remove();
-            for (var i = 0; i < $scope.job.jars.length; i++)
-                if ($scope.job.jars[i] == response.file_name)
-                    $scope.job.jars.splice(i, 1);
-            $scope.job.jars.push(response.file_name);
-            $scope.load_classes();
-        }
-    };
-
-    $scope.load_classes = function () {
-        sparkService.open_jars($scope.job.uuid).then(function (classes) {
-            console.log(classes);
-            $scope.classes = classes;
-            for (var i = 0; i < classes.length; i++) {
-                if (classes[i].name == $scope.job.main_class)
-                    $scope.job.class = classes[i];
+                //判断后缀
+                var fileExtend = item.name.substring(item.name.lastIndexOf('.')).toLowerCase();
+                //可以对fileExtend（文件后缀<.xxx>） 进行判断 处理
+                return uploadFileExtend.indexOf(fileExtend) > -1
             }
         });
-    };
 
-    $scope.remove_jar = function (index, filename) {
-        sparkService.remove_jar($scope.job.uuid, filename).then(function (message) {
-            if (message.success) {
-                $scope.job.jars.splice(index, 1);
+        uploader.onSuccessItem = function (fileItem, response, status, headers) {
+            if (response.success) {
+                fileItem.remove();
+                for (var i = 0; i < $scope.job.jars.length; i++)
+                    if ($scope.job.jars[i] == response.file_name)
+                        $scope.job.jars.splice(i, 1);
+                $scope.job.jars.push(response.file_name);
                 $scope.load_classes();
-            } else
-                $scope.alerts.push({type: 'danger', msg: message.content})
-        });
-    };
+            }
+        };
 
-    $scope.save_job = function () {
-        sparkService.save_job($scope.job).then(function (message) {
-            if (message.success)
-                $modalInstance.close(message);
-            else
-                $scope.alerts.push({type: 'danger', msg: message.content})
-        });
-    };
+        $scope.load_classes = function () {
+            sparkService.open_jars($scope.job.uuid).then(function (classes) {
+                console.log(classes);
+                $scope.classes = classes;
+                for (var i = 0; i < classes.length; i++) {
+                    if (classes[i].name == $scope.job.main_class)
+                        $scope.job.class = classes[i];
+                }
+            });
+        };
 
-}]);
+        $scope.remove_jar = function (index, filename) {
+            sparkService.remove_jar($scope.job.uuid, filename).then(function (message) {
+                if (message.success) {
+                    $scope.job.jars.splice(index, 1);
+                    $scope.load_classes();
+                } else
+                    $scope.alerts.push({type: 'danger', msg: message.content})
+            });
+        };
+
+        $scope.remove_argument = function (index) {
+            $scope.arguments.splice(index, 1);
+        };
+
+        $scope.add_argument = function () {
+            if ($scope.new_argument.length > 0) {
+                for (var i = 0; i < $scope.arguments.length; i++) {
+                    if ($scope.arguments[i] == $scope.new_argument) {
+                        if ($scope.argument_index == undefined || $scope.argument_index != i)
+                            $scope.arguments.splice(i, 1);
+                    }
+                }
+                if ($scope.argument_index != undefined) {
+                    $scope.arguments.splice($scope.argument_index, 1, $scope.new_argument);
+                } else {
+                    $scope.arguments.push($scope.new_argument)
+                }
+                $scope.new_argument = '';
+                $scope.argument_index = undefined;
+            }
+        };
+        $scope.edit_argument = function (index) {
+            $scope.new_argument = $scope.arguments[index];
+            $scope.argument_index = index;
+        };
+
+        $scope.remove_variable = function (key) {
+            delete $scope.variables[key];
+        };
+
+        $scope.add_variable = function (variable) {
+            if (variable.key.length > 0 && variable.value.length) {
+                $scope.variables[variable.key] = variable.value;
+                $scope.variable = {};
+            }
+        };
+
+        $scope.edit_variable = function (key) {
+            $scope.variable.key = key;
+            $scope.variable.value = $scope.variables[key];
+        };
+
+        $scope.save_job = function () {
+            $scope.job.arguments = $scope.arguments.join(',');
+            $scope.job.variables = $scope.variables;
+            sparkService.save_job($scope.job).then(function (message) {
+                if (message.success)
+                    $modalInstance.close(message);
+                else
+                    $scope.alerts.push({type: 'danger', msg: message.content})
+            });
+        };
+
+    }]);
 
 app.controller('SparkJobLogsCtrl', ['$scope', 'sparkService', '$modalInstance', 'config', 'content', function ($scope, sparkService, $modalInstance, config, content) {
 
@@ -264,6 +311,92 @@ app.controller('SparkJobLogsCtrl', ['$scope', 'sparkService', '$modalInstance', 
     };
 
     $scope.logs = content.replace(new RegExp(/(\tat)/g), '&nbsp;&nbsp;&nbsp;&nbsp;').split('\n');
+
+}]);
+
+
+app.controller('SparkRunningListCtrl', ['$scope', 'sparkService', '$compile', '$modal', function ($scope, sparkService, $compile, $modal) {
+
+    $scope.jobGrid = {};
+    $scope.kill_list = {};
+    $scope.dt_option = {
+        'language': {
+            'url': 'static/vendor/jquery/datatables/i18n/zh_CN.json'
+
+        },
+        ajax: {
+            url: 'spark/job/log_running',
+            dataSrc: 'logs'
+        },
+        columns: [
+            {title: '主键', data: 'uuid', visible: false},
+            {title: '作业ID', data: 'app_id', width: '20%'},
+            {title: '名称', data: 'title', width: '40%'},
+            {title: '时间', data: 'created_time', width: '15%'}
+        ],
+        columnDefs: [
+            {
+                targets: [2],
+                render: function (data, type, row) {
+                    return '<i class="fa fa-bug m-r-xs"></i>' + data;
+                }
+            },
+            {
+                targets: [3],
+                render: function (data, type, row) {
+                    return new Date(parseInt(data)).toLocaleString();
+                }
+            },
+            {
+                title: '操作', width: '25%', targets: [4], data: 'uuid', orderable: false,
+                render: function (data, type, row) {
+                    $scope.kill_list[data] = true;
+                    var option = '<a ng-show="kill_list[\'' + data + '\']" ng-click="kill(\'' + data + '\',\'' + row.title +
+                        '\')" class="text-info m-r-md"><i class="fa  fa-eye m-r-xs"></i>强制停止</a>' +
+                        '<a ng-click="show_out(\'' + data + '\')" class="text-info m-r-md"><i class="fa  fa-eye m-r-xs"></i>输出</a>' +
+                        '<a href="spark/' + data + '/log_out" class="text-info" target="_blank"><i class="fa fa-download m-r-xs"></i>日志</a>';
+                    return option;
+                }
+            }
+        ],
+        order: [[3, "desc"]],
+        "fnCreatedRow": function (nRow, aData, iDataIndex) {
+            $compile(nRow)($scope);
+        }
+    };
+
+    $scope.kill = function (uuid, title) {
+        $scope.showConfirm('请确认是否强制停止作业:' + title).result.then(function (data) {
+            if (data) {
+                $scope.kill_list[uuid] = false;
+                sparkService.kill_job(uuid).then(function (message) {
+                    if (message.success)
+                        $scope.jobGrid.running.api().ajax.reload();
+                    else
+                        $scope.kill_list[uuid] = true;
+                    $scope.showMessage(message);
+                })
+            }
+
+        }, function () {
+        });
+
+    };
+
+    $scope.show_out = function (uuid) {
+        sparkService.get_log(uuid).then(function (log) {
+            $modal.open({
+                templateUrl: 'static/tpl/spark/spark.job.log.html',
+                controller: 'SparkJobLogsCtrl',
+                size: 'lg',
+                resolve: {
+                    content: function () {
+                        return log.std_out;
+                    }
+                }
+            })
+        })
+    };
 
 }]);
 
@@ -277,19 +410,19 @@ app.controller('SparkLogListCtrl', ['$scope', 'sparkService', '$compile', '$moda
 
         },
         ajax: {
-            url: 'spark/job/log_list',
+            url: 'spark/job/log_history',
             dataSrc: 'logs'
         },
         columns: [
             {title: '主键', data: 'uuid', visible: false},
-            {title: '名称', data: 'title', width: '40%'},
             {title: '作业ID', data: 'app_id', width: '20%'},
+            {title: '名称', data: 'title', width: '35%'},
             {title: '状态', data: 'status', width: '10%'},
-            {title: '创建时间', data: 'created_time', width: '15%'}
+            {title: '时间', data: 'created_time', width: '20%'}
         ],
         columnDefs: [
             {
-                targets: [1],
+                targets: [2],
                 render: function (data, type, row) {
                     return '<i class="fa fa-bug m-r-xs"></i>' + data;
                 }
@@ -297,14 +430,14 @@ app.controller('SparkLogListCtrl', ['$scope', 'sparkService', '$compile', '$moda
             {
                 targets: [4],
                 render: function (data, type, row) {
-                    return new Date(parseInt(data)).toLocaleString().replace(/:\d{1,2}$/, ' ');
+                    return new Date(parseInt(data)).toLocaleString();
                 }
             },
             {
                 title: '操作', width: '15%', targets: [5], data: 'uuid', orderable: false,
                 render: function (data, type, row) {
                     return '<a ng-click="show_out(\'' + data + '\')" class="text-info m-r-md"><i class="fa  fa-eye m-r-xs"></i>输出</a>' +
-                        '<a ng-click="show_log(\'' + data + '\',\'' + row.title + '\')" class="text-info"><i class="fa fa-eye m-r-xs"></i>日志</a>';
+                        '<a href="spark/' + data + '/log_out" class="text-info" target="_blank"><i class="fa fa-download m-r-xs"></i>日志</a>';
                 }
             }
         ],
@@ -316,27 +449,16 @@ app.controller('SparkLogListCtrl', ['$scope', 'sparkService', '$compile', '$moda
 
     $scope.show_out = function (uuid) {
         sparkService.get_log(uuid).then(function (log) {
-            openLog(log.std_out);
-        })
-    };
-
-
-    $scope.show_log = function (uuid) {
-        sparkService.get_log(uuid).then(function (log) {
-            openLog(log.std_err);
-        })
-    };
-
-    function openLog(content) {
-        $modal.open({
-            templateUrl: 'static/tpl/spark/job.log.html',
-            controller: 'SparkJobLogsCtrl',
-            size: 'lg',
-            resolve: {
-                content: function () {
-                    return content;
+            $modal.open({
+                templateUrl: 'static/tpl/spark/spark.job.log.html',
+                controller: 'SparkJobLogsCtrl',
+                size: 'lg',
+                resolve: {
+                    content: function () {
+                        return log.std_out;
+                    }
                 }
-            }
+            })
         })
     };
 

@@ -33,14 +33,19 @@ angular.module('app')
                             }
                         }
                     })
+                    .state('app.spark.running', {
+                        url: '/running',
+                        views: {
+                            '': {
+                                templateUrl: 'static/tpl/spark/spark.job.running.list.html'
+                            }
+                        }
+                    })
                     .state('app.spark.logs', {
                         url: '/logs',
                         views: {
                             '': {
                                 templateUrl: 'static/tpl/spark/spark.job.log.list.html'
-                            },
-                            'aside': {
-                                templateUrl: 'static/tpl/spark/spark.list.html'
                             }
                         }
                     });
