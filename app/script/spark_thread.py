@@ -109,8 +109,7 @@ def create_spark_job(spark_job):
             if os.path.isfile(os.path.join(upload_path, f)):
                 server_script.upload(os.path.join(upload_path, f), os.path.join(remote_path, f))
                 spark_job.jars += 'file:{0},'.format(os.path.join(remote_path, f))
-
-        job_log.shell = json.dumps({
+        spark_dict = {
             "action": "CreateSubmissionRequest",
             "appArgs": spark_job.arguments.split(','),
             "appResource": 'file:{0}'.format(os.path.join(remote_path, spark_job.main_jar)),
@@ -132,7 +131,10 @@ def create_spark_job(spark_job):
                 "spark.submit.deployMode": "cluster",
                 "spark.master": spark_job.master
             }
-        })
+        }
+        spark_dict['environmentVariables'] = dict(spark_dict['environmentVariables'], **json.loads(spark.variables))
+        spark_dict['sparkProperties'] = dict(spark_dict['sparkProperties'], **json.loads(spark_job.variables))
+        job_log.shell = json.dumps(spark_dict)
         http_client = httpclient.HTTPClient()
         create_job_request = httpclient.HTTPRequest(
                 url='{0}/v1/submissions/create'.format(spark.rest_url),
