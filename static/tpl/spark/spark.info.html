@@ -1,0 +1,102 @@
+<form class=" form-horizontal" ng-submit="save_spark()">
+    <div class="modal-header">
+        <h5 class="modal-title">Spark配置信息</h5>
+    </div>
+    <div class="modal-body">
+        <input type="hidden" class="form-control" ng-model="spark.uuid">
+        <input type="hidden" class="form-control" ng-model="spark.s_uuid">
+        <alert ng-repeat="alert in alerts" type="{{ alert.type }}" close="closeAlert($index)">{{ alert.msg }}</alert>
+        <div class="form-group">
+            <label class="col-lg-2 control-label">WEB UI:</label>
+
+            <div class="col-lg-8">
+                <input type="text" class="form-control" ng-model="spark.web_ui"
+                       placeholder="http://">
+            </div>
+        </div>
+        <div class="form-group">
+            <label class="col-lg-2 control-label">URL:</label>
+
+            <div class="col-lg-8">
+                <input type="text" class="form-control" ng-model="spark.url"
+                       placeholder="spark://">
+            </div>
+        </div>
+        <div class="form-group">
+            <label class="col-lg-2 control-label">REST URL:</label>
+
+            <div class="col-lg-8">
+                <input type="text" class="form-control" ng-model="spark.rest_url"
+                       placeholder="spark://">
+            </div>
+        </div>
+        <div class="form-group">
+            <label class="col-lg-2 control-label">最大进程数:</label>
+
+            <div class="col-lg-3">
+                <input type="text" class="form-control" ng-model="spark.max_processor">
+            </div>
+            <label class="col-lg-2 control-label">最大可用内存:</label>
+
+            <div class="col-lg-3">
+                <input type="text" class="form-control" ng-model="spark.max_memory">
+            </div>
+        </div>
+        <div class="form-group">
+            <label class="col-lg-2 control-label">spark安装路径:</label>
+
+            <div class="col-lg-8">
+                <input type="text" class="form-control" ng-model="spark.path">
+            </div>
+        </div>
+        <div class="form-group">
+            <label class="col-lg-2 control-label">环境变量</label>
+
+            <div class="col-lg-3">
+                <input type="text" class="form-control" ng-model="variable.key">
+            </div>
+            <div class="col-lg-4 m-l-n-md">
+                <input type="text" class="form-control" ng-model="variable.value">
+            </div>
+            <div class="col-lg-1 m-l-n-md">
+                <button class="btn btn-default" type="button" ng-click="add_variable(variable)">
+                    新增
+                </button>
+            </div>
+            <div class="col-lg-offset-2 col-lg-8">
+                <table class="table table-striped b-a m-t-md">
+                    <thead>
+                    <tr>
+                        <th width="30%">编码</th>
+                        <th width="40%">值</th>
+                        <th>&nbsp;</th>
+                    </tr>
+                    </thead>
+                    <tbody>
+                    <tr ng-repeat="(key, value) in variables">
+                        <td>
+                            {{ key }}
+                        </td>
+                        <td>
+                            {{ value }}
+                        </td>
+                        <td>
+                            <a ng-click="edit_variable(key)" class="text-info m-r-sm">
+                                <i class="fa fa-pencil m-r-xs"></i>编辑
+                            </a>
+                            <a ng-click="remove_variable(key)" class="text-warning">
+                                <i class="fa fa-times m-r-xs"></i>删除
+                            </a>
+                        </td>
+                    </tr>
+                    </tbody>
+                </table>
+            </div>
+        </div>
+
+    </div>
+    <div class="modal-footer">
+        <button class="btn btn-info w-xs">保存</button>
+        <button type="button" class="btn btn-default w-xs" ng-click="cancel()">取消</button>
+    </div>
+</form>

@@ -9,8 +9,47 @@ from peewee import *
 from app.core.base_model import BaseModel
 
 
-class Server(BaseModel):
+class Folder(BaseModel):
+    """
+    链接分类目录
+    """
     uuid = CharField(db_column='UUID', max_length=64, primary_key=True)
+    title = CharField(db_column='TITLE', max_length=32)
+    description = TextField(db_column='DESCRIPTION')
+    created_time = DateTimeField(db_column='CREATED_DATE', null=False)
+
+    def to_dict(self):
+        return {
+            'uuid': self.uuid,
+            'title': self.title,
+            'description': self.description,
+            'created_time': time.mktime(self.created_time.timetuple()) * 1000,
+        }
+
+    def to_tree(self):
+        return {
+            'uid': self.uuid,
+            'label': self.title,
+            'icon': ['fa fa-folder-o'],
+            'type': 'folder',
+            'data': {
+                'uuid': self.uuid,
+                'title': self.title,
+                'description': self.description,
+                'created_time': time.mktime(self.created_time.timetuple()) * 1000,
+            }
+        }
+
+    class Meta:
+        db_table = 'WORKER_SERVER_FOLDER'
+
+
+class Server(BaseModel):
+    """
+    服务器链接
+    """
+    uuid = CharField(db_column='UUID', max_length=64, primary_key=True)
+    folder = ForeignKeyField(Folder, db_column='FOLDER_UUID')
     title = CharField(db_column='TITLE', max_length=32)
     description = TextField(db_column='DESCRIPTION')
     host = CharField(db_column='HOST', max_length=32)

@@ -9,12 +9,13 @@ import os
 import uuid
 import zipfile
 
-import tornado
+import tornado.web
 import tornado.websocket
 
 from app.core.base_handler import BaseHandler
+from app.model.server_model import Server
 from app.model.spark_model import Spark, SparkJob, SparkJobLog
-from app.script.spark_thread import CreateSparkJobThread, kill_spark_job, create_spark_job
+from app.script.spark_thread import kill_spark_job, create_spark_job
 from config import system, sparkConfig
 
 
@@ -26,7 +27,20 @@ class SparkHandler(BaseHandler):
     def post(self, url_first='', url_second=''):
         if url_first == '':
             return
-        if url_first == 'job':
+        if url_first == 'save':
+            spark = Spark()
+            spark.uuid = self.args.get('uuid')
+            spark.s_uuid = self.args.get('s_uuid')
+            spark.path = self.args.get('path')
+            spark.web_ui = self.args.get('web_ui')
+            spark.url = self.args.get('url')
+            spark.rest_url = self.args.get('rest_url')
+            spark.max_memory = self.args.get('max_memory')
+            spark.max_processor = self.args.get('max_processor')
+            spark.variables = json.dumps(self.args.get('variables'))
+            self.save(spark)
+
+        if url_first == 'job' and url_second == 'save':
             job = SparkJob()
             job.uuid = self.args.get('uuid')
             job.s_uuid = self.args.get('s_uuid')
@@ -39,9 +53,7 @@ class SparkHandler(BaseHandler):
             job.processor = self.args.get('processor')
             job.memory = self.args.get('memory')
             job.variables = json.dumps(self.args.get('variables'))
-            self.job = job
-        if url_first == 'job' and url_second == 'save':
-            self.job_save()
+            self.job_save(job)
         if url_first == 'job' and url_second == 'upload_jar':
             self.job_upload_jar()
 
@@ -78,12 +90,30 @@ class SparkHandler(BaseHandler):
         if url_second == 'log_out':
             self.job_log_out(url_first)
 
+    def save(self, spark):
+        """
+        保存Spark服务配置信息
+        :param spark: Spark服务配置信息
+        :return: 处理结果
+        """
+        if spark.uuid is None:
+            spark.uuid = str(uuid.uuid1())
+            spark.server = Server.get(Server.uuid == spark.s_uuid)
+            spark.save(force_insert=True)
+        else:
+            spark.save()
+        self.write({'success': True, 'content': 'Spark服务配置保存成功.'})
+
     def info(self):
         """
         获取Spark服务器信息
         :return: 服务器信息
         """
-        spark = Spark.get(Spark.uuid == self.get_argument('uuid'))
+        spark = {}
+        if self.get_argument('uuid', None):
+            spark = Spark.get(Spark.uuid == self.get_argument('uuid'))
+        if self.get_argument('s_uuid', None):
+            spark = Spark.select().join(Server).where(Server.uuid == self.get_argument('s_uuid')).get()
         self.write(spark.to_dict())
 
     def list(self):
@@ -92,7 +122,7 @@ class SparkHandler(BaseHandler):
         :return: 服务器列表
         """
         sparks = []
-        for spark in Spark.select():
+        for spark in Spark.select(Spark, Server).join(Server):
             sparks.append(spark.to_dict())
         self.write({'sparks': sparks})
 
@@ -121,6 +151,7 @@ class SparkHandler(BaseHandler):
         上传jar包
         :return:
         """
+        global file_name
         upload_path = os.path.join(system['upload_file'],
                                    sparkConfig['upload_path'] + '/' + self.request.headers['uuid'])  # 文件的暂存路径
 
@@ -167,12 +198,12 @@ class SparkHandler(BaseHandler):
                         classes.append({'name': name, 'jar': jar})
         self.write({'classes': classes})
 
-    def job_save(self):
+    def job_save(self, job):
         """
         保存Spark作业信息
+        :param job: Spark作业信息
         :return: 处理结果
         """
-        job = self.job
         if job.uuid is None:
             job.uuid = str(uuid.uuid1())
             job.spark = Spark.get(Spark.uuid == job.s_uuid)

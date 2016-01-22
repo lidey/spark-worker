@@ -21,6 +21,7 @@ urls = [
     (r"/config.js", ConfigHandler, dict()),
     (r"/user/(.*)", UserHandler, dict()),
     (r"/job/(.*)", JobHandler, dict()),
+    (r"/server/(.*)/(.*)", ServerHandler, dict()),
     (r"/server/(.*)", ServerHandler, dict()),
     (r'/terminal', WebTerminalHandler, dict()),
     (r'/terminal/kill', WebTerminalKillHandler, dict()),

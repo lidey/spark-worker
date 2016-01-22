@@ -4,26 +4,21 @@
 # File Name: rask.py
 # File Author: lidey 
 # File Created Date: 2015-11-27 16:22
-import commands
 import json
-import threading
 import uuid
-import time
-from datetime import datetime
-
 import select
-
 import sys
-import tornado
+import tornado.web
+import tornado.websocket
+
 from paramiko import AuthenticationException
 from paramiko.ssh_exception import NoValidConnectionsError
-from tornado.websocket import WebSocketClosedError
 
 from app.core.base_handler import BaseHandler
 from app.core.base_thread import WebSocketThread
-from app.model.server_model import Server
+from app.model.server_model import Server, Folder
 from app.model.spark_model import Spark
-from app.script.server_script import ServerScript, Tty, WebTty
+from app.script.server_script import ServerScript, WebTty
 
 
 class ServerHandler(BaseHandler):
@@ -31,97 +26,123 @@ class ServerHandler(BaseHandler):
         pass
 
     @tornado.web.authenticated
-    def post(self, url_str=''):
-        if url_str == '':
+    def post(self, url_first='', url_second=''):
+        if url_first == '':
             return
+        if url_first == 'folder' and url_second == 'save':
+            folder = Folder()
+            folder.uuid = self.args.get('uuid')
+            folder.title = self.args.get('title')
+            folder.description = self.args.get('description')
+            return self.folder_save(folder)
 
-        server = Server()
-        server.uuid = self.args.get('uuid')
-        server.title = self.args.get('title')
-        server.description = self.args.get('description')
-        server.host = self.args.get('host')
-        server.type = self.args.get('type')
-        server.version = self.args.get('version').get('key')
-        server.name = self.args.get('name')
-        server.password = self.args.get('password')
-        server.processor = self.args.get('processor')
-        server.memory = self.args.get('memory')
-        server.path = self.args.get('path')
-        if server.type == 'Spark':
-            spark = Spark()
-            spark.uuid = self.args.get('spark').get('uuid')
-            spark.path = self.args.get('spark').get('path')
-            spark.web_ui = self.args.get('spark').get('web_ui')
-            spark.url = self.args.get('spark').get('url')
-            spark.rest_url = self.args.get('spark').get('rest_url')
-            spark.max_memory = self.args.get('spark').get('max_memory')
-            spark.max_processor = self.args.get('spark').get('max_processor')
-            spark.variables = json.dumps(self.args.get('spark').get('variables'))
-            server.spark = spark
-        self.server = server
-
-        if url_str == 'save':
-            self.save()
-        if url_str == 'test':
-            self.test()
+        if url_first == 'save':
+            server = Server()
+            server.uuid = self.args.get('uuid')
+            server.f_uuid = self.args.get('f_uuid')
+            server.title = self.args.get('title')
+            server.description = self.args.get('description')
+            server.host = self.args.get('host')
+            server.type = self.args.get('type')
+            server.version = self.args.get('version').get('key')
+            server.name = self.args.get('name')
+            server.password = self.args.get('password')
+            server.processor = self.args.get('processor')
+            server.memory = self.args.get('memory')
+            server.path = self.args.get('path')
+            return self.server_save(server)
 
     @tornado.web.authenticated
-    def get(self, url_str=''):
-        if url_str == '':
+    def get(self, url_first='', url_second=''):
+        if url_first == '':
             return
-        if url_str == 'info':
-            self.info()
-        if url_str == 'list':
-            self.list()
-        if url_str == 'remove':
-            self.remove()
+        if url_first == 'folder' and url_second == 'tree':
+            return self.folder_tree()
+        if url_first == 'folder' and url_second == 'info':
+            return self.folder_info()
+        if url_first == 'folder' and url_second == 'remove':
+            return self.folder_remove()
+        if url_first == 'info':
+            return self.server_info()
+        if url_first == 'list':
+            return self.server_list()
+        if url_first == 'remove':
+            return self.server_remove()
+        if url_first == 'test':
+            return self.server_test()
 
-    def save(self):
+
+    def folder_tree(self):
         """
-        保存服务器链接信息
+        查询数据库链接及包含的目录结构
+        :return: 树形数据集
+        """
+        tree = []
+        for folder in Folder.select():
+            tree.append(folder.to_tree())
+        self.write({'tree': tree})
+
+    def folder_save(self, folder):
+        """
+        保存服务器链接目录分类信息
+        :param folder: 目录分类信息
         :return: 处理结果
         """
-        server = self.server
-        if server.uuid == None:
+        if folder.uuid is None:
+            folder.uuid = str(uuid.uuid1())
+            folder.save(force_insert=True)
+        else:
+            folder.save()
+        self.write({'success': True, 'content': '目录分类保存成功.'})
+
+    def folder_info(self):
+        """
+        获取服务器链接目录分类信息
+        :return: 目录分类信息
+        """
+        self.write(Folder.get(Folder.uuid == self.get_argument('uuid')).to_dict())
+
+    def folder_remove(self):
+        """
+        删除服务器链接目录分类
+        :return: 处理结果
+        """
+        Folder.get(Folder.uuid == self.get_argument('uuid')).delete_instance()
+        self.write({'success': True, 'content': '目录分类删除成功.'})
+
+    def server_save(self, server):
+        """
+        保存服务器链接信息
+        :param server: 服务器链接信息
+        :return: 处理结果
+        """
+        if server.uuid is None:
             server.uuid = str(uuid.uuid1())
-            server.created_time = datetime.now()
+            server.folder = Folder.get(Folder.uuid == server.f_uuid)
             server.save(force_insert=True)
-            if server.type == 'Spark':
-                spark = server.spark
-                spark.server = server
-                spark.uuid = str(uuid.uuid1())
-                spark.save(force_insert=True)
 
         else:
             server.save()
-            if server.type == 'Spark':
-                spark = server.spark
-                spark.save()
-        self.write({'success': True, 'content': '服务器保存成功.', 'uuid': server.uuid})
+        self.write({'success': True, 'content': '服务器保存成功.'})
 
-    def info(self):
+    def server_info(self):
         """
         获取服务器链接信息
         :return: 链接信息
         """
-        server = Server.get(Server.uuid == self.get_argument('uuid'))
-        server_dict = server.to_dict()
-        if server.type == 'Spark':
-            spark = Spark.select().join(Server).where(Server.uuid == server.uuid).get()
-            server_dict['spark'] = spark.to_dict()
-        self.write(server_dict)
+        self.write(Server.get(Server.uuid == self.get_argument('uuid')).to_dict())
 
-    def list(self):
+    def server_list(self):
         """
         获取服务器链接列表
         :return: 链接列表
         """
         servers = []
-        for server in Server.select():
+        for server in Server.select().join(Folder).where(Folder.uuid == self.get_argument('f_uuid')):
             servers.append(server.to_dict())
         self.write({'servers': servers})
 
-    def remove(self):
+    def server_remove(self):
         """
         删除服务器链接信息
         :return: 处理结果
@@ -130,13 +151,13 @@ class ServerHandler(BaseHandler):
         server.delete_instance()
         self.write({'success': True, 'content': '服务器删除成功.'})
 
-    def test(self):
+    def server_test(self):
         """
         测试服务器链接信息
         :return: 处理结果
         """
         try:
-            script = ServerScript(server=self.server)
+            script = ServerScript(Server.get(Server.uuid == self.get_argument('uuid')))
             processor, _ = script.command("cat /proc/cpuinfo |grep 'processor'|sort |uniq|wc -l")
             memory, _ = script.command("free -m | grep Mem | awk '{print $2}'")
             script.close()
@@ -168,6 +189,10 @@ class WebTerminalHandler(tornado.websocket.WebSocketHandler):
         return True
 
     def open(self):
+        """
+        建立web socket连接
+        :return:
+        """
         server = Server.get(Server.uuid == self.get_argument('uuid'))
         self.term = WebTty(server)
         self.ssh = self.term.get_connection()
@@ -185,6 +210,11 @@ class WebTerminalHandler(tornado.websocket.WebSocketHandler):
                 pass
 
     def on_message(self, message):
+        """
+        发送信息
+        :param message:信息
+        :return:
+        """
         data = json.loads(message)
         if not data:
             return
@@ -195,7 +225,6 @@ class WebTerminalHandler(tornado.websocket.WebSocketHandler):
                     match = self.term.ps1_pattern.search(self.term.vim_data)
                     if match:
                         self.term.vim_flag = False
-                        vim_data = self.term.deal_command(self.term.vim_data)[0:200]
 
                 self.term.vim_data = ''
                 self.term.data = ''
@@ -205,6 +234,10 @@ class WebTerminalHandler(tornado.websocket.WebSocketHandler):
                 self.channel.send(data['data'])
 
     def on_close(self):
+        """
+        关闭连接
+        :return:
+        """
         if self in WebTerminalHandler.clients:
             WebTerminalHandler.clients.remove(self)
         try:
@@ -214,6 +247,10 @@ class WebTerminalHandler(tornado.websocket.WebSocketHandler):
             pass
 
     def forward_outbound(self):
+        """
+        监听ssh连接发送回调信息
+        :return:
+        """
         try:
             data = ''
             while True:

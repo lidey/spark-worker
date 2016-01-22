@@ -14,37 +14,22 @@ angular.module('app')
                         url: '/server',
                         templateUrl: 'static/tpl/server/server.html',
                         resolve: {
-                            deps: ['uiLoad',
-                                function (uiLoad) {
-                                    return uiLoad.load(['static/js/app/server/server.js',
-                                        'static/js/app/server/server-service.js',
-                                        'static/vendor/libs/moment.min.js']);
+                            deps: ['$ocLazyLoad', 'uiLoad',
+                                function ($ocLazyLoad, uiLoad) {
+                                    return $ocLazyLoad.load(['angularBootstrapNavTree']).then(function () {
+                                        return uiLoad.load(['static/js/app/server/server.js',
+                                            'static/js/app/server/server-service.js',
+                                            'static/js/app/spark/spark.js',
+                                            'static/js/app/spark/spark-service.js',
+                                            'static/vendor/libs/moment.min.js']);
+                                    })
+
                                 }]
                         }
                     })
                     .state('app.server.index', {
                         url: '/index',
-                        templateUrl: 'static/tpl/server/server.detail.html'
-                    })
-                    .state('app.server.add', {
-                        url: '/add',
-                        templateUrl: 'static/tpl/server/server.info.html',
-                        resolve: {
-                            deps: ['$ocLazyLoad',
-                                function ($ocLazyLoad) {
-                                    return $ocLazyLoad.load(['ui.select']);
-                                }]
-                        }
-                    })
-                    .state('app.server.update', {
-                        url: '/update/{uuid}',
-                        templateUrl: 'static/tpl/server/server.info.html',
-                        resolve: {
-                            deps: ['$ocLazyLoad',
-                                function ($ocLazyLoad) {
-                                    return $ocLazyLoad.load(['ui.select', 'textAngular']);
-                                }]
-                        }
+                        templateUrl: 'static/tpl/server/server.index.html'
                     });
             }
         ]

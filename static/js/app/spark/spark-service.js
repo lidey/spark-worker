@@ -23,6 +23,17 @@ app.factory('sparkService', ['$http', function ($http) {
             return resp.data;
         });
     };
+    factory.get_by_server = function (s_uuid) {
+        return $http.get("spark/info", {params: {s_uuid: s_uuid}}).then(function (resp) {
+            return resp.data;
+        });
+    };
+
+    factory.save = function (spark) {
+        return $http.post("spark/save", spark).then(function (resp) {
+            return resp.data;
+        });
+    };
 
     factory.save_job = function (job) {
         if (job.class != null) {

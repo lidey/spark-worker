@@ -22,6 +22,62 @@ app.controller('SparkCtrl', ['$scope', 'sparkService', '$stateParams', function 
     };
 }]);
 
+
+app.controller('SparkEditCtrl', ['$scope', 'sparkService', '$modalInstance', 'spark', function ($scope, sparkService, $modalInstance, spark) {
+
+    $scope.alerts = [];
+    $scope.variables = {};
+    $scope.variable = {};
+
+    $scope.closeAlert = function (index) {
+        $scope.alerts.splice(index, 1);
+    };
+
+    $scope.cancel = function () {
+        $modalInstance.dismiss('cancel');
+    };
+    $scope.spark = spark;
+
+    if (spark.uuid != undefined) {
+        sparkService.get(spark.uuid).then(function (data) {
+            $scope.spark = data;
+            $scope.variables = data.variables;
+        });
+    } else if (spark.s_uuid != undefined) {
+        sparkService.get_by_server(spark.s_uuid).then(function (data) {
+            $scope.spark = data;
+            $scope.variables = data.variables;
+        });
+    }
+
+    $scope.add_variable = function (variable) {
+        if (variable.key.length > 0 && variable.key.length > 0) {
+            $scope.variables[variable.key] = variable.value;
+            $scope.variable = {};
+        }
+    };
+
+    $scope.edit_variable = function (key) {
+        $scope.variable.key = key;
+        $scope.variable.value = $scope.variables[key];
+    };
+
+    $scope.remove_variable = function (key) {
+        delete $scope.variables[key];
+    };
+
+    $scope.save_spark = function () {
+        $scope.spark.variables = $scope.variables;
+        sparkService.save($scope.spark).then(function (message) {
+            if (message.success)
+                $modalInstance.close(message);
+            else
+                $scope.alerts.push({type: 'danger', msg: message.content})
+        });
+    };
+}]);
+
+
 app.controller('SparkJobListCtrl', ['$scope', 'sparkService', '$compile', '$modal', function ($scope, sparkService, $compile, $modal) {
     $scope.spark = undefined;
     $scope.jobGrid = {};
@@ -309,7 +365,8 @@ app.controller('SparkJobLogsCtrl', ['$scope', 'sparkService', '$modalInstance', 
     $scope.cancel = function () {
         $modalInstance.dismiss();
     };
-
+    if (content == null || content == undefined)
+        content = '';
     $scope.logs = content.replace(new RegExp(/(\tat)/g), '&nbsp;&nbsp;&nbsp;&nbsp;').split('\n');
 
 }]);

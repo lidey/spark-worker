@@ -3,22 +3,38 @@ app.factory('serverService', ['$http', function ($http) {
 
     var factory = {};
 
-    var servers;
-
     var versionArray = [
         {name: 'CentOS 7 以上版本', key: 'CentOS-7', type: 'Linux'},
         {name: 'CentOS 6 以上版本', key: 'CentOS-6', type: 'Linux'},
         {name: 'Window 2008', key: 'Window-2008', type: 'Window'}
     ];
 
-    factory.all = function () {
-        servers = $http.get("server/list").then(function (resp) {
-            return resp.data.servers;
+    factory.tree = function () {
+        return $http.get("server/folder/tree").then(function (resp) {
+            return resp.data.tree;
         });
-        return servers;
+    };
+
+    factory.folder_save = function (folder) {
+        return $http.post("server/folder/save", folder).then(function (resp) {
+            return resp.data;
+        });
+    };
+
+    factory.folder_get = function (uuid) {
+        return $http.get("server/folder/info", {params: {uuid: uuid}}).then(function (resp) {
+            return resp.data;
+        });
+    };
+
+    factory.folder_delete = function (uuid) {
+        return $http.get("server/folder/remove", {params: {uuid: uuid}}).then(function (resp) {
+            return resp.data;
+        });
     };
 
     factory.save = function (server) {
+        console.log(server)
         return $http.post("server/save", server).then(function (resp) {
             return resp.data;
         });
@@ -31,13 +47,13 @@ app.factory('serverService', ['$http', function ($http) {
     };
 
     factory.delete = function (uuid) {
-        return servers = $http.get("server/remove", {params: {uuid: uuid}}).then(function (resp) {
+        return $http.get("server/remove", {params: {uuid: uuid}}).then(function (resp) {
             return resp.data;
         });
     };
 
-    factory.test = function (server) {
-        return servers = $http.post("server/test", server).then(function (resp) {
+    factory.test = function (uuid) {
+        return $http.get("server/test", {params: {uuid: uuid}}).then(function (resp) {
             return resp.data;
         });
     };

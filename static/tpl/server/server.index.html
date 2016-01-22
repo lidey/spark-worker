@@ -1,0 +1,44 @@
+<div ng-controller="ServerIndexCtrl">
+    <div ng-if="folder != undefined">
+        <!-- header -->
+        <div class="wrapper bg-light lter b-b">
+            <div class="pull-right btn-group  m-t-n-xs m-l-xs">
+                <button ng-if="folder.uuid!=undefined" class="btn btn-sm btn-info"
+                        ng-click="add_server(folder.uuid)">
+                    <i class="fa fa-plus"></i>服务器连接
+                </button>
+            </div>
+            <div class="pull-right btn-group  m-t-n-xs m-l-xs">
+                <button ng-if="folder.uuid==undefined" class="btn btn-sm btn-info"
+                        ng-click="add_folder()">
+                    <i class="fa fa-plus"></i>目录
+                </button>
+                <button ng-if="folder.uuid!=undefined" class="btn btn-sm btn-info"
+                        ng-click="edit_folder(folder)">
+                    <i class="fa fa-pencil"></i>目录
+                </button>
+                <button ng-if="folder.uuid!=undefined" class="btn btn-sm btn-warning"
+                        ng-click="delete_folder(folder)">
+                    <i class="glyphicon glyphicon-trash"></i>目录
+                </button>
+            </div>
+            {{ folder.title }}&nbsp;
+        </div>
+        <!-- / header -->
+        <div class="wrapper-md ng-scope" ng-if="folder.uuid!=undefined">
+            <alert ng-repeat="alert in alerts" type="{{ alert.type }}"
+                   close="closeAlert($index)">{{ alert.msg }}</alert>
+            <div class="panel panel-default">
+                <div class="panel-heading">
+                    服务器列表
+                </div>
+                <div class="panel-body table-responsive">
+                    <table ng-if="dt_option!=undefined" id="servers" ui-jq="dataTable" ui-options="dt_option"
+                           ui-controller="grid"
+                           class="table table-striped m-b-none">
+                    </table>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
