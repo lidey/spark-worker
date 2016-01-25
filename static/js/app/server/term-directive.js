@@ -35,6 +35,7 @@ angular.module('app')
                     onClose: function () {
                         term.write('Connection Reset By Peer');
                         term.destroy();
+                        $element.html('服务器连接异常.');
                     }
                 }));
             }

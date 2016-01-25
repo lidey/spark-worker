@@ -314,6 +314,7 @@ class Tty(object):
                         port=self.port,
                         username=self.username,
                         password=self.password,
+                        timeout=10,
                         allow_agent=False,
                         look_for_keys=False)
 

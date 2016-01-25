@@ -27,6 +27,7 @@ app.controller('ServerCtrl', ['$scope', 'serverService', '$timeout', '$modal', f
     };
     $scope.folder_tree_handler = function (branch) {
         if (branch.type != null) {
+            $scope.branch = branch;
             $scope.folder = branch.data;
             $scope.$broadcast('folder', branch.data);
         }
@@ -304,7 +305,6 @@ app.controller('ServerTermListCtrl', ['$scope', '$modal', 'config', 'serverServi
     });
 
     $scope.add = function () {
-        console.log($scope.select)
         $scope.terms.push({
             title: $scope.terms.length + 1 + '. ' + $scope.select.server.title,
             uri: 'ws://' + config.hostname + ':' + config.port + '/terminal?uuid=' + $scope.select.server.uuid
