@@ -15,6 +15,12 @@ app.factory('serverService', ['$http', function ($http) {
         });
     };
 
+    factory.all = function () {
+        return $http.get("server/all").then(function (resp) {
+            return resp.data.servers;
+        });
+    };
+
     factory.folder_save = function (folder) {
         return $http.post("server/folder/save", folder).then(function (resp) {
             return resp.data;

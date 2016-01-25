@@ -8,14 +8,47 @@
         color: #000;
         background: #f0f0f0;
     }
+
 </style>
 
-<div class="modal-header">
-    <h5 class="modal-title">{{ server.title }}
-        <span class="pull-right">
-            <button type="button" ng-click="cancel()" class="close"><span aria-hidden="true">&times;</span></button>
-        </span>
-    </h5>
+<div ng-controller="ServerTermListCtrl" ng-init="app.hideAside = true;">
+    <!-- header -->
+    <div class="wrapper bg-light lter b-b">
+        <div class="h4">终端管理
+            <div class="pull-right btn-group  m-t-n-xs m-l-xs" style="width: 300px;">
+                <form ng-submit="add()">
+                    <div class="input-group">
+                        <ui-select ng-model="select.server" theme="bootstrap">
+                            <ui-select-match placeholder="选择服务器版本">{{$select.selected.title}}</ui-select-match>
+                            <ui-select-choices group-by="server.folder.title"
+                                               repeat="server in servers | filter: $select.search">
+                                <span ng-bind-html="server.title | highlight: $select.search"></span>
+                            </ui-select-choices>
+                        </ui-select>
+                    <span class="input-group-btn">
+                      <button class="btn btn-default">
+                          <i class="fa fa-plus"></i>终端
+                      </button>
+                    </span>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+    <!-- / header -->
+    <div class="wrapper-md ng-scope" ng-if="terms.length >0">
+        <tabset class="tab-container">
+            <tab ng-repeat="term in terms" class="23">
+                <tab-heading>
+                    {{ term.title }}
+                    <span class="pull-right m-l-sm">
+                        <a href ng-click="close($index,term.title)" class="close">&times;</a>
+                    </span>
+                </tab-heading>
+                <tab-content class="m-n-sm" style=" background-color: #000000">
+                    <term uri='{{ term.uri }}'></term>
+                </tab-content>
+            </tab>
+        </tabset>
+    </div>
 </div>
-<term uri='{{ web_terminal_uri }}'></term>
-

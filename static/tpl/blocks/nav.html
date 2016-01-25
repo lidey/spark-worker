@@ -17,10 +17,31 @@
         <span>基础配置</span>
     </li>
     <li ng-class="{active:$state.includes('app.server')}">
-        <a ui-sref="app.server.index">
+        <a href class="auto">
+            <span class="pull-right text-muted">
+                <i class="fa fa-fw fa-angle-right text"></i>
+                <i class="fa fa-fw fa-angle-down text-active"></i>
+            </span>
             <i class="glyphicon glyphicon-cloud icon text-info-lter"></i>
             <span class="font-bold">服务器</span>
         </a>
+        <ul class="nav nav-sub dk">
+            <li ng-class="{active:$state.includes('app.server.index')}">
+                <a ui-sref="app.server.index">
+                    <span>连接管理</span>
+                </a>
+            </li>
+            <li ng-class="{active:$state.includes('app.server.term')}">
+                <a ui-sref="app.server.term">
+                    <span>终端管理</span>
+                </a>
+            </li>
+            <li ng-class="{active:$state.includes('app.server.file')}">
+                <a ui-sref="app.server.file">
+                    <span>文件管理</span>
+                </a>
+            </li>
+        </ul>
     </li>
     <li ng-class="{active:($state.includes('app.scheduler') || $state.includes('app.kafka') )}">
         <a href class="auto">

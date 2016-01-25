@@ -1,30 +1,7 @@
 <!-- hbox layout -->
 <div class="hbox hbox-auto-xs bg-light " ng-controller="ServerCtrl">
     <!-- column -->
-    <div class="col w-lg lt b-r bg-auto">
-        <div class="vbox">
-            <div class="wrapper">
-                <button type="button" ng-click="reload()" class="pull-right btn btn-sm btn-info m-t-n-xs">
-                    <i class="fa fa-refresh"></i>刷新
-                </button>
-                <div class="h4">服务器</div>
-            </div>
-            <div class="row-row">
-                <div class="wrapper-md" ng-init="reload()">
-                    <span ng-if="doing_async">数据加载中...</span>
-                    <abn-tree ng-show="doing_async==false"
-                              tree-data="folder_data"
-                              tree-control="folder_tree"
-                              on-select="folder_tree_handler(branch)"
-                              expand-level="3"
-                              icon-leaf=""
-                              icon-expand="fa fa-plus"
-                              icon-collapse="fa fa-minus"
-                    >
-                    </abn-tree>
-                </div>
-            </div>
-        </div>
+    <div class="col w-lg lt b-r bg-auto" ng-class="{'hide': app.hideAside }" ui-view="aside">
     </div>
     <!-- /column -->
 
@@ -36,33 +13,3 @@
     <!-- /column -->
 </div>
 <!-- /hbox layout -->
-
-
-<!-- modal -->
-<script type="text/ng-template" id="serverModalContent.html">
-    <div class="modal-header">
-        <h3 class="modal-title">提示</h3>
-    </div>
-    <div class="modal-body">
-        <b>{{ message.content }}</b>
-    </div>
-    <div class="modal-footer">
-        <button class="btn btn-warning" ng-click="cancel()">关闭</button>
-    </div>
-</script>
-<!-- /modal -->
-
-<!-- modal -->
-<script type="text/ng-template" id="serverConfirmContent.html">
-    <div class="modal-header">
-        <h3 class="modal-title">提示</h3>
-    </div>
-    <div class="modal-body">
-        <b>{{ message.content }}</b>
-    </div>
-    <div class="modal-footer">
-        <button class="btn btn-primary" ng-click="ok()">确定</button>
-        <button class="btn btn-warning" ng-click="cancel()">取消</button>
-    </div>
-</script>
-<!-- /modal -->

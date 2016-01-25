@@ -109,7 +109,7 @@ app.controller('ServerIndexCtrl', ['$scope', 'serverService', '$modal', '$compil
                         {
                             targets: [5],
                             render: function (data, type, row) {
-                                return new Date(parseInt(data)).toLocaleString().substr(0,10);
+                                return new Date(parseInt(data)).toLocaleString().substr(0, 10);
                             }
                         },
                         {
@@ -233,8 +233,7 @@ app.controller('ServerEditCtrl', ['$scope', 'serverService', '$modalInstance', '
     $scope.cancel = function () {
         $modalInstance.dismiss('cancel');
     };
-    console.log(folder)
-    console.log(server)
+
     if (server != null) {
         $scope.server = server;
         $scope.versions = serverService.getVersionArrayAll();
@@ -293,11 +292,31 @@ app.controller('ServerEditCtrl', ['$scope', 'serverService', '$modalInstance', '
     };
 }]);
 
-app.controller('ServerTermCtrl', ['$scope', '$modalInstance', 'config', 'server', function ($scope, $modalInstance, config, server) {
-    $scope.web_terminal_uri = 'ws://' + config.hostname + ':' + config.port + '/terminal?uuid=' + server.uuid;
-    $scope.server = server;
+app.controller('ServerTermListCtrl', ['$scope', '$modal', 'config', 'serverService', function ($scope, $modal, config, serverService) {
+    //$scope.web_terminal_uri = 'ws://' + config.hostname + ':' + config.port + '/terminal?uuid=' + server.uuid;
 
-    $scope.cancel = function () {
-        $modalInstance.dismiss('cancel');
+    $scope.terms = [];
+    $scope.servers = [];
+    $scope.select = {};
+
+    serverService.all().then(function (servers) {
+        $scope.servers = servers;
+    });
+
+    $scope.add = function () {
+        console.log($scope.select)
+        $scope.terms.push({
+            title: $scope.terms.length + 1 + '. ' + $scope.select.server.title,
+            uri: 'ws://' + config.hostname + ':' + config.port + '/terminal?uuid=' + $scope.select.server.uuid
+        })
+    };
+
+    $scope.close = function (index, title) {
+        $scope.showConfirm('<p>请确认是否是要断开服务器连接:' + title + '?</p>').result.then(function (data) {
+            if (data) {
+                $scope.terms.splice(index, 1);
+            }
+        });
+
     };
 }]);

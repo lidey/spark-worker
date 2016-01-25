@@ -1,0 +1,23 @@
+<div class="vbox">
+    <div class="wrapper">
+        <button type="button" ng-click="reload()" class="pull-right btn btn-sm btn-info m-t-n-xs">
+            <i class="fa fa-refresh"></i>刷新
+        </button>
+        <div class="h4">服务器</div>
+    </div>
+    <div class="row-row">
+        <div class="wrapper-md" ng-init="reload()">
+            <span ng-if="doing_async">数据加载中...</span>
+            <abn-tree ng-show="doing_async==false"
+                      tree-data="folder_data"
+                      tree-control="folder_tree"
+                      on-select="folder_tree_handler(branch)"
+                      expand-level="3"
+                      icon-leaf=""
+                      icon-expand="fa fa-plus"
+                      icon-collapse="fa fa-minus"
+            >
+            </abn-tree>
+        </div>
+    </div>
+</div>

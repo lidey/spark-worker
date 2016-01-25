@@ -66,11 +66,12 @@ class ServerHandler(BaseHandler):
             return self.server_info()
         if url_first == 'list':
             return self.server_list()
+        if url_first == 'all':
+            return self.server_all()
         if url_first == 'remove':
             return self.server_remove()
         if url_first == 'test':
             return self.server_test()
-
 
     def folder_tree(self):
         """
@@ -139,6 +140,16 @@ class ServerHandler(BaseHandler):
         """
         servers = []
         for server in Server.select().join(Folder).where(Folder.uuid == self.get_argument('f_uuid')):
+            servers.append(server.to_dict())
+        self.write({'servers': servers})
+
+    def server_all(self):
+        """
+        获取服务器链接列表
+        :return: 链接列表
+        """
+        servers = []
+        for server in Server.select().join(Folder):
             servers.append(server.to_dict())
         self.write({'servers': servers})
 

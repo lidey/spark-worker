@@ -29,7 +29,40 @@ angular.module('app')
                     })
                     .state('app.server.index', {
                         url: '/index',
-                        templateUrl: 'static/tpl/server/server.index.html'
+                        views: {
+                            '': {
+                                templateUrl: 'static/tpl/server/server.index.html'
+                            },
+                            'aside': {
+                                templateUrl: 'static/tpl/server/server.folder.tree.html'
+                            }
+                        }
+                    })
+                    .state('app.server.term', {
+                        url: '/term',
+                        views: {
+                            '': {
+                                templateUrl: 'static/tpl/server/server.term.html'
+                            }
+                        },
+                        resolve: {
+                            deps: ['$ocLazyLoad', 'uiLoad',
+                                function ($ocLazyLoad, uiLoad) {
+                                    return $ocLazyLoad.load(['ui.select']).then(function () {
+                                        return uiLoad.load(['static/vendor/jquery/term/term.js',
+                                            'static/js/app/server/term-directive.js']);
+                                    });
+
+                                }]
+                        }
+                    })
+                    .state('app.server.file', {
+                        url: '/file',
+                        views: {
+                            '': {
+                                templateUrl: 'static/tpl/server/server.file.html'
+                            }
+                        }
                     });
             }
         ]
