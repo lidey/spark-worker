@@ -33,10 +33,14 @@ angular.module('app')
                                     return $ocLazyLoad.load(['static/js/controllers/app-index.js']);
                                 }]
                         }
+                    }).state('app.profile', {
+                        url: '/profile',
+                        templateUrl: 'static/tpl/profile.html'
                     }).state('app.docs', {
-                    url: '/docs',
-                    templateUrl: 'static/tpl/docs.html'
-                    })
+                        url: '/docs',
+                        templateUrl: 'static/tpl/docs.html'
+                    }
+                );
 
             }
         ]
