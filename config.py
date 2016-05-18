@@ -9,10 +9,10 @@ import logging
 
 # 服务配置信息
 system = {
-    'name': '大数据云--数据调度系统',
+    'name': 'Spark调度系统',
     'hostname': '10.211.55.2',
     'port': 8880,
-    'company': '软通动力信息技术（集团）有限公司',
+    'company': 'memory',
     'version': '0.0.1',
     'upload_file': '/Users/lidey/Documents/tmp/upload_file'
 }
